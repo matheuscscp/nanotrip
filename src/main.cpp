@@ -11,10 +11,10 @@ int main(int argc, char** argv) {
 	
 	try {
 		sm.run();
-	} catch (Quit&) {
-		// just quit
 	} catch (mexception& e) {
 		e.logerr();	// log the error
+	} catch (Quit&) {
+		// just quit
 	}
 	
 	return 0;
