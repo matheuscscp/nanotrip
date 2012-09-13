@@ -5,7 +5,7 @@
 
 #include "SDL_mixer.h"
 
-#include "mod/observer.hpp"
+#include "observer.hpp"
 
 class Audio
 {

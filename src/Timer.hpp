@@ -1,7 +1,7 @@
 #ifndef TIMER_HPP
 #define TIMER_HPP
 
-#include "mod/observer.hpp"
+#include "observer.hpp"
 
 class Timer {
 private:

@@ -1,7 +1,7 @@
 #include <fstream>
 #include <sstream>
 
-#include "mod/common.hpp"
+#include "common.hpp"
 
 #include "Ranking.hpp"
 

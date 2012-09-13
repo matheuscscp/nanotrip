@@ -1,7 +1,7 @@
 #ifndef CAMERA_HPP
 #define CAMERA_HPP
 
-#include "mod/linearalgebra.hpp"
+#include "linearalgebra.hpp"
 
 struct Camera
 {

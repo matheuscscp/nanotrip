@@ -3,7 +3,7 @@
 
 #include "SDL.h"
 
-#include "mod/observer.hpp"
+#include "observer.hpp"
 
 #define inputmanager_event	(*(((InputManager::Event*)&event)->event))
 

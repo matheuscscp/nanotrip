@@ -39,10 +39,10 @@ build: $(OBJ)
 	g++ $(CXXFLAGS) $(OBJ) -o $(EXE) $(LIB)
 
 run: build
-	$(EXE) $(RUNFLAGS)
+	./$(EXE) $(RUNFLAGS)
 
 test: build
-	$(EXE) -f -p $(CURDIR)/ -s StateTest
+	./$(EXE) -f -p $(CURDIR)/ -s StateTest
 
 gdb: build
 	gdb $(EXE)

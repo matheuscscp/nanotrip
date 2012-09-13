@@ -1,5 +1,5 @@
-#include "mod/common.hpp"
-#include "mod/observer.hpp"
+#include "common.hpp"
+#include "observer.hpp"
 
 #include "Audio.hpp"
 

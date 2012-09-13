@@ -12,7 +12,7 @@
 
 #include <string>
 
-#include "mod/linearalgebra.hpp"
+#include "linearalgebra.hpp"
 
 #include "SDL.h"
 

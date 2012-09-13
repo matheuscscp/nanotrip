@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 
-#include "mod/observer.hpp"
+#include "observer.hpp"
 
 class InputString
 {

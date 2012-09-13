@@ -12,7 +12,7 @@
 #include <string>
 #include <map>
 
-#include "mod/observer.hpp"
+#include "observer.hpp"
 
 /// Declares the game state ID.
 #define GAMESTATE			\

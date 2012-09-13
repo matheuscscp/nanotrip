@@ -1,6 +1,6 @@
 #include "State.hpp"
 
-#include "mod/common.hpp"
+#include "common.hpp"
 
 #include "InputManager.hpp"
 

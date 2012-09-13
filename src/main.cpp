@@ -1,5 +1,5 @@
 
-#include "mod/common.hpp"
+#include "common.hpp"
 
 #include "StateManager.hpp"
 

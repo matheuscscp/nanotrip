@@ -1,7 +1,7 @@
 #ifndef BUTTON_HPP
 #define BUTTON_HPP
 
-#include "mod/observer.hpp"
+#include "observer.hpp"
 
 #include "Geometry.hpp"
 #include "Sprite.hpp"

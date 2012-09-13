@@ -10,8 +10,8 @@
 #include "SDL_ttf.h"
 #include "SDL_mixer.h"
 
-#include "mod/common.hpp"
-#include "mod/configfile.hpp"
+#include "common.hpp"
+#include "configfile.hpp"
 
 #include "SDLBase.hpp"
 

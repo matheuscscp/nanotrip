@@ -1,7 +1,7 @@
 #ifndef GAMEOBJECT_HPP
 #define GAMEOBJECT_HPP
 
-#include "mod/linearalgebra.hpp"
+#include "linearalgebra.hpp"
 
 class GameObject
 {

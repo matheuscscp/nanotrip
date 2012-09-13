@@ -1,6 +1,6 @@
 #include <fstream>
 
-#include "mod/common.hpp"
+#include "common.hpp"
 
 #include "TileMap.hpp"
 

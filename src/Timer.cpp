@@ -1,6 +1,6 @@
 #include "SDL.h"
 
-#include "mod/observer.hpp"
+#include "observer.hpp"
 
 #include "Timer.hpp"
 

@@ -1,4 +1,4 @@
-#include "mod/configfile.hpp"
+#include "configfile.hpp"
 
 #include "InputString.hpp"
 
