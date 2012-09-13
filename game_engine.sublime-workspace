@@ -1,0 +1,400 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"S",
+				"State"
+			],
+			[
+				"Sta",
+				"StateFirst"
+			],
+			[
+				"In",
+				"InputManager"
+			],
+			[
+				"ha",
+				"handleObsStackPop"
+			],
+			[
+				"pri",
+				"private"
+			],
+			[
+				"ti",
+				"ticks"
+			],
+			[
+				"ra",
+				"range"
+			],
+			[
+				"ar",
+				"argv"
+			],
+			[
+				"en",
+				"endl"
+			],
+			[
+				"SDL",
+				"SDL_GetTicks"
+			],
+			[
+				"inc",
+				"include"
+			],
+			[
+				"p",
+				"pass"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "include/State.hpp",
+			"settings":
+			{
+				"buffer_size": 698,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/State.cpp",
+			"settings":
+			{
+				"buffer_size": 1415,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "include/StateManager.hpp",
+			"settings":
+			{
+				"buffer_size": 550,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/StateManager.cpp",
+			"settings":
+			{
+				"buffer_size": 3348,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"command_palette":
+	{
+		"height": 285.0,
+		"selected_items":
+		[
+			[
+				"Package Control: ",
+				"Package Control: Remove Package"
+			],
+			[
+				"Package Control",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 449.0
+	},
+	"console":
+	{
+		"height": 139.0
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/home/matheus/Documents/C_C++/C++/IDJ/game_engine/Makefile",
+		"/home/matheus/Documents/C_C++/C++/IDJ/game_engine/src/GamePath.cpp",
+		"/home/matheus/Documents/C_C++/C++/IDJ/game_engine/include/GamePath.hpp",
+		"/home/matheus/Documents/C_C++/C++/IDJ/game_engine/src/SDLBase.cpp",
+		"/home/matheus/Documents/C_C++/C++/IDJ/game_engine/include/SDLBase.hpp",
+		"/home/matheus/Documents/C_C++/C++/IDJ/game_engine/src/StateFirst.cpp",
+		"/home/matheus/Documents/C_C++/C++/IDJ/game_engine/include/StateFirst.hpp",
+		"/home/matheus/Documents/C_C++/C++/IDJ/game_engine/src/StateMovie.cpp",
+		"/home/matheus/Documents/C_C++/C++/IDJ/game_engine/include/StateMovie.hpp",
+		"/home/matheus/Documents/C_C++/C++/IDJ/game_engine/src/StatePauseManager.cpp",
+		"/home/matheus/Documents/C_C++/C++/IDJ/game_engine/include/mod/common.hpp",
+		"/home/matheus/Documents/C_C++/C++/IDJ/game_engine/mod_src/common.cpp",
+		"/home/matheus/Documents/C_C++/C++/IDJ/game_engine/include/State.hpp",
+		"/home/matheus/Documents/C_C++/C++/IDJ/game_engine/include/GameStates.hpp",
+		"/home/matheus/Documents/C_C++/C++/IDJ/game_engine/mod_src/observer.cpp",
+		"/home/matheus/Documents/C_C++/C++/IDJ/game_engine/include/StatePauseManager.hpp",
+		"/home/matheus/Documents/C_C++/C++/IDJ/game_engine/src/InputString.cpp",
+		"/home/matheus/Documents/C_C++/C++/IDJ/game_engine/include/InputString.hpp",
+		"/home/matheus/Documents/C_C++/C++/IDJ/game_engine/include/mod/observer.hpp",
+		"/home/matheus/Documents/C_C++/C++/IDJ/game_engine/include/InputManager.hpp",
+		"/home/matheus/Documents/C_C++/C++/IDJ/game_engine/src/InputManager.cpp",
+		"/home/matheus/Documents/C_C++/C++/IDJ/game_engine/src/Ranking.cpp",
+		"/home/matheus/Documents/C_C++/C++/IDJ/game_engine/src/State.cpp",
+		"/home/matheus/Documents/C_C++/C++/IDJ/game_engine/include/Timer.hpp",
+		"/home/matheus/Documents/C_C++/C++/IDJ/game_engine/src/Timer.cpp",
+		"/home/matheus/Documents/C_C++/C++/IDJ/game_engine/src/Audio.cpp",
+		"/home/matheus/Documents/C_C++/C++/IDJ/game_engine/include/Audio.hpp",
+		"/home/matheus/Documents/C_C++/C++/IDJ/game_engine/src/Text.cpp",
+		"/home/matheus/Documents/C_C++/C++/IDJ/game_engine/src/StateManager.cpp",
+		"/home/matheus/Documents/C_C++/C++/IDJ/game_engine/src/Button.cpp",
+		"/home/matheus/Documents/C_C++/C++/IDJ/game_engine/include/Button.hpp",
+		"/home/matheus/.config/sublime-text-2/Packages/Default/Preferences.sublime-settings",
+		"/home/matheus/Documents/C_C++/C/CB_monitoria/trab2_2012_1_senhas/gera_senha_algoritmos/gera_senha.c",
+		"/home/matheus/Documents/C_C++/C/CB_monitoria/trab2_2012_1_senhas/nsenha.c",
+		"/home/matheus/Downloads/gera_senha/gera_senha.c",
+		"/home/matheus/Downloads/gera_senha/bom",
+		"/home/matheus/Downloads/gera_senha/ruim",
+		"/home/matheus/Downloads/gera_senha/gera_senha.cpp",
+		"/home/matheus/Downloads/gera_senha.cpp",
+		"/home/matheus/Downloads/t.cpp",
+		"/home/matheus/Downloads/ruim",
+		"/home/matheus/Downloads/bom",
+		"/media/Matheus/Users/Matheus/Downloads/julia/trab2.c",
+		"/tmp/fz3temp-1/LocalSettings.php",
+		"/media/Matheus/Users/Matheus/Documents/CJR/servidores/cjr.org.br.txt",
+		"/media/Matheus/Users/Matheus/Downloads/tarefas.txt",
+		"/var/www/CJR/sistema-seluz-grupo-01-cjr/seluz.sql",
+		"/var/www/CJR/sistema-seluz-grupo-01-cjr/application/config/config.php",
+		"/home/matheus/Documents/C_C++/C/jogo_joni/video.c",
+		"/home/matheus/.config/sublime-text-2/Packages/Default/Default (Linux).sublime-keymap",
+		"/home/matheus/Documents/C_C++/C++/IDJ/game_engine/include/Animation.hpp",
+		"/home/matheus/.config/sublime-text-2/Packages/Terminal/Default (Linux).sublime-keymap"
+	],
+	"find":
+	{
+		"height": 35.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"state::args",
+			"StateArgs",
+			"stateargs",
+			"stacked",
+			"list",
+			"stop",
+			"simple",
+			"handle",
+			"line",
+			"remove",
+			"erase",
+			"ruler",
+			"wguseaj",
+			"mean",
+			"require_once",
+			"draw_white",
+			"draw_whie",
+			"highlight",
+			"highli"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 3,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "include/State.hpp",
+					"settings":
+					{
+						"buffer_size": 698,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								338,
+								338
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 51.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "src/State.cpp",
+					"settings":
+					{
+						"buffer_size": 1415,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								20,
+								20
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "include/StateManager.hpp",
+					"settings":
+					{
+						"buffer_size": 550,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								365,
+								365
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "src/StateManager.cpp",
+					"settings":
+					{
+						"buffer_size": 3348,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1055,
+								1055
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 153.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 0.0
+	},
+	"input":
+	{
+		"height": 0.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"replace":
+	{
+		"height": 0.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 317.0,
+	"status_bar_visible": true
+}

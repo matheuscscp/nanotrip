@@ -1,0 +1,27 @@
+
+
+
+
+CODIGO ESPECIFICO:
+
+state options pode ter: mutar som, volume de som, alterar brightness
+
+
+
+
+
+
+
+
+
+
+ENGINE:
+
+arrumar o instanciador de primeiro estado para statemovie no StateManager.cpp
+
+arrumar coisas da SDLBase (delayframe, stackedscreen (tela preta))
+
+CLASS STATEMOVIE (empilhar estado no pause)
+
+classe StateMovie (mostrar enter: pause    space: skip)
+
