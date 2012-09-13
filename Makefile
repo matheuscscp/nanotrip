@@ -15,9 +15,9 @@ LIB = -lSDL -lSDL_image -lSDL_gfx -lSDL_ttf -lSDL_mixer
 MOD = $(MODDIR)/configfile.o $(MODDIR)/linearalgebra.o $(MODDIR)/common.o $(MODDIR)/observer.o
 EXE = game
 
-RUNFLAGS = -f -p /home/matheus/Documents/C_C++/C++/IDJ/game_engine/
-
 FIRSTATE = StateTest
+
+RUNFLAGS = -f -p $(CURDIR)/ -s $(FIRSTATE)
 
 OBJ0 = $(OBJDIR)/main.o $(OBJDIR)/SDLBase.o $(OBJDIR)/Sprite.o $(OBJDIR)/Animation.o
 OBJ1 = $(OBJ0) $(OBJDIR)/TileSet.o $(OBJDIR)/TileMap.o $(OBJDIR)/GameObject.o $(OBJDIR)/Camera.o
@@ -39,10 +39,14 @@ build: $(OBJ)
 	g++ $(CXXFLAGS) $(MOD) $(OBJ) -o $(BINDIR)/$(EXE) $(LIB)
 
 run: build
-	$(BINDIR)/$(EXE) $(RUNFLAGS) -s $(FIRSTATE)
+	$(BINDIR)/$(EXE) $(RUNFLAGS)
 
 test: build
-	$(BINDIR)/$(EXE) $(RUNFLAGS) -s StateTest
+	$(BINDIR)/$(EXE) -f -p $(CURDIR)/ -s StateTest
+
+gdb: build
+	gdb $(BINDIR)/$(EXE)
+#r -f -p /home/matheus/Documents/C_C++/C++/IDJ/game_engine/ -s StateTest
 
 clean:
 	rm -rf $(BINDIR)/* $(OBJDIR)/* $(ERRLOG)
@@ -53,6 +57,4 @@ dox:
 doxclean:
 	rm -rf $(DOCDIR)/html $(DOCDIR)/latex
 
-gdb: build
-	gdb $(BINDIR)/$(EXE)
-#r -f -p /home/matheus/Documents/C_C++/C++/IDJ/game_engine/ -s StateTest
+.PHONY: all build run test gdb clean dox doxclean
