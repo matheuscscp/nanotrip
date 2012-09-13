@@ -54,9 +54,8 @@ State* State::build(const string& name, ArgsBase* args) {
 
 bool State::frozen() const { return frozen_; }
 
-void State::render() {}
-void State::input() {}
 void State::update() {}
+void State::render() {}
 
 void State::handleQuit(const observer::Event& event, bool& stop) {
 	throw Quit();

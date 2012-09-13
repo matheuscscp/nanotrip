@@ -3,11 +3,10 @@ OBJDIR = obj
 SRCDIR = src
 DOCDIR = doc
 
-SDLDIR = /usr/include/SDL
-
 ERRLOG = ErrorLog.txt
 
-CXXFLAGS = -ansi -pedantic -Wall -Wextra -Wunused-parameter -g -I $(SDLDIR)/
+CXXFLAGS = -ansi -pedantic -Wall -Wextra -Wunused-parameter -g
+INCLUDE = -I /usr/include/SDL -I /usr/local/include/SDL
 
 EXE = game
 
@@ -21,7 +20,7 @@ MOD = $(OBJDIR)/configfile.o $(OBJDIR)/linearalgebra.o $(OBJDIR)/common.o $(OBJD
 
 OBJ0 = $(MOD) $(OBJDIR)/main.o $(OBJDIR)/SDLBase.o $(OBJDIR)/Sprite.o $(OBJDIR)/Animation.o
 OBJ1 = $(OBJ0) $(OBJDIR)/TileSet.o $(OBJDIR)/TileMap.o $(OBJDIR)/GameObject.o $(OBJDIR)/Camera.o
-OBJ2 = $(OBJ1) $(OBJDIR)/Geometry.o $(OBJDIR)/InputManager.o $(OBJDIR)/Button.o
+OBJ2 = $(OBJ1) $(OBJDIR)/InputManager.o $(OBJDIR)/Button.o $(OBJDIR)/Geometry.o
 OBJ3 = $(OBJ2) $(OBJDIR)/StateManager.o $(OBJDIR)/Text.o $(OBJDIR)/Audio.o $(OBJDIR)/Timer.o
 OBJ4 = $(OBJ3) $(OBJDIR)/State.o $(OBJDIR)/Ranking.o $(OBJDIR)/ClearSurface.o $(OBJDIR)/SurfaceManager.o
 #OBJ5 = $(OBJ4) $(OBJDIR)/InputString.o $(OBJDIR)/StateTest.o $(OBJ6) $(OBJDIR)/StateMovie.o
@@ -33,7 +32,7 @@ OBJ  = $(OBJ5)
 all: build
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
-	g++ $(CXXFLAGS) -c $< -o $@
+	g++ $(CXXFLAGS) $(INCLUDE) -c $< -o $@
 
 build: $(OBJ)
 	g++ $(CXXFLAGS) $(OBJ) -o $(EXE) $(LIB)

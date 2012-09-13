@@ -7,31 +7,31 @@
 
 #define inputmanager_event	(*(((InputManager::Event*)&event)->event))
 
-#define INPUTMANAGER_N_EVENTS	12
-#define INPUTMANAGER_KEYS		SDLK_LAST
 #define INPUTMANAGER_BUTTONS	6
 
-class InputManager
-{
+class InputManager {
 SUBJECT
 public:
 	enum {
-		KEYDOWN = 0,		// 1
-		KEYUP,				// 2
-		MOUSEMOTION,		// 3
-		MOUSEDOWN_LEFT,		// 4
-		MOUSEDOWN_MIDDLE,	// 5
-		MOUSEDOWN_RIGHT,	// 6
-		MOUSEUP_LEFT,		// 7
-		MOUSEUP_MIDDLE,		// 8
-		MOUSEUP_RIGHT,		// 9
-		MOUSE_WHEELUP,		// 10
-		MOUSE_WHEELDOWN,	// 11
-		QUIT				// 12
+		// events
+		QUIT = 0,
+		KEYDOWN,
+		KEYUP,
+		MOUSEMOTION,
+		MOUSEDOWN_LEFT,
+		MOUSEDOWN_MIDDLE,
+		MOUSEDOWN_RIGHT,
+		MOUSEUP_LEFT,
+		MOUSEUP_MIDDLE,
+		MOUSEUP_RIGHT,
+		MOUSE_WHEELUP,
+		MOUSE_WHEELDOWN,
+		
+		// don't change this
+		LASTEVENT
 	};
 	
-	struct Event : public observer::Event
-	{
+	struct Event : public observer::Event {
 		SDL_Event* event;
 		
 		Event(int type, SDL_Event* event);
@@ -42,7 +42,7 @@ private:
 	
 	SDL_Event event_;
 	
-	bool key_pressed[INPUTMANAGER_KEYS];
+	bool key_pressed[SDLK_LAST];
 	int mouse_x;
 	int mouse_y;
 	bool mouse_pressed[INPUTMANAGER_BUTTONS];
@@ -52,8 +52,8 @@ private:
 	InputManager ();
 	~InputManager ();
 public:
-	static InputManager* instance ();
-	static void close ();
+	static InputManager* instance();
+	static void close();
 	
 	void update ();
 	

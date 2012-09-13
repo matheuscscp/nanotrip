@@ -9,33 +9,26 @@ InputManager* InputManager::instance_ = 0;
 InputManager::Event::Event(int type, SDL_Event* event) : observer::Event(type), event(event) {}
 InputManager::Event::~Event() {}
 
-InputManager::InputManager() : mouse_x(INT_MAX), mouse_y(INT_MAX)
-{
-	subject.init( INPUTMANAGER_N_EVENTS );
+InputManager::InputManager() : mouse_x(INT_MAX), mouse_y(INT_MAX) {
+	subject.init(LASTEVENT);
 	
-	for( int i = 0; i < INPUTMANAGER_KEYS; i++ )
+	for( int i = 0; i < SDLK_LAST; i++ )
 		key_pressed[i] = false;
 	
 	for( int i = 0; i < INPUTMANAGER_BUTTONS; i++ )
 		mouse_pressed[i] = false;
 }
 
-InputManager::~InputManager()
-{
-}
+InputManager::~InputManager() {}
 
-InputManager* InputManager::instance()
-{
-	if( !instance_ )
+InputManager* InputManager::instance() {
+	if (!instance_)
 		instance_ = new InputManager();
-	
 	return instance_;
 }
 
-void InputManager::close()
-{
-	if( instance_ )
-	{
+void InputManager::close() {
+	if (instance_) {
 		delete instance_;
 		instance_ = 0;
 	}
@@ -121,32 +114,9 @@ void InputManager::update()
 	}
 }
 
-bool InputManager::keyPressed (int i) const
-{
-	return key_pressed[i];
-}
-
-int InputManager::mouseX () const
-{
-	return mouse_x;
-}
-
-int InputManager::mouseY () const
-{
-	return mouse_y;
-}
-
-bool InputManager::mousePressed (int i) const
-{
-	return mouse_pressed[i];
-}
-
-int InputManager::mouseDownX () const
-{
-	return mousedown_x;
-}
-
-int InputManager::mouseDownY () const
-{
-	return mousedown_y;
-}
+bool InputManager::keyPressed(int i) const { return key_pressed[i]; }
+int InputManager::mouseX() const { return mouse_x; }
+int InputManager::mouseY() const { return mouse_y; }
+bool InputManager::mousePressed(int i) const { return mouse_pressed[i]; }
+int InputManager::mouseDownX() const { return mousedown_x; }
+int InputManager::mouseDownY() const { return mousedown_y; }

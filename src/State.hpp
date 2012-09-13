@@ -95,7 +95,6 @@ public:
 	/// The state tells if it's frozen, or not.
 	bool frozen() const;
 	
-	virtual void input();
 	virtual void update();
 	virtual void render();
 protected:

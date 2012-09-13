@@ -108,13 +108,6 @@ void StateManager::run() {
 
 void StateManager::input() {
 	InputManager::instance()->update();
-	
-	// for all loaded states
-	for (list<State*>::iterator it = State::states.begin(); it != State::states.end(); ++it) {
-		// checks for input if not frozen
-		if (!(*it)->frozen())
-			(*it)->input();
-	}
 }
 
 void StateManager::update() {

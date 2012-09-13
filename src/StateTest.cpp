@@ -19,10 +19,6 @@ StateTest::~StateTest() {
 	delete avatar;
 }
 
-void StateTest::input() {
-	
-}
-
 void StateTest::update() {
 	avatar->update();
 }

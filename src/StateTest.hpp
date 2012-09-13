@@ -11,7 +11,6 @@ public:
 	StateTest(ArgsBase* args);
 	~StateTest();
 	
-	void input();
 	void update();
 	void render();
 };
