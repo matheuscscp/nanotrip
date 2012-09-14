@@ -1,3 +1,4 @@
+
 #ifndef INPUTMANAGER_HPP
 #define INPUTMANAGER_HPP
 
@@ -6,8 +7,6 @@
 #include "observer.hpp"
 
 #define inputmanager_event	(*(((InputManager::Event*)&event)->event))
-
-#define INPUTMANAGER_BUTTONS	6
 
 class InputManager {
 SUBJECT
@@ -31,11 +30,12 @@ public:
 		LASTEVENT
 	};
 	
-	struct Event : public observer::Event {
-		SDL_Event* event;
-		
+	class Event : public observer::Event {
+	private:
+		SDL_Event* event_;
+	public:
 		Event(int type, SDL_Event* event);
-		~Event();
+		const SDL_Event* operator()() const;
 	};
 private:
 	static InputManager* instance_;
@@ -45,24 +45,24 @@ private:
 	bool key_pressed[SDLK_LAST];
 	int mouse_x;
 	int mouse_y;
-	bool mouse_pressed[INPUTMANAGER_BUTTONS];
+	bool mouse_pressed[6];
 	int mousedown_x;
 	int mousedown_y;
 	
-	InputManager ();
-	~InputManager ();
+	InputManager();
+	~InputManager();
 public:
 	static InputManager* instance();
 	static void close();
 	
-	void update ();
+	void update();
 	
-	bool keyPressed (int i) const;
-	int mouseX () const;
-	int mouseY () const;
-	bool mousePressed (int i) const;
-	int mouseDownX () const;
-	int mouseDownY () const;
+	bool keyPressed(int i) const;
+	int mouseX() const;
+	int mouseY() const;
+	bool mousePressed(int i) const;
+	int mouseDownX() const;
+	int mouseDownY() const;
 };
 
 #endif
