@@ -6,7 +6,7 @@
 
 #include "observer.hpp"
 
-#define inputmanager_event	(*(((InputManager::Event*)&event)->event))
+#define inputmanager_event	(*( *((InputManager::Event*)&event) )())
 
 class InputManager {
 SUBJECT
@@ -32,7 +32,7 @@ public:
 	
 	class Event : public observer::Event {
 	private:
-		SDL_Event* event_;
+		SDL_Event* event;
 	public:
 		Event(int type, SDL_Event* event);
 		const SDL_Event* operator()() const;

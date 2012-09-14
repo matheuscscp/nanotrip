@@ -7,7 +7,7 @@
 InputManager* InputManager::instance_ = 0;
 
 InputManager::Event::Event(int type, SDL_Event* event) : observer::Event(type), event(event) {}
-const SDL_Event* InputManager::Event::operator()() const { return event_; }
+const SDL_Event* InputManager::Event::operator()() const { return event; }
 
 InputManager::InputManager() : mouse_x(INT_MAX), mouse_y(INT_MAX) {
 	subject.init(LASTEVENT);
