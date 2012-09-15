@@ -33,8 +33,8 @@ SDL_Surface* SDLBase::screen_ = NULL;
 SDL_Surface* SDLBase::bright = NULL;
 SDL_Surface* SDLBase::fade = NULL;
 SDL_Surface* SDLBase::stack_screen = NULL;
-unsigned int SDLBase::dt_ = 0;
-unsigned int SDLBase::fps = 0;
+int SDLBase::dt_ = 0;
+int SDLBase::fps = 0;
 
 struct StackScreen
 {
@@ -46,7 +46,7 @@ struct StackScreen
 void readSDLConf(
 	int& w, int& h, int& bpp,
 	string& title, string& icon,
-	unsigned int& fps,
+	int& fps,
 	StackScreen& stack
 )
 {
@@ -136,7 +136,7 @@ void SDLBase::init()
 {
 	int w, h, bpp;
 	string title, icon;
-	unsigned int fps;
+	int fps;
 	StackScreen stack;
 	
 	readSDLConf( w, h, bpp, title, icon, fps, stack );
@@ -253,8 +253,8 @@ void SDLBase::renderSurface(
 
 void SDLBase::delayFrame ()
 {
-	static unsigned int t = 0;
-	unsigned int frame_size = 1000 / fps;
+	static int t = 0;
+	int frame_size = 1000 / fps;
 	
 	dt_ = SDL_GetTicks () - t;
 	
@@ -266,7 +266,7 @@ void SDLBase::delayFrame ()
 	dt_ = ( ( dt_ < frame_size ) ? frame_size : dt_ );
 }
 
-unsigned int SDLBase::dt ()
+int SDLBase::dt ()
 {
 	return dt_;
 }
@@ -276,7 +276,7 @@ float SDLBase::FPS ()
 	return ( (float) 1000 / dt_ );
 }
 
-void SDLBase::setFPS(unsigned int fps)
+void SDLBase::setFPS(int fps)
 {
 	if( fps )
 		SDLBase::fps = fps;

@@ -7,6 +7,7 @@
 using namespace common;
 
 using std::string;
+using std::list;
 
 // =============================================================================
 // State::ArgsBase Class
@@ -27,7 +28,7 @@ State::ArgsBase* State::Change::args() const { return args_; }
 // State::StackUp Class
 // =============================================================================
 
-State::StackUp::StackUp(const std::string& state, ArgsBase* args) : Change(state, args) {}
+State::StackUp::StackUp(const string& state, ArgsBase* args) : Change(state, args) {}
 
 // =============================================================================
 // State Class
@@ -35,13 +36,31 @@ State::StackUp::StackUp(const std::string& state, ArgsBase* args) : Change(state
 
 // Static vars
 std::map<string, State* (*)(State::ArgsBase* args)> State::builders;
-std::list<State*> State::states;
+list<State*> State::states;
 
-State::State() : frozen_(false) {
+State::State() : frozen_(false), bg(0) {
+	// all sprites
+	Sprite::all.push_back(&sprites);
+	
+	// all game objects
+	GameObject::all.push_back(&game_objects);
+	
+	// quit event
 	InputManager::instance()->connect(InputManager::QUIT, this, &State::handleQuit);
 }
 
 State::~State() {
+	// all sprites
+	while (sprites.size())
+		delete sprites.back();
+	Sprite::all.pop_back();
+	
+	// all game objects
+	while (game_objects.size())
+		delete game_objects.back();
+	GameObject::all.pop_back();
+	
+	// quit event
 	InputManager::instance()->disconnect(this);
 }
 
@@ -53,6 +72,44 @@ State* State::build(const string& name, ArgsBase* args) {
 }
 
 bool State::frozen() const { return frozen_; }
+
+void State::externUpdate() {
+	// all sprites
+	for (list<Sprite*>::iterator it = sprites.begin(); it != sprites.end(); ++it)
+		(*it)->update();
+	
+	// game objects interactions
+	interactions.update();
+	
+	// all game objects
+	for (list<GameObject*>::iterator it = game_objects.begin(); it != game_objects.end();) {
+		GameObject* tmp = *it;
+		tmp->update();
+		if (!tmp->mustdie())
+			++it;
+		// deletes the game object if it requested by itself
+		else {
+			it = game_objects.erase(it);
+			delete tmp;
+		}
+	}
+	
+	// specific game state
+	update();
+}
+
+void State::externRender() {
+	// background
+	if (bg)
+		bg->render();
+	
+	// all game objects
+	for (list<GameObject*>::iterator it = game_objects.begin(); it != game_objects.end(); ++it)
+		(*it)->render();
+	
+	// specific game state
+	render();
+}
 
 void State::update() {}
 void State::render() {}

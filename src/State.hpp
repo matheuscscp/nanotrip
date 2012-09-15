@@ -14,6 +14,8 @@
 
 #include "observer.hpp"
 
+#include "InteractionManager.hpp"
+
 /// Declares the game state ID.
 #define GAMESTATE			\
 private:					\
@@ -80,6 +82,10 @@ public:
 	static std::list<State*> states;
 protected:
 	bool frozen_;
+	Sprite* bg;
+	std::list<Sprite*> sprites;
+	std::list<GameObject*> game_objects;
+	InteractionManager interactions;
 public:
 	/// Empty constructor.
 	State();
@@ -95,9 +101,12 @@ public:
 	/// The state tells if it's frozen, or not.
 	bool frozen() const;
 	
+	void externUpdate();
+	void externRender();
+protected:
 	virtual void update();
 	virtual void render();
-protected:
+	
 	virtual void handleQuit(const observer::Event& event, bool& stop);
 };
 

@@ -1,17 +1,34 @@
 #include "GameObject.hpp"
 
-using namespace lalge;
+using std::list;
 
-GameObject::GameObject (const R2Vector& r, const Scalar& depthconst) :
-r ( r ), depthconst ( depthconst )
-{
+list< list<GameObject*>* > GameObject::all;
+
+GameObject::GameObject() : shape(0), sprite(0), hidden(false), die(false) { all.back()->push_back(this); }
+
+GameObject::~GameObject() {
+	// not removed from GameObject::all if the object requested to die itself
+	if (!die)
+		all.back()->remove(this);
+	
+	// shape
+	if (shape)
+		delete shape;
 }
 
-GameObject::~GameObject ()
-{
+bool GameObject::mustdie() const { return die; }
+
+Shape* GameObject::getShape() const { return shape; }
+
+void GameObject::setShape(Shape* shape) {
+	if (shape)
+		delete shape;
+	this->shape = shape;
 }
 
-R2Vector GameObject::range (const R2Vector& param) const
-{
-	return ( param - r );
+void GameObject::update() {}
+
+void GameObject::render() {
+	if ((sprite) && (!hidden))
+		sprite->render(shape->position.x(0), shape->position.x(1), true);
 }

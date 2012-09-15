@@ -3,16 +3,16 @@
 
 #include "observer.hpp"
 
-#include "Geometry.hpp"
-#include "Sprite.hpp"
+#include "GameObject.hpp"
 
-class Button : public Rectangle
-{
+class Button : public GameObject {
 SUBJECT
 public:
-	enum
-	{
-		CLICKED = 0 // 1
+	enum {
+		CLICKED = 0,
+		
+		// don't change this
+		LASTEVENT
 	};
 private:
 	bool clicked;

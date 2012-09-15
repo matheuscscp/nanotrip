@@ -18,16 +18,17 @@ LIB = -lSDL -lSDL_image -lSDL_gfx -lSDL_ttf -lSDL_mixer
 
 MOD = $(OBJDIR)/configfile.o $(OBJDIR)/linearalgebra.o $(OBJDIR)/common.o $(OBJDIR)/observer.o
 
+# $(OBJDIR)/StatePauseManager.o $(OBJDIR)/StateMovie.o $(OBJDIR)/Button.o $(OBJDIR)/Geometry.o 
+
 OBJ0 = $(MOD) $(OBJDIR)/main.o $(OBJDIR)/SDLBase.o $(OBJDIR)/Sprite.o $(OBJDIR)/Animation.o
 OBJ1 = $(OBJ0) $(OBJDIR)/TileSet.o $(OBJDIR)/TileMap.o $(OBJDIR)/GameObject.o $(OBJDIR)/Camera.o
-OBJ2 = $(OBJ1) $(OBJDIR)/InputManager.o $(OBJDIR)/Button.o $(OBJDIR)/Geometry.o
+OBJ2 = $(OBJ1) $(OBJDIR)/InputManager.o $(OBJDIR)/Particle.o $(OBJDIR)/Circle.o
 OBJ3 = $(OBJ2) $(OBJDIR)/StateManager.o $(OBJDIR)/Text.o $(OBJDIR)/Audio.o $(OBJDIR)/Timer.o
 OBJ4 = $(OBJ3) $(OBJDIR)/State.o $(OBJDIR)/Ranking.o $(OBJDIR)/ClearSurface.o $(OBJDIR)/SurfaceManager.o
-#OBJ5 = $(OBJ4) $(OBJDIR)/InputString.o $(OBJDIR)/StateTest.o $(OBJ6) $(OBJDIR)/StateMovie.o
-OBJ5 = $(OBJ4) $(OBJDIR)/InputString.o $(OBJDIR)/StateTest.o
-#OBJ6 = $(OBJ5) $(OBJDIR)/StatePauseManager.o 
-#OBJ  = $(OBJ6)
-OBJ  = $(OBJ5)
+OBJ5 = $(OBJ4) $(OBJDIR)/InputString.o $(OBJDIR)/StateTest.o $(OBJDIR)/InteractionManager.o
+OBJ6 = $(OBJ5) $(OBJDIR)/Shape.o 
+
+OBJ  = $(OBJ6)
 
 all: build
 

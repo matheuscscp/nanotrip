@@ -1,28 +1,33 @@
+
 #ifndef GAMEOBJECT_HPP
 #define GAMEOBJECT_HPP
 
-#include "linearalgebra.hpp"
+#include <list>
 
-class GameObject
-{
+#include "Shape.hpp"
+#include "Sprite.hpp"
+
+class GameObject {
 public:
-	lalge::R2Vector r;
+	static std::list< std::list<GameObject*>* > all;
+private:
+	Shape* shape;
+public:
+	Sprite* sprite;
+	bool hidden;
+protected:
+	bool die;
+public:
+	GameObject();
+	virtual ~GameObject();
 	
-	lalge::Scalar depthconst;
+	bool mustdie() const;
 	
-	GameObject (
-		const lalge::R2Vector& r = lalge::R2Vector (),
-		const lalge::Scalar& depthconst = 1
-	);
-	virtual ~GameObject ();
+	Shape* getShape() const;
+	void setShape(Shape* shape);
 	
-	virtual void update () = 0;
-	
-	virtual void render () = 0;
-	
-	virtual GameObject* clone () = 0;
-	
-	lalge::R2Vector range (const lalge::R2Vector& param) const;
+	virtual void update();
+	virtual void render();
 };
 
 #endif

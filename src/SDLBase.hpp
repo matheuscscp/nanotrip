@@ -32,10 +32,10 @@ private:
 	static SDL_Surface* stack_screen;
 	
 	/// @brief Delta-time of the last frame
-	static unsigned int dt_;
+	static int dt_;
 	
 	/// @brief Frames-per-second rate
-	static unsigned int fps;
+	static int fps;
 public:
 	static void init();
 	
@@ -79,13 +79,13 @@ public:
 	
 	/// @return Delta-time in milliseconds of the last frame
 	/// @brief Access method to frame delta-time
-	static unsigned int dt();
+	static int dt();
 	
 	/// @return The real frames-per-second rate that's being reached
 	/// @brief Access method to frame delta-time
 	static float FPS();
 	
-	static void setFPS(unsigned int fps);
+	static void setFPS(int fps);
 	
 	/// This method shows in the screen what is the screen SDL surface.
 	/// @throw mexception Thrown if SDL wasn't initialized yet, or if it was

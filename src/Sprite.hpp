@@ -10,6 +10,7 @@
 #ifndef SPRITE_HPP
 #define SPRITE_HPP
 
+#include <list>
 #include <string>
 
 #include "SDL.h"
@@ -17,8 +18,9 @@
 /// Class to hold SDL surfaces and rectangles and to render those surfaces in
 /// the screen.
 /// @brief Class to hold SDL surfaces
-class Sprite
-{
+class Sprite {
+public:
+	static std::list< std::list<Sprite*>* > all;
 protected:
 	/// @brief Pointer to the SDL surface
 	SDL_Surface* src;
@@ -63,6 +65,8 @@ private:
 	/// @brief Frees the memory used by the surface
 	void unload ();
 public:
+	virtual void update();
+	
 	/// This method sets the rectangle to take a piece of the surface.
 	/// @param x Position in x axis of the surface.
 	/// @param y Position in y axis of the surface.
@@ -93,7 +97,7 @@ public:
 	/// @param y Position in y axis of the screen surface.
 	/// @see SDLBase::renderSurface
 	/// @brief Render the clipped surface
-	void render (int x = 0, int y = 0, bool surface_manager = false);
+	void render (int x = 0, int y = 0, bool center = false, bool surface_manager = false);
 	
 	void rotozoom (
 		float angle,
