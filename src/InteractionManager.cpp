@@ -4,11 +4,13 @@
 
 using std::list;
 
-Interaction::Interaction(GameObject* go1, GameObject* go2, callback handler) :
-go1(go1), go2(go2), handler(handler) {}
+Interaction::Interaction(GameObject* go1, GameObject* go2, callback handler, bool twice) :
+go1(go1), go2(go2), handler(handler), twice(twice) {}
 
 void Interaction::interact() {
 	CALLBACK(*go1, handler)(go2);
+	if (twice)
+		CALLBACK(*go2, handler)(go1);
 }
 
 bool Interaction::operator==(const Interaction& param) const {

@@ -14,8 +14,10 @@ private:
 	GameObject* go2;
 	
 	callback handler;
+	
+	bool twice;
 public:
-	Interaction(GameObject* go1, GameObject* go2, callback handler);
+	Interaction(GameObject* go1, GameObject* go2, callback handler, bool twice = true);
 	bool operator==(const Interaction& param) const;
 	bool operator!=(const Interaction& param) const;
 	void interact();

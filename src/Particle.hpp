@@ -9,6 +9,8 @@ private:
 	lalge::Scalar elasticity;
 	lalge::Scalar mass;
 public:
+	lalge::Scalar charge;
+	
 	lalge::R2Vector speed;
 	lalge::R2Vector acceleration;
 	lalge::R2Vector force;
@@ -25,8 +27,11 @@ public:
 	
 	lalge::Scalar getMass() const;
 	void setMass(lalge::Scalar mass);
-protected:
-	void updateKinematic();
+	
+	void addParticleFieldForces(GameObject* target);
+	lalge::R2Vector gravitationalForce(const Particle& target) const;
+	lalge::R2Vector electricalForce(const Particle& target) const;
+	lalge::R2Vector magneticForce(const Particle& target) const;	// FIXME: someday
 };
 
 #endif
