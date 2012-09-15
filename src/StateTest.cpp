@@ -8,7 +8,7 @@ Sprite* avatar;
 
 StateTest::StateTest(ArgsBase* args) {
 	bg = new Sprite("img/bg.png");
-	avatar = new Animation("img/avatar.png", 0, 143, 1, 17);
+	avatar = new Animation("img/avatar.png", 0, 7, 1, 16);
 }
 
 void StateTest::update() {

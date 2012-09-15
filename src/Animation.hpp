@@ -19,24 +19,24 @@ public:
 	Animation (
 		const std::string& filename,
 		int frame,
-		int framesize,
+		int fps,
 		int rows,
 		int cols,
 		bool matrix = false,
 		int line = 0
 	);
 	
-	void update ();
+	void update();
 private:
-	void update_ ();
+	void update_();
 	
-	int frameAmount () const;
+	int frameAmount() const;
 public:
-	int getFrame () const;
-	int getFrameSize () const;
+	int getFrame() const;
+	int getFPS() const;
 	
-	void setFrame (int frame);
-	void setFrameSize (int framesize);
+	void setFrame(int frame);
+	void setFPS(int fps);
 };
 
 #endif
