@@ -1,24 +1,25 @@
 
-#ifndef LEVEL_HPP
-#define LEVEL_HPP
+#ifndef STATELEVEL_HPP
+#define STATELEVEL_HPP
 
-#include <list>
-#include <string>
+#include "State.hpp"
 
-#include "configfile.hpp"
-
-#include "Particle.hpp"
-
-class Level {
-private:
+class StateLevel : public State {
+GAMESTATE_DEC(StateLevel)
+protected:
 	Configuration raw;
-public:
+	
 	Particle* avatar;
 	std::list<Particle*> particles;
 	
+	Sprite* positive_sprite;
+	Sprite* negative_sprite;
+public:
+	StateLevel(ArgsBase* args);
+protected:
 	void load(const std::string& path);
 	void reload();
-private:
+	
 	void assemble();
 	void assembleAvatar(const Configuration& conf);
 	void assembleParticle(Particle* particle, const Configuration& conf);

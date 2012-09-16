@@ -5,6 +5,7 @@
 #include "Interaction.hpp"
 
 using namespace common;
+using namespace lalge;
 
 using std::string;
 using std::list;
@@ -30,16 +31,31 @@ void Level::reload() {
 }
 
 void Level::assemble() {
+	assembleAvatar(raw.getConfig("avatar"));
+	
+	list<Configuration> conf = raw.getConfigList("particle");
+	for (list<Configuration>::iterator it = conf.begin(); it != conf.end(); ++it) {
+		Particle* tmp = new Particle();
+		particles.push_back(tmp);
+		assembleParticle(tmp, *it);
+	}
 	
 	assembleInteractions();
 }
 
-void Level::assembleAvatar(const Configuration& avatar) {
-	
+void Level::assembleAvatar(const Configuration& conf) {
+	avatar->getShape()->position = r2vec(conf.getReal("x"), conf.getReal("y"));
+	avatar->speed = r2vec(conf.getReal("speedX"), conf.getReal("speedX"));
+	avatar->setElasticity(conf.getReal("k"));
+	avatar->setMass(conf.getReal("m"));
+	avatar->charge = conf.getReal("q");
 }
 
-void Level::assembleParticle(const Configuration& particle) {
-	
+void Level::assembleParticle(Particle* particle, const Configuration& conf) {
+	particle->getShape()->position = r2vec(conf.getReal("x"), conf.getReal("y"));
+	particle->setElasticity(conf.getReal("k"));
+	particle->setMass(conf.getReal("m"));
+	particle->charge = conf.getReal("q");
 }
 
 void Level::assembleInteractions() {

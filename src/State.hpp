@@ -17,22 +17,27 @@
 #include "Interaction.hpp"
 
 /// Declares the game state ID.
-#define GAMESTATE			\
-private:					\
-	static id_buf id_;		\
-public:						\
-	static id_type getid();	\
+#define GAMESTATE_DEC(GameState)								\
+public:															\
+	template <class T>											\
+	class Assigner {											\
+	public:														\
+		Assigner() { State::builders[#GameState] = build<T>; }	\
+	};															\
+private:														\
+	static Assigner<GameState> assigner;						\
+																\
+	static id_buf id_;											\
+public:															\
+	static id_type getid();										\
 	id_type id() const;
 
 /// Defines the game state ID and the constructor builder.
-#define GAMESTATE_DEF(GameState)												\
-State::id_buf GameState::id_ = true;											\
-State::id_type GameState::getid() { return &id_; }								\
-State::id_type GameState::id() const { return &id_; }							\
-State* build(State::ArgsBase* args) { return new GameState(args); }				\
-class Assigner { public: Assigner() { State::builders[#GameState] = build; } };	\
-class Builder { static Assigner assigner; };									\
-Assigner Builder::assigner;
+#define GAMESTATE_DEF(GameState)						\
+GameState::Assigner<GameState> GameState::assigner;		\
+State::id_buf GameState::id_ = true;					\
+State::id_type GameState::getid() { return &id_; }		\
+State::id_type GameState::id() const { return &id_; }
 
 /// Base class for a game state.
 class State {
@@ -115,5 +120,8 @@ protected:
 	
 	virtual void handleQuit(const observer::Event& event, bool& stop);
 };
+
+template <class T>
+State* build(State::ArgsBase* args) { return new T(args); }
 
 #endif

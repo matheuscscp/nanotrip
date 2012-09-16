@@ -5,7 +5,7 @@
 #include "State.hpp"
 
 class StateTest : public State {
-GAMESTATE
+GAMESTATE_DEC(StateTest)
 public:
 	StateTest(ArgsBase* args);
 	
