@@ -17,7 +17,7 @@ public:
 	lalge::Scalar area() const;
 	lalge::Scalar perimeter() const;
 	
-	bool collidesCircle(const Circle& target) const;
+	bool collides(const Circle& target) const;
 };
 
 #endif

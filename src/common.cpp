@@ -5,7 +5,6 @@
 #include "common.hpp"
 
 using std::string;
-using std::cout;
 using std::fstream;
 
 using namespace common;
@@ -54,7 +53,7 @@ const char* mexception::what() const throw() {
 }
 
 void mexception::logerr() const throw() {
-	cout << "Logging error...\n";
+	std::cout << "Logging error: " << what_ << std::endl;
 	
 	fstream f(RootPath::get("ErrorLog.txt").c_str(), fstream::out | fstream::app);
 	time_t rawtime = time(NULL);

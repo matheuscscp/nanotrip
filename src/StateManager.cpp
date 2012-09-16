@@ -89,7 +89,7 @@ void StateManager::run() {
 			State::states.push_back(State::build(su.state(), su.args()));
 		}
 		// maybe unstack a game state
-		catch (State::Unstack&) {
+		catch (State::Unstack& us) {
 			// throw exception if the list is empty
 			if (State::states.size() == 1)
 				throw mexception("Trying to drop all game states");
@@ -97,6 +97,7 @@ void StateManager::run() {
 			delete State::states.back();
 			State::states.pop_back();
 			observer::Stack::pop();
+			State::states.back()->handleUnstack(us.args());
 		}
 		// change the last pointer
 		catch(State::Change& ch) {

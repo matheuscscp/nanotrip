@@ -26,6 +26,25 @@ void GameObject::setShape(Shape* shape) {
 	this->shape = shape;
 }
 
+void GameObject::updateAll() {
+	for (list<GameObject*>::iterator it = all.back()->begin(); it != all.back()->end();) {
+		GameObject* tmp = *it;
+		tmp->update();
+		if (!tmp->mustdie())
+			++it;
+		// deletes the game object if requested by itself
+		else {
+			it = all.back()->erase(it);
+			delete tmp;
+		}
+	}
+}
+
+void GameObject::renderAll() {
+	for (list<GameObject*>::iterator it = all.back()->begin(); it != all.back()->end(); ++it)
+		(*it)->render();
+}
+
 void GameObject::update() {}
 
 void GameObject::render() {

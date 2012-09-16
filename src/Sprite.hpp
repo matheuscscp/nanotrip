@@ -65,6 +65,8 @@ private:
 	/// @brief Frees the memory used by the surface
 	void unload ();
 public:
+	static void updateAll();
+	
 	virtual void update();
 	
 	/// This method sets the rectangle to take a piece of the surface.

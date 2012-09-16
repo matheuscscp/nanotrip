@@ -14,7 +14,7 @@
 
 #include "observer.hpp"
 
-#include "InteractionManager.hpp"
+#include "Interaction.hpp"
 
 /// Declares the game state ID.
 #define GAMESTATE			\
@@ -74,7 +74,11 @@ public:
 	};
 	
 	/// Throw this class if you want to unstack a game state.
-	class Unstack {};
+	class Unstack : public Change {
+	public:
+		/// Assignment constructor.
+		Unstack(ArgsBase* args = 0);
+	};
 	
 	static std::map<std::string, State* (*)(ArgsBase*)> builders;
 	
@@ -85,7 +89,7 @@ protected:
 	Sprite* bg;
 	std::list<Sprite*> sprites;
 	std::list<GameObject*> game_objects;
-	InteractionManager interactions;
+	std::list<Interaction*> interactions;
 public:
 	/// Empty constructor.
 	State();
@@ -94,6 +98,8 @@ public:
 	virtual ~State();
 	
 	static State* build(const std::string& name, ArgsBase* args = 0);
+	
+	virtual void handleUnstack(ArgsBase* args);
 protected:
 	/// Access method to the game state ID.
 	virtual id_type id() const = 0;

@@ -31,6 +31,12 @@ State::ArgsBase* State::Change::args() const { return args_; }
 State::StackUp::StackUp(const string& state, ArgsBase* args) : Change(state, args) {}
 
 // =============================================================================
+// State::Unstack Class
+// =============================================================================
+
+State::Unstack::Unstack(ArgsBase* args) : Change("", args) {}
+
+// =============================================================================
 // State Class
 // =============================================================================
 
@@ -44,6 +50,9 @@ State::State() : frozen_(false), bg(0) {
 	
 	// all game objects
 	GameObject::all.push_back(&game_objects);
+	
+	// all game objects interactions
+	Interaction::all.push_back(&interactions);
 	
 	// quit event
 	InputManager::instance()->connect(InputManager::QUIT, this, &State::handleQuit);
@@ -60,6 +69,11 @@ State::~State() {
 		delete game_objects.back();
 	GameObject::all.pop_back();
 	
+	// all game objects interactions
+	while (interactions.size())
+		delete interactions.back();
+	Interaction::all.pop_back();
+	
 	// quit event
 	InputManager::instance()->disconnect(this);
 }
@@ -71,28 +85,19 @@ State* State::build(const string& name, ArgsBase* args) {
 	return (*builders[name])(args);
 }
 
+void State::handleUnstack(ArgsBase* args) {}
+
 bool State::frozen() const { return frozen_; }
 
 void State::externUpdate() {
 	// all sprites
-	for (list<Sprite*>::iterator it = sprites.begin(); it != sprites.end(); ++it)
-		(*it)->update();
+	Sprite::updateAll();
 	
 	// game objects interactions
-	interactions.update();
+	Interaction::interactAll();
 	
 	// all game objects
-	for (list<GameObject*>::iterator it = game_objects.begin(); it != game_objects.end();) {
-		GameObject* tmp = *it;
-		tmp->update();
-		if (!tmp->mustdie())
-			++it;
-		// deletes the game object if it requested by itself
-		else {
-			it = game_objects.erase(it);
-			delete tmp;
-		}
-	}
+	GameObject::updateAll();
 	
 	// specific game state
 	update();
@@ -104,8 +109,7 @@ void State::externRender() {
 		bg->render();
 	
 	// all game objects
-	for (list<GameObject*>::iterator it = game_objects.begin(); it != game_objects.end(); ++it)
-		(*it)->render();
+	GameObject::renderAll();
 	
 	// specific game state
 	render();

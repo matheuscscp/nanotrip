@@ -8,9 +8,10 @@
 #include "SDLBase.hpp"
 #include "SurfaceManager.hpp"
 
+using std::list;
 using std::string;
 
-std::list< std::list<Sprite*>* > Sprite::all;
+list< list<Sprite*>* > Sprite::all;
 
 Sprite::Sprite() : src(0), rotozoomed(0), angle_(0), zoomx(1), zoomy(1) {
 	all.back()->push_back(this);
@@ -53,6 +54,11 @@ void Sprite::unload ()
 		
 		restore ();
 	}
+}
+
+void Sprite::updateAll() {
+	for (list<Sprite*>::iterator it = all.back()->begin(); it != all.back()->end(); ++it)
+		(*it)->update();
 }
 
 void Sprite::update() {}

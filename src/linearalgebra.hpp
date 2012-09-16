@@ -25,6 +25,7 @@ Scalar deg2rad (const Scalar& param);
 // =============================================================================
 
 class VectorNotDefined {};
+class NotZeroAssignment {};
 class DivisionByZero {};
 class AngleNotDefined {};
 class DirectionNotDefined {};
@@ -81,6 +82,8 @@ public:
 	
 	RnVector< n > opposite () const;
 	RnVector< n > operator- () const;
+	
+	RnVector<n>& operator=(int zero);
 	
 	RnVector< n >& operator+= (const RnVector< n >& param);
 	RnVector< n > operator+ (const RnVector< n >& param) const;
@@ -397,6 +400,14 @@ template <unsigned int n>
 RnVector< n > RnVector< n >::operator- () const
 {
 	return opposite ();
+}
+
+template <unsigned int n>
+RnVector<n>& RnVector<n>::operator=(int zero) {
+	if (zero)
+		throw NotZeroAssignment();
+	annul();
+	return *this;
 }
 
 template <unsigned int n>
