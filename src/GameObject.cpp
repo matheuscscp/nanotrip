@@ -21,7 +21,7 @@ bool GameObject::mustdie() const { return die; }
 Shape* GameObject::getShape() const { return shape; }
 
 void GameObject::setShape(Shape* shape) {
-	if (shape)
+	if (this->shape)
 		delete shape;
 	this->shape = shape;
 }
