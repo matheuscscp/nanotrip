@@ -11,7 +11,7 @@ INCLUDE = -I /usr/include/SDL -I /usr/local/include/SDL
 EXE = game
 
 RUNFPS = 
-FIRSTATE = StateTest
+FIRSTATE = StateFirstLevel
 RUNFLAGS = $(RUNFPS) -p $(CURDIR)/ -s $(FIRSTATE)
 
 LIB = -lSDL -lSDL_image -lSDL_gfx -lSDL_ttf -lSDL_mixer
