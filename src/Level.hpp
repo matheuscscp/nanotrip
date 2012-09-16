@@ -21,7 +21,7 @@ public:
 private:
 	void assemble();
 	void assembleAvatar(const Configuration& conf);
-	void assembleParticle(Particle* particle, const Configuration& conf);
+	void assembleParticle(const Configuration& conf);
 	void assembleInteractions();
 };
 

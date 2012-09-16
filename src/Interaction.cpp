@@ -8,6 +8,7 @@ std::list< std::list<Interaction*>* > Interaction::all;
 
 Interaction::Interaction(GameObject* go1, GameObject* go2, callback handler, bool twice) :
 go1(go1), go2(go2), handler(handler), enabled(true), twice(twice) {}
+Interaction::~Interaction() { all.back()->remove(this); }
 
 list<Interaction*>::iterator Interaction::find(const Interaction& interaction) {
 	list<Interaction*>::iterator it = all.back()->begin();
@@ -42,10 +43,8 @@ bool Interaction::erase(GameObject* go1, GameObject* go2, callback handler) {
 bool Interaction::erase(Interaction* interaction) {
 	list<Interaction*>::iterator it = find(*interaction);
 	bool found = (it != all.back()->end());
-	if (found) {
+	if (found)
 		delete *it;
-		all.back()->erase(it);
-	}
 	return found;
 }
 

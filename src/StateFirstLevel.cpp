@@ -1,29 +1,34 @@
 #include "StateFirstLevel.hpp"
 
-#include "common.hpp"
-
 #include "Animation.hpp"
-#include "Particle.hpp"
 #include "Circle.hpp"
-
-using namespace lalge;
-using namespace common;
 
 GAMESTATE_DEF(StateFirstLevel)
 
-Particle* avatar;
-
-Sprite* bg1;
-
 StateFirstLevel::StateFirstLevel(ArgsBase* args) {
-	bg1 = new Sprite("img/bg_opaco.png");
-	bg1->render();
+	bg = new Sprite("img/bg_opaco.png");
+	bg->render();
+	delete bg;
 	bg = new Sprite("img/bg_transparente.png");
-	avatar = new Particle();
-	avatar->sprite = new Animation("img/avatar.png", 0, 7, 1, 16);
-	((Circle*)avatar->getShape())->setRadius(100);
-	avatar->getShape()->position = r2vec(100, 100);
-	avatar->speed = r2vec(300, 150);
+	
+	level.load("level/level.conf");
+	
+	level.avatar->sprite = new Animation("img/avatar.png", 0, 7, 1, 16);
+	
+	positive_sprite = new Sprite("img/prot.png");
+	negative_sprite = new Sprite("img/elec.png");
+	
+	((Circle*)level.avatar->getShape())->setRadius(28);
+	level.avatar->setMass(5);
+	
+	for (std::list<Particle*>::iterator it = level.particles.begin(); it != level.particles.end(); ++it) {
+		((Circle*)(*it)->getShape())->setRadius(10);
+		(*it)->pinned = true;
+		if ((*it)->charge < 0)
+			(*it)->sprite = negative_sprite;
+		else
+			(*it)->sprite = positive_sprite;
+	}
 }
 
 void StateFirstLevel::update() {

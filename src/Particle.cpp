@@ -48,7 +48,7 @@ R2Vector Particle::gravitationalForce(const Particle& target) const {
 }
 
 R2Vector Particle::electricalForce(const Particle& target) const {
-	R2Vector range = getShape()->range(*target.getShape());
+	R2Vector range = target.getShape()->range(*getShape());
 	Scalar size = (elec_const*charge*target.charge)/pow(range.size(), 3);
 	return (range*size);
 }

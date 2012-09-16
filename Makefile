@@ -26,7 +26,7 @@ OBJ2 = $(OBJ1) $(OBJDIR)/InputManager.o $(OBJDIR)/Particle.o $(OBJDIR)/Circle.o
 OBJ3 = $(OBJ2) $(OBJDIR)/StateManager.o $(OBJDIR)/Text.o $(OBJDIR)/Audio.o $(OBJDIR)/Timer.o
 OBJ4 = $(OBJ3) $(OBJDIR)/State.o $(OBJDIR)/Ranking.o $(OBJDIR)/ClearSurface.o $(OBJDIR)/SurfaceManager.o
 OBJ5 = $(OBJ4) $(OBJDIR)/InputString.o $(OBJDIR)/StateTest.o $(OBJDIR)/Interaction.o
-OBJ6 = $(OBJ5) $(OBJDIR)/Shape.o $(OBJDIR)/Level.o 
+OBJ6 = $(OBJ5) $(OBJDIR)/Shape.o $(OBJDIR)/Level.o $(OBJDIR)/StateFirstLevel.o 
 
 OBJ  = $(OBJ6)
 
@@ -46,7 +46,7 @@ test: build
 
 gdb: build
 	gdb $(EXE)
-#r -f -p /home/matheus/Documents/C_C++/C++/IDJ/nanotrip/ -s StateTest
+#r -f -p /home/matheus/Documents/C_C++/C++/IDJ/nanotrip/ -s StateFirstLevel
 
 clean:
 	rm -rf $(EXE) $(OBJDIR)/* $(ERRLOG)

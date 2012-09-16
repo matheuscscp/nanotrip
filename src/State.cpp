@@ -41,7 +41,7 @@ State::Unstack::Unstack(ArgsBase* args) : Change("", args) {}
 // =============================================================================
 
 // Static vars
-std::map<string, State* (*)(State::ArgsBase* args)> State::builders;
+std::map<string, State* (*)(State::ArgsBase*)> State::builders;
 list<State*> State::states;
 
 State::State() : frozen_(false), bg(0) {

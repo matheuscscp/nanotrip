@@ -21,7 +21,9 @@ private:
 	bool twice;
 	
 	Interaction(GameObject* go1, GameObject* go2, callback handler, bool twice = false);
-	
+public:
+	~Interaction();
+private:
 	static std::list<Interaction*>::iterator find(const Interaction& interaction);
 	bool operator!=(const Interaction& param) const;
 public:

@@ -33,17 +33,17 @@ void Level::reload() {
 void Level::assemble() {
 	assembleAvatar(raw.getConfig("avatar"));
 	
+	// all particles
 	list<Configuration> conf = raw.getConfigList("particle");
 	for (list<Configuration>::iterator it = conf.begin(); it != conf.end(); ++it) {
-		Particle* tmp = new Particle();
-		particles.push_back(tmp);
-		assembleParticle(tmp, *it);
+		assembleParticle(*it);
 	}
 	
 	assembleInteractions();
 }
 
 void Level::assembleAvatar(const Configuration& conf) {
+	avatar = new Particle();
 	avatar->getShape()->position = r2vec(conf.getReal("x"), conf.getReal("y"));
 	avatar->speed = r2vec(conf.getReal("speedX"), conf.getReal("speedX"));
 	avatar->setElasticity(conf.getReal("k"));
@@ -51,11 +51,13 @@ void Level::assembleAvatar(const Configuration& conf) {
 	avatar->charge = conf.getReal("q");
 }
 
-void Level::assembleParticle(Particle* particle, const Configuration& conf) {
+void Level::assembleParticle(const Configuration& conf) {
+	Particle* particle = new Particle();
 	particle->getShape()->position = r2vec(conf.getReal("x"), conf.getReal("y"));
 	particle->setElasticity(conf.getReal("k"));
 	particle->setMass(conf.getReal("m"));
 	particle->charge = conf.getReal("q");
+	particles.push_back(particle);
 }
 
 void Level::assembleInteractions() {
