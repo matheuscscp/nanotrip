@@ -36,7 +36,7 @@ public:
 	int w() const;
 	int h() const;
 	
-	void render(int x = 0, int y = 0, bool surface_manager = false);
+	void render(int x = 0, int y = 0, bool center = true, bool surface_manager = false);
 private:
 	void render_text();
 	void render_text_();

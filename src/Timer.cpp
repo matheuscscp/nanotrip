@@ -46,5 +46,7 @@ int Timer::time() const
 	return( SDL_GetTicks() - initialtime );
 }
 
+bool Timer::ispaused() const { return paused; }
+
 void Timer::handleObsStackPush(const observer::Event& event, bool& stop) { pause(); }
 void Timer::handleObsStackPop(const observer::Event& event, bool& stop) { resume(); }

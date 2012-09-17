@@ -1,6 +1,7 @@
-#include "configfile.hpp"
-
 #include "InputString.hpp"
+
+#include "configfile.hpp"
+#include "common.hpp"
 
 #include "InputManager.hpp"
 
@@ -12,21 +13,41 @@ using std::string;
 
 vector< bool > InputString::available_input;
 
-InputString::InputString(const string& str, bool flag) :
-active(false), buf(str)
-{
-	if( !available_input.size() )
+InputString::InputString(const string& str) : buf(str), max_size(0) {
+	if (!available_input.size())
 		initAvailableInput();
-	
-	subject.init( 2 );
-	
-	enable( flag );
+	subject.init(LASTEVENT);
+	InputManager::instance()->connect(InputManager::KEYDOWN, this, &InputString::handleKeyDown);
+	InputManager::instance()->connect(InputManager::KEYUP, this, &InputString::handleKeyUp);
 }
 
-InputString::~InputString()
-{
-	if( active )
-		InputManager::instance()->disconnect( this );
+InputString::~InputString() {
+	InputManager::instance()->disconnect(this);
+}
+
+int InputString::getMaxSize() const { return max_size; }
+
+void InputString::setMaxSize(int max_size) {
+	if (max_size < 0)
+		return;
+	this->max_size = max_size;
+	if ((max_size) && (buf.size() > max_size))
+		buf.erase(max_size);
+}
+
+const string& InputString::get() const { return buf; }
+
+void InputString::set(const std::string& input) {
+	buf = input;
+	subject.broadcast(observer::Event(UPDATE));
+}
+
+void InputString::update() {
+	if ((InputManager::instance()->keyPressed(SDLK_BACKSPACE)) &&
+		(!timer.ispaused()) && (timer.time() >= 500) && (buf.size())) {
+		buf.erase(buf.size() - 1);
+		subject.broadcast(observer::Event(UPDATE));
+	}
 }
 
 void InputString::initAvailableInput()
@@ -37,7 +58,7 @@ void InputString::initAvailableInput()
 	available_input.resize( SDLK_LAST, false );
 	
 	try {
-		tmp.readTxt( "conf/InputString.conf" );
+		tmp.readTxt(common::RootPath::get("conf/InputString.conf"));
 		stmp = tmp.getStr( "available_input" );
 		
 		if( !stmp.size() )
@@ -57,10 +78,16 @@ void InputString::handleKeyDown(const observer::Event& event, bool& stop) {
 	int tmp = inputmanager_event.key.keysym.sym;
 	bool broadcast = true;
 	
-	if( ( tmp == SDLK_BACKSPACE ) && ( buf.size() ) )
+	if( ( tmp == SDLK_BACKSPACE ) && ( buf.size() ) ) {
 		buf.erase( buf.size() - 1 );
-	else if( ( tmp == SDLK_KP_ENTER ) || ( tmp == SDLK_RETURN ) )
+		timer.start();
+	}
+	else if( ( tmp == SDLK_KP_ENTER ) || ( tmp == SDLK_RETURN ) ) {
 		subject.broadcast( observer::Event( ENTER ) );
+		broadcast = false;
+	}
+	else if ((max_size) && (buf.size() == max_size))
+		broadcast = false;
 	else
 	{
 		if(	(	( inputmanager_event.key.keysym.sym >= SDLK_a ) &&
@@ -86,20 +113,7 @@ void InputString::handleKeyDown(const observer::Event& event, bool& stop) {
 		subject.broadcast( observer::Event( UPDATE ) );
 }
 
-void InputString::enable(bool flag)
-{
-	if( ( !active ) && ( flag ) )
-	{
-		InputManager::instance()->connect(
-			InputManager::KEYDOWN,
-			this,
-			&InputString::handleKeyDown
-		);
-		active = true;
-	}
-	else if( ( active ) && ( !flag ) )
-	{
-		InputManager::instance()->disconnect( this );
-		active = false;
-	}
+void InputString::handleKeyUp(const observer::Event& event, bool& stop) {
+	if (inputmanager_event.key.keysym.sym == SDLK_BACKSPACE)
+		timer.pause();
 }

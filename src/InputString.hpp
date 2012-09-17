@@ -6,29 +6,39 @@
 
 #include "observer.hpp"
 
-class InputString
-{
+#include "Timer.hpp"
+
+class InputString {
 SUBJECT
 public:
-	enum
-	{
-		UPDATE = 0,	// 1
-		ENTER		// 2
+	enum {
+		UPDATE = 0,
+		ENTER,
+		
+		// don't change this
+		LASTEVENT
 	};
 private:
 	static std::vector< bool > available_input;
 	
-	bool active;
-public:
 	std::string buf;
-	
-	InputString(const std::string& str = "", bool flag = true);
+	int max_size;
+	Timer timer;
+public:
+	InputString(const std::string& str = "");
 	~InputString();
+	
+	int getMaxSize() const;
+	void setMaxSize(int max_size);
+	
+	const std::string& get() const;
+	void set(const std::string& input);
+	
+	void update();
 private:
 	void initAvailableInput();
 	void handleKeyDown(const observer::Event& event, bool& stop);
-public:
-	void enable(bool flag);
+	void handleKeyUp(const observer::Event& event, bool& stop);
 };
 
 #endif

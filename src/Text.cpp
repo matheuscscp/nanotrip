@@ -49,8 +49,13 @@ int Text::h() const
 	return surface->h;
 }
 
-void Text::render (int x, int y, bool surface_manager)
+void Text::render (int x, int y, bool center, bool surface_manager)
 {
+	if ((center) && (surface)) {
+		x -= surface->w/2;
+		y -= surface->h/2;
+	}
+	
 	if( surface_manager )
 		SurfaceManager::instance()->clone( x, y, surface );
 	else

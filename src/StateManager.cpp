@@ -128,7 +128,7 @@ void StateManager::renderFPS() {
 	sprintf(tmp, "FPS: %.1f", SDLBase::FPS());
 	
 	fps->setText(string(tmp));
-	fps->render(SDLBase::screen()->w - fps->w(), 0);
+	fps->render(SDLBase::screen()->w - fps->w(), 0, false);
 }
 
 void StateManager::handleMexception(mexception* e) {

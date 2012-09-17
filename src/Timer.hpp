@@ -17,6 +17,7 @@ public:
 	void resume();
 	
 	int time() const;
+	bool ispaused() const;
 private:
 	void handleObsStackPush(const observer::Event& event, bool& stop);
 	void handleObsStackPop(const observer::Event& event, bool& stop);

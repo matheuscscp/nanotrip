@@ -88,4 +88,9 @@ void RootPath::init(const string& path_) {
 }
 
 const string& RootPath::get() { return path; }
-string RootPath::get(const string& path_) { return (path + path_); }
+
+string RootPath::get(const string& path_) {
+	if (path.find(path_) == path.npos)
+		return (path + path_);
+	return path_;
+}

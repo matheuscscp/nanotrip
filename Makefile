@@ -18,7 +18,7 @@ LIB = -lSDL -lSDL_image -lSDL_gfx -lSDL_ttf -lSDL_mixer
 
 MOD = $(OBJDIR)/configfile.o $(OBJDIR)/linearalgebra.o $(OBJDIR)/common.o $(OBJDIR)/observer.o
 
-# $(OBJDIR)/StatePauseManager.o $(OBJDIR)/StateMovie.o 
+# $(OBJDIR)/StateMovie.o 
 
 OBJ0 = $(MOD) $(OBJDIR)/main.o $(OBJDIR)/SDLBase.o $(OBJDIR)/Sprite.o $(OBJDIR)/Animation.o
 OBJ1 = $(OBJ0) $(OBJDIR)/TileSet.o $(OBJDIR)/TileMap.o $(OBJDIR)/GameObject.o $(OBJDIR)/Camera.o
@@ -28,7 +28,7 @@ OBJ4 = $(OBJ3) $(OBJDIR)/State.o $(OBJDIR)/Ranking.o $(OBJDIR)/ClearSurface.o $(
 OBJ5 = $(OBJ4) $(OBJDIR)/InputString.o $(OBJDIR)/StateTest.o $(OBJDIR)/Interaction.o
 OBJ6 = $(OBJ5) $(OBJDIR)/Shape.o $(OBJDIR)/Level.o $(OBJDIR)/StateFirstLevel.o $(OBJDIR)/Rectangle.o
 OBJ7 = $(OBJ6) $(OBJDIR)/Button.o $(OBJDIR)/StateNewGame.o $(OBJDIR)/StateLoadLevel.o 
-OBJ8 = $(OBJ7) $(OBJDIR)/StateMainMenu.o 
+OBJ8 = $(OBJ7) $(OBJDIR)/StateMainMenu.o $(OBJDIR)/StateLevel.o 
 
 OBJ  = $(OBJ8)
 
