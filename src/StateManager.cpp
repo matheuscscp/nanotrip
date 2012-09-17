@@ -3,8 +3,7 @@
 #include "SDLBase.hpp"
 #include "InputManager.hpp"
 #include "SurfaceManager.hpp"
-//#include "StateMovie.hpp"
-#include "State.hpp"
+#include "StateMovie.hpp"
 
 using namespace common;
 
@@ -47,9 +46,9 @@ void StateManager::loadFirst() {
 		state = MainArgs::get<string>("--state");
 	// for a movie as the first game state
 	if (state == "StateMovie") {
-		// FIXME
-		//string movie = MainArgs::get<string>(state);
-		//State::states.push_back(new StateMovie(movie));
+		string movie = MainArgs::get<string>(state);
+		string nextstate = MainArgs::get<string>(movie);
+		State::states.push_back(new StateMovie(new StateMovie::Args(movie, nextstate)));
 	}
 	// you can't load pause manager as your first game state
 	else if (state == "StatePauseManager")

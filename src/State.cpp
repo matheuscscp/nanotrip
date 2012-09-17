@@ -57,6 +57,9 @@ State::State() : frozen_(false), bg(0) {
 	// all sprites
 	Sprite::all.push_back(&sprites);
 	
+	// all texts
+	Text::all.push_back(&texts);
+	
 	// all game objects
 	GameObject::all.push_back(&game_objects);
 	
@@ -72,6 +75,11 @@ State::~State() {
 	while (sprites.size())
 		delete sprites.back();
 	Sprite::all.pop_back();
+	
+	// all texts
+	while (texts.size())
+		delete texts.back();
+	Text::all.pop_back();
 	
 	// all game objects
 	while (game_objects.size())

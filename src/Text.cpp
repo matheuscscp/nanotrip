@@ -7,7 +7,10 @@
 
 using namespace common;
 
+using std::list;
 using std::string;
+
+list< list<Text*>* > Text::all;
 
 Text::Text(
 	const string& fontfile,
@@ -31,12 +34,15 @@ color(color), render_type(render_type), bg(bg)
 	TTF_SetFontStyle( font, style );
 	
 	render_text_();
+	
+	all.back()->push_back(this);
 }
 
 Text::~Text()
 {
 	TTF_CloseFont( font );
 	SurfaceManager::instance()->free( surface );
+	all.back()->remove(this);
 }
 
 int Text::w() const

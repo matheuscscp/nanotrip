@@ -15,6 +15,7 @@
 #include "common.hpp"
 #include "observer.hpp"
 
+#include "Text.hpp"
 #include "Interaction.hpp"
 
 /// Declares the game state ID.
@@ -120,6 +121,7 @@ protected:
 	bool frozen_;
 	Sprite* bg;
 	std::list<Sprite*> sprites;
+	std::list<Text*> texts;
 	std::list<GameObject*> game_objects;
 	std::list<Interaction*> interactions;
 public:

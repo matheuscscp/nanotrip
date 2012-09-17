@@ -9,14 +9,19 @@
 class StateMovie : public State {
 GAMESTATE
 public:
-	struct Args {
+	class Args : public ArgsBase {
+	public:
 		std::string path;
-		int nextstate;
+		//int nextstate;
 		bool pause_able;
 		bool skip_able;
 		int skip_fade;
 		
-		Args(const std::string& name, int nextstate, bool pause_able = true, bool skip_able = true, int skip_fade = 1500);
+		std::string movie;
+		std::string nextstate;
+		
+		//Args(const std::string& name, int nextstate, bool pause_able = true, bool skip_able = true, int skip_fade = 1500);
+		Args(const std::string& movie, const std::string& nextstate);
 	};
 private:
 	int nextstate;
@@ -34,10 +39,9 @@ private:
 	Timer timer;
 	Timer skip_timer;
 public:
-	StateMovie(const std::string& movie);
+	StateMovie(ArgsBase* args);
 	~StateMovie();
 	
-	void input();
 	void update();
 	void render();
 private:

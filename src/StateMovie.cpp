@@ -1,8 +1,8 @@
 #include <list>
 #include <sstream>
 
-#include "mod/common.hpp"
-#include "mod/configfile.hpp"
+#include "common.hpp"
+#include "configfile.hpp"
 
 #include "StateMovie.hpp"
 
@@ -15,15 +15,21 @@ using std::string;
 using std::list;
 using std::stringstream;
 
-StateArgsMovie::StateArgsMovie(
-	char stack_op,
-	const string& name, int nextstate, bool pause_able,
-	bool skip_able, int skip_fade
-) : StateArgs( GameStates::MOVIE, stack_op ),
-path(string("mov/") + name + "/"), nextstate(nextstate),
-pause_able(pause_able), skip_able(skip_able), skip_fade(skip_fade)
-{
+GAMESTATE_DEF(StateMovie)
+
+StateMovie::Args::Args(const string& movie, const string& nextstate) :
+movie(movie), nextstate(nextstate) {}
+//path(string("mov/") + name + "/")
+
+StateMovie::StateMovie(ArgsBase* args) {
+	// TODO
 }
+
+StateMovie::~StateMovie() {
+	// TODO
+}
+
+/*
 
 void StateMovie::load(StateArgs* args)
 {
@@ -70,13 +76,9 @@ void StateMovie::unload()
 		delete bgm;
 }
 
-StateArgs* StateMovie::input()
-{
-	return popArgs();
-}
+*/
 
-StateArgs* StateMovie::update()
-{
+void StateMovie::update() {
 	if( sizes )
 	{
 		if( timer.time() >= sizes[ index ] )
@@ -90,16 +92,13 @@ StateArgs* StateMovie::update()
 	{
 		if( bgm )
 			bgm->stop();
-		args = new StateArgs( nextstate );
+		//args = new StateArgs( nextstate );
 	}
 	else if( skip_timer.time() >= 0 )
 		SDLBase::setFadeOpacity( float( skip_timer.time() ) / skip_fade );
-	
-	return popArgs();
 }
 
-void StateMovie::render()
-{
+void StateMovie::render() {
 	frames[ index ].render();
 	if( skip_timer.time() >= 0 )
 		SDLBase::renderFade();
@@ -120,9 +119,9 @@ void StateMovie::handleKeyDown(const observer::Event& event, bool& stop)
 	{
 		if( ( pause_able ) && ( skip_timer.time() < 0 ) )
 		{
-			args = new StateArgs(
-				GameStates::PAUSE_MANAGER, GameStates::STACK_UP
-			);
+			//args = new StateArgs(
+			//	GameStates::PAUSE_MANAGER, GameStates::STACK_UP
+			//);
 		}
 	}
 }
