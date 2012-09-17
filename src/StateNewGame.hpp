@@ -12,6 +12,7 @@ private:
 	Button* loadlevel;
 	Button* makelevel;
 	Button* goback;
+	Button* quit;
 public:
 	StateNewGame(ArgsBase* args);
 	

@@ -11,7 +11,7 @@ INCLUDE = -I /usr/include/SDL -I /usr/local/include/SDL
 EXE = game
 
 RUNFPS = 
-FIRSTATE = StateNewGame
+FIRSTATE = StateMainMenu
 RUNFLAGS = $(RUNFPS) -p $(CURDIR)/ -s $(FIRSTATE)
 
 LIB = -lSDL -lSDL_image -lSDL_gfx -lSDL_ttf -lSDL_mixer
@@ -28,8 +28,9 @@ OBJ4 = $(OBJ3) $(OBJDIR)/State.o $(OBJDIR)/Ranking.o $(OBJDIR)/ClearSurface.o $(
 OBJ5 = $(OBJ4) $(OBJDIR)/InputString.o $(OBJDIR)/StateTest.o $(OBJDIR)/Interaction.o
 OBJ6 = $(OBJ5) $(OBJDIR)/Shape.o $(OBJDIR)/Level.o $(OBJDIR)/StateFirstLevel.o $(OBJDIR)/Rectangle.o
 OBJ7 = $(OBJ6) $(OBJDIR)/Button.o $(OBJDIR)/StateNewGame.o $(OBJDIR)/StateLoadLevel.o 
+OBJ8 = $(OBJ7) $(OBJDIR)/StateMainMenu.o 
 
-OBJ  = $(OBJ7)
+OBJ  = $(OBJ8)
 
 all: build
 
@@ -47,7 +48,7 @@ test: build
 
 gdb: build
 	gdb $(EXE)
-#r -f -p /home/matheus/Documents/C_C++/C++/IDJ/nanotrip/ -s StateNewGame
+#r -f -p /home/matheus/Documents/C_C++/C++/IDJ/nanotrip/ -s StateMainMenu
 
 clean:
 	rm -rf $(EXE) $(OBJDIR)/* $(ERRLOG)
