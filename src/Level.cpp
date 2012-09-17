@@ -10,6 +10,8 @@ using namespace lalge;
 using std::string;
 using std::list;
 
+Level::Level() : avatar(0) {}
+
 void Level::load(const string& path) {
 	raw.clear();
 	raw.readTxt(RootPath::get(path));

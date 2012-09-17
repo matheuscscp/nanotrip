@@ -15,17 +15,16 @@ public:
 		LASTEVENT
 	};
 private:
+	int clip_y;
 	bool clicked;
-	bool active;
+	bool enabled;
 public:
-	Sprite* sprite;
-	
-	Button(const lalge::R2Vector& r, Sprite* sprite, bool flag = true);
+	Button(Sprite* sprite);
 	~Button();
 	
-	void render();
+	void update();
 	
-	void enable(bool flag);
+	void enable(bool enable);
 private:
 	void handleMouseDownLeft(const observer::Event& event, bool& stop);
 	void handleMouseUpLeft(const observer::Event& event, bool& stop);

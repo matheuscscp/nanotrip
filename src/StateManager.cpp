@@ -1,5 +1,3 @@
-#include "common.hpp"
-
 #include "StateManager.hpp"
 
 #include "SDLBase.hpp"
@@ -12,6 +10,7 @@ using namespace common;
 
 using std::string;
 using std::list;
+using std::cout;
 
 StateManager::StateManager() : fps(0) {
 	SDLBase::init();
@@ -83,26 +82,8 @@ void StateManager::run() {
 			update();
 			render();
 		}
-		// push the new game state
-		catch(State::StackUp& su) {
-			observer::Stack::push();
-			State::states.push_back(State::build(su.state(), su.args()));
-		}
-		// maybe unstack a game state
-		catch (State::Unstack& us) {
-			// throw exception if the list is empty
-			if (State::states.size() == 1)
-				throw mexception("Trying to drop all game states");
-			// unstack a game state
-			delete State::states.back();
-			State::states.pop_back();
-			observer::Stack::pop();
-			State::states.back()->handleUnstack(us.args());
-		}
-		// change the last pointer
-		catch(State::Change& ch) {
-			delete State::states.back();
-			State::states.back() = State::build(ch.state(), ch.args());
+		catch (mexception* e) {
+			handleMexception(e);
 		}
 	}
 }
@@ -148,4 +129,49 @@ void StateManager::renderFPS() {
 	
 	fps->setText(string(tmp));
 	fps->render(SDLBase::screen()->w - fps->w(), 0);
+}
+
+void StateManager::handleMexception(mexception* e) {
+	try {
+		string what = e->what();
+		if (what == "Quit") {
+			// So you wanna quit? You don't say... DON'T THROW POINTERS TO QUIT REQUESTS!
+			cout << "So you wanna quit? You don't say... DON'T THROW POINTERS TO QUIT REQUESTS!\n";
+			delete e;
+			throw Quit();
+		}
+		else if (what == "State::StackUp")
+			throw (State::StackUp*)e;
+		else if (what == "State::Unstack")
+			throw (State::Unstack*)e;
+		else if (what == "State::Change")
+			throw (State::Change*)e;
+		
+		// So it was an error? You don't say... DON'T THROW POINTERS TO ERRORS!
+		cout << "So it was an error? You don't say... DON'T THROW POINTERS TO ERRORS!\n";
+		delete e;
+		throw mexception(what);
+	}
+	// push the new game state
+	catch (State::StackUp* su) {
+		observer::Stack::push();
+		State::states.push_back(State::build(su->state(), su->args()));
+	}
+	// maybe unstack a game state
+	catch (State::Unstack* us) {
+		// throw exception if the list is empty
+		if (State::states.size() == 1)
+			throw mexception("Trying to drop all game states");
+		// unstack a game state
+		delete State::states.back();
+		State::states.pop_back();
+		observer::Stack::pop();
+		State::states.back()->handleUnstack(us->args());
+	}
+	// change the last pointer
+	catch (State::Change* ch) {
+		delete State::states.back();
+		State::states.back() = State::build(ch->state(), ch->args());
+	}
+	delete e;
 }

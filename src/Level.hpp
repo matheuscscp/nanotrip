@@ -16,6 +16,8 @@ public:
 	Particle* avatar;
 	std::list<Particle*> particles;
 	
+	Level();
+	
 	void load(const std::string& path);
 	void reload();
 private:

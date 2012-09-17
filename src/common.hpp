@@ -21,9 +21,6 @@ Some structures that can be easily needed everywhere.
 /// Namespace for some common classes and functions.
 namespace common {
 
-/// Class to throw quit exceptions.
-class Quit {};
-
 /// Evaluate function for strings.
 template <typename T>
 T eval(const std::string& raw);
@@ -48,9 +45,16 @@ private:
 	std::string what_;
 public:
 	mexception(const std::string& what) throw();	///< Constructor to assign the description.
-	~mexception() throw();	///< Empty destructor.
+	virtual ~mexception() throw();	///< Empty destructor.
 	const char* what() const throw();	///< Returns the description.
 	void logerr() const throw();	///< Logs the exception into the ErrorLog.txt file.
+};
+
+/// Class to throw quit exceptions.
+class Quit : public mexception {
+public:
+	// Empty constructor.
+	Quit();
 };
 
 /// Auto pointer Class.

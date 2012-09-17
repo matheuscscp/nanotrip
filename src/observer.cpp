@@ -1,7 +1,10 @@
 #include "observer.hpp"
 
-using std::list;
+#include "common.hpp"
+
 using namespace observer;
+
+using std::list;
 
 // =============================================================================
 // Static vars
@@ -70,8 +73,14 @@ void Subject::broadcast(const Event& event) {
 	bool stop = false;
 	for (list<Observer*>::iterator it = observers[event_type].begin(); (it != observers[event_type].end()) && (!stop); ++it) {
 		// the callback is done only for the observers in the top of the stack
-		if ((*it)->stack_id == Stack::id())
-			(*it)->callHandler(event, stop);
+		if ((*it)->stack_id == Stack::id()) {
+			try {
+				(*it)->callHandler(event, stop);
+			} catch (common::mexception* e) {
+				broadcasting[event_type] = false;
+				throw e;
+			}
+		}
 	}
 	
 	broadcasting[event_type] = false;

@@ -2,6 +2,8 @@
 #ifndef STATEMANAGER_HPP
 #define STATEMANAGER_HPP
 
+#include "common.hpp"
+
 #include "Text.hpp"
 
 /// Class to manage all game states.
@@ -25,6 +27,8 @@ private:
 	void render();
 	
 	void renderFPS();
+	
+	void handleMexception(common::mexception* e);
 };
 
 #endif

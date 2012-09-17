@@ -12,6 +12,7 @@
 #include <string>
 #include <map>
 
+#include "common.hpp"
 #include "observer.hpp"
 
 #include "Interaction.hpp"
@@ -58,14 +59,17 @@ public:
 		virtual ~ArgsBase();
 	};
 	
-	/// Throw this class to change the current game state.
-	class Change {
+	/// Throw (POINTER!) this class to change the current game state.
+	class Change : public common::mexception {
 	private:
 		std::string state_;
 		ArgsBase* args_;
 	public:
 		/// Assignmest constructor.
 		Change(const std::string& state, ArgsBase* args = 0);
+		
+		/// Empty destructor.
+		~Change() throw();
 		
 		/// Access method to the name of the new game state.
 		const std::string& state() const;
@@ -74,18 +78,38 @@ public:
 		ArgsBase* args() const;
 	};
 	
-	/// Throw this class to stack up the current game state and load a new one.
-	class StackUp : public Change {
+	/// Throw (POINTER!) this class to stack up the current game state and load a new one.
+	class StackUp : public common::mexception {
+	private:
+		std::string state_;
+		ArgsBase* args_;
 	public:
-		/// Assignment constructor.
+		/// Assignmest constructor.
 		StackUp(const std::string& state, ArgsBase* args = 0);
+		
+		/// Empty destructor.
+		~StackUp() throw();
+		
+		/// Access method to the name of the new game state.
+		const std::string& state() const;
+		
+		/// Access method to the arguments.
+		ArgsBase* args() const;
 	};
 	
-	/// Throw this class if you want to unstack a game state.
-	class Unstack : public Change {
+	/// Throw (POINTER!) this class if you want to unstack a game state.
+	class Unstack : public common::mexception {
+	private:
+		ArgsBase* args_;
 	public:
-		/// Assignment constructor.
+		/// Assignmest constructor.
 		Unstack(ArgsBase* args = 0);
+		
+		/// Empty destructor.
+		~Unstack() throw();
+		
+		/// Access method to the arguments.
+		ArgsBase* args() const;
 	};
 	
 	static std::map<std::string, State* (*)(ArgsBase*)> builders;

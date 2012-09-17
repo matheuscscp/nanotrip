@@ -1,7 +1,5 @@
 #include "State.hpp"
 
-#include "common.hpp"
-
 #include "InputManager.hpp"
 
 using namespace common;
@@ -20,7 +18,10 @@ State::ArgsBase::~ArgsBase() {}
 // State::Args Class
 // =============================================================================
 
-State::Change::Change(const string& state, ArgsBase* args) : state_(state), args_(args) {}
+State::Change::Change(const string& state, ArgsBase* args) :
+mexception("State::Change"), state_(state), args_(args) {}
+State::Change::~Change() throw() {}
+
 const string& State::Change::state() const { return state_; }
 State::ArgsBase* State::Change::args() const { return args_; }
 
@@ -28,13 +29,21 @@ State::ArgsBase* State::Change::args() const { return args_; }
 // State::StackUp Class
 // =============================================================================
 
-State::StackUp::StackUp(const string& state, ArgsBase* args) : Change(state, args) {}
+State::StackUp::StackUp(const string& state, ArgsBase* args) :
+mexception("State::StackUp"), state_(state), args_(args) {}
+State::StackUp::~StackUp() throw() {}
+
+const string& State::StackUp::state() const { return state_; }
+State::ArgsBase* State::StackUp::args() const { return args_; }
 
 // =============================================================================
 // State::Unstack Class
 // =============================================================================
 
-State::Unstack::Unstack(ArgsBase* args) : Change("", args) {}
+State::Unstack::Unstack(ArgsBase* args) : mexception("State::Unstack"), args_(args) {}
+State::Unstack::~Unstack() throw() {}
+
+State::ArgsBase* State::Unstack::args() const { return args_; }
 
 // =============================================================================
 // State Class

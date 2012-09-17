@@ -11,14 +11,14 @@ INCLUDE = -I /usr/include/SDL -I /usr/local/include/SDL
 EXE = game
 
 RUNFPS = 
-FIRSTATE = StateFirstLevel
+FIRSTATE = StateNewGame
 RUNFLAGS = $(RUNFPS) -p $(CURDIR)/ -s $(FIRSTATE)
 
 LIB = -lSDL -lSDL_image -lSDL_gfx -lSDL_ttf -lSDL_mixer
 
 MOD = $(OBJDIR)/configfile.o $(OBJDIR)/linearalgebra.o $(OBJDIR)/common.o $(OBJDIR)/observer.o
 
-# $(OBJDIR)/StatePauseManager.o $(OBJDIR)/StateMovie.o $(OBJDIR)/Button.o $(OBJDIR)/Geometry.o 
+# $(OBJDIR)/StatePauseManager.o $(OBJDIR)/StateMovie.o 
 
 OBJ0 = $(MOD) $(OBJDIR)/main.o $(OBJDIR)/SDLBase.o $(OBJDIR)/Sprite.o $(OBJDIR)/Animation.o
 OBJ1 = $(OBJ0) $(OBJDIR)/TileSet.o $(OBJDIR)/TileMap.o $(OBJDIR)/GameObject.o $(OBJDIR)/Camera.o
@@ -26,9 +26,10 @@ OBJ2 = $(OBJ1) $(OBJDIR)/InputManager.o $(OBJDIR)/Particle.o $(OBJDIR)/Circle.o
 OBJ3 = $(OBJ2) $(OBJDIR)/StateManager.o $(OBJDIR)/Text.o $(OBJDIR)/Audio.o $(OBJDIR)/Timer.o
 OBJ4 = $(OBJ3) $(OBJDIR)/State.o $(OBJDIR)/Ranking.o $(OBJDIR)/ClearSurface.o $(OBJDIR)/SurfaceManager.o
 OBJ5 = $(OBJ4) $(OBJDIR)/InputString.o $(OBJDIR)/StateTest.o $(OBJDIR)/Interaction.o
-OBJ6 = $(OBJ5) $(OBJDIR)/Shape.o $(OBJDIR)/Level.o $(OBJDIR)/StateFirstLevel.o 
+OBJ6 = $(OBJ5) $(OBJDIR)/Shape.o $(OBJDIR)/Level.o $(OBJDIR)/StateFirstLevel.o $(OBJDIR)/Rectangle.o
+OBJ7 = $(OBJ6) $(OBJDIR)/Button.o $(OBJDIR)/StateNewGame.o $(OBJDIR)/StateLoadLevel.o 
 
-OBJ  = $(OBJ6)
+OBJ  = $(OBJ7)
 
 all: build
 
@@ -46,7 +47,7 @@ test: build
 
 gdb: build
 	gdb $(EXE)
-#r -f -p /home/matheus/Documents/C_C++/C++/IDJ/nanotrip/ -s StateFirstLevel
+#r -f -p /home/matheus/Documents/C_C++/C++/IDJ/nanotrip/ -s StateNewGame
 
 clean:
 	rm -rf $(EXE) $(OBJDIR)/* $(ERRLOG)

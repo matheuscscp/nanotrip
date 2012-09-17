@@ -186,6 +186,7 @@ void observer::Subject::disconnect(obs_type* observer) {
 		for (std::list<Observer*>::iterator it = observers[i].begin(); it != observers[i].end(); ++it) {
 			// erases if it is found and breaks the loop for this method
 			if (((ObserverDerived<obs_type>*)(*it))->observer == observer) {
+				delete *it;
 				observers[i].erase(it);
 				break;
 			}
@@ -202,6 +203,7 @@ void observer::Subject::disconnect(int event_type, obs_type* observer) {
 	for (std::list<Observer*>::iterator it = observers[event_type].begin(); it != observers[event_type].end(); ++it) {
 		// erases if it is found and returns this method
 		if (((ObserverDerived<obs_type>*)(*it))->observer == observer) {
+			delete *it;
 			observers[event_type].erase(it);
 			return;
 		}
