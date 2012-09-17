@@ -42,13 +42,13 @@ void StateMainMenu::handleNewGame(const observer::Event& event, bool& stop) {
 }
 
 void StateMainMenu::handleRanking(const observer::Event& event, bool& stop) {
-	SHOW("handleRanking");
+	throw new Change("StateRanking");
 }
 
 void StateMainMenu::handleDirections(const observer::Event& event, bool& stop) {
-	SHOW("handleDirections");
+	throw new Change("StateDirections");
 }
 
 void StateMainMenu::handleCredits(const observer::Event& event, bool& stop) {
-	SHOW("handleCredits");
+	throw new Change("StateCredits");
 }
