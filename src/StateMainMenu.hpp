@@ -9,9 +9,8 @@ class StateMainMenu : public State {
 GAMESTATE
 private:
 	Button* newgame;
-	Button* loadgame;
-	Button* directions;
 	Button* ranking;
+	Button* directions;
 	Button* credits;
 	Button* quit;
 public:
@@ -21,9 +20,8 @@ public:
 	void render();
 private:
 	void handleNewGame(const observer::Event& event, bool& stop);
-	void handleLoadGame(const observer::Event& event, bool& stop);
-	void handleDirections(const observer::Event& event, bool& stop);
 	void handleRanking(const observer::Event& event, bool& stop);
+	void handleDirections(const observer::Event& event, bool& stop);
 	void handleCredits(const observer::Event& event, bool& stop);
 };
 

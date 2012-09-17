@@ -10,9 +10,9 @@ GAMESTATE_DEF(StateNewGame)
 StateNewGame::StateNewGame(ArgsBase* args) {
 	bg = new Sprite("img/bg_opaco.png");
 	
-	history = new Button(new Sprite("img/history.png"));
-	history->getShape()->position = r2vec(640, 100);
-	history->connect(Button::CLICKED, this, &StateNewGame::handleHistory);
+	play = new Button(new Sprite("img/play.png"));
+	play->getShape()->position = r2vec(640, 100);
+	play->connect(Button::CLICKED, this, &StateNewGame::handlePlay);
 	
 	loadlevel = new Button(new Sprite("img/loadlevel.png"));
 	loadlevel->getShape()->position = r2vec(640, 200);
@@ -37,8 +37,8 @@ void StateNewGame::update() {
 void StateNewGame::render() {
 }
 
-void StateNewGame::handleHistory(const observer::Event& event, bool& stop) {
-	throw new Change("StateFirstLevel");
+void StateNewGame::handlePlay(const observer::Event& event, bool& stop) {
+	throw new Change("StatePlay");
 }
 
 void StateNewGame::handleLoadLevel(const observer::Event& event, bool& stop) {
@@ -46,7 +46,7 @@ void StateNewGame::handleLoadLevel(const observer::Event& event, bool& stop) {
 }
 
 void StateNewGame::handleMakeLevel(const observer::Event& event, bool& stop) {
-	SHOW("handleMakeLevel");
+	throw new Change("StateMakeLevel");
 }
 
 void StateNewGame::handleGoBack(const observer::Event& event, bool& stop) {

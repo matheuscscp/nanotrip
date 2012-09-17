@@ -8,7 +8,7 @@
 class StateNewGame : public State {
 GAMESTATE
 private:
-	Button* history;
+	Button* play;
 	Button* loadlevel;
 	Button* makelevel;
 	Button* goback;
@@ -19,7 +19,7 @@ public:
 	void update();
 	void render();
 private:
-	void handleHistory(const observer::Event& event, bool& stop);
+	void handlePlay(const observer::Event& event, bool& stop);
 	void handleLoadLevel(const observer::Event& event, bool& stop);
 	void handleMakeLevel(const observer::Event& event, bool& stop);
 	void handleGoBack(const observer::Event& event, bool& stop);
