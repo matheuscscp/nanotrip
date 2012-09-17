@@ -26,10 +26,10 @@ OBJ2 = $(OBJ1) $(OBJDIR)/InputManager.o $(OBJDIR)/Particle.o $(OBJDIR)/Circle.o
 OBJ3 = $(OBJ2) $(OBJDIR)/StateManager.o $(OBJDIR)/Text.o $(OBJDIR)/Audio.o $(OBJDIR)/Timer.o
 OBJ4 = $(OBJ3) $(OBJDIR)/State.o $(OBJDIR)/Ranking.o $(OBJDIR)/ClearSurface.o $(OBJDIR)/SurfaceManager.o
 OBJ5 = $(OBJ4) $(OBJDIR)/InputString.o $(OBJDIR)/StateTest.o $(OBJDIR)/Interaction.o
-OBJ6 = $(OBJ5) $(OBJDIR)/Shape.o $(OBJDIR)/Level.o $(OBJDIR)/StateFirstLevel.o $(OBJDIR)/Rectangle.o
+OBJ6 = $(OBJ5) $(OBJDIR)/Shape.o $(OBJDIR)/Level.o $(OBJDIR)/StateLevelMaker.o $(OBJDIR)/Rectangle.o
 OBJ7 = $(OBJ6) $(OBJDIR)/Button.o $(OBJDIR)/StateNewGame.o $(OBJDIR)/StateLoadLevel.o
 OBJ8 = $(OBJ7) $(OBJDIR)/StateMainMenu.o $(OBJDIR)/StateLevel.o $(OBJDIR)/StatePlay.o
-OBJ9 = $(OBJ8) $(OBJDIR)/StateMakeLevel.o $(OBJDIR)/StateLevelMaker.o 
+OBJ9 = $(OBJ8) $(OBJDIR)/StateMakeLevel.o 
 
 OBJ  = $(OBJ9)
 

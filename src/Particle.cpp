@@ -106,7 +106,7 @@ bool Particle::collides(const Particle& target) const {
 		return true;
 	
 	// collision test for crossing trajectories
-	// RESOLVER O SISTEMA LINEAR DOS VETORES DIFF
+	// RESOLVER O SISTEMA LINEAR DOS VETORES DIFERENCA e tal
 	
 	return false;
 }

@@ -13,8 +13,6 @@ private:
 	Sprite* inputbox;
 	Text* inputtext;
 	InputString inputstring;
-	Text* warning;
-	bool warning_hidden;
 	
 	Button* goback;
 	Button* quit;
