@@ -10,7 +10,7 @@ GAMESTATE
 private:
 	Button* newgame;
 	Button* ranking;
-	Button* directions;
+	Button* instructions;
 	Button* credits;
 	Button* quit;
 public:
@@ -21,7 +21,7 @@ public:
 private:
 	void handleNewGame(const observer::Event& event, bool& stop);
 	void handleRanking(const observer::Event& event, bool& stop);
-	void handleDirections(const observer::Event& event, bool& stop);
+	void handleInstructions(const observer::Event& event, bool& stop);
 	void handleCredits(const observer::Event& event, bool& stop);
 };
 

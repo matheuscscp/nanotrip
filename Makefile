@@ -28,9 +28,10 @@ OBJ6 = $(OBJ5) $(OBJDIR)/Shape.o $(OBJDIR)/Level.o $(OBJDIR)/StateLevelMaker.o $
 OBJ7 = $(OBJ6) $(OBJDIR)/Button.o $(OBJDIR)/StateNewGame.o $(OBJDIR)/StateLoadLevel.o
 OBJ8 = $(OBJ7) $(OBJDIR)/StateMainMenu.o $(OBJDIR)/StateLevel.o $(OBJDIR)/StatePlay.o
 OBJ9 = $(OBJ8) $(OBJDIR)/StateMakeLevel.o $(OBJDIR)/StateMovie.o $(OBJDIR)/StateRanking.o
-OBJ10 = $(OBJ9) $(OBJDIR)/StateDirections.o $(OBJDIR)/StateCredits.o 
+OBJ10 = $(OBJ9) $(OBJDIR)/StateInstructions.o $(OBJDIR)/StateCredits.o
+OBJ11 = $(OBJ10) 
 
-OBJ  = $(OBJ10)
+OBJ  = $(OBJ11)
 
 all: build
 

@@ -39,6 +39,7 @@ void StateLoadLevel::update() {
 }
 
 void StateLoadLevel::render() {
+	GameObject::renderAll();
 	inputbox->render(640, 300, true);
 	inputtext->render(640, 320);
 	if (!warning_hidden)

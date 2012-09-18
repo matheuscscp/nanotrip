@@ -12,6 +12,8 @@ private:
 	Button* quit;
 public:
 	StateRanking(ArgsBase* args);
+	
+	void render();
 private:
 	void handleGoBack(const observer::Event& event, bool& stop);
 };

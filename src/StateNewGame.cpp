@@ -35,6 +35,7 @@ void StateNewGame::update() {
 }
 
 void StateNewGame::render() {
+	GameObject::renderAll();
 }
 
 void StateNewGame::handlePlay(const observer::Event& event, bool& stop) {

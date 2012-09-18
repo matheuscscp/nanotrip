@@ -16,6 +16,10 @@ StateRanking::StateRanking(ArgsBase* args) {
 	quit->connect(Button::CLICKED, this, &StateRanking::handleQuit);
 }
 
+void StateRanking::render() {
+	GameObject::renderAll();
+}
+
 void StateRanking::handleGoBack(const observer::Event& event, bool& stop) {
 	throw new Change("StateMainMenu");
 }

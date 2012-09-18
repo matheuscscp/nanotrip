@@ -30,4 +30,5 @@ void StateTest::update() {
 }
 
 void StateTest::render() {
+	GameObject::renderAll();
 }

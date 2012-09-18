@@ -17,6 +17,10 @@ StateMakeLevel::StateMakeLevel(ArgsBase* args) {
 	inputstring.connect(InputString::UPDATE, this, &StateMakeLevel::handleInput);
 	inputstring.connect(InputString::ENTER, this, &StateMakeLevel::handleEnter);
 	inputstring.setMaxSize(60);
+	if (args) {
+		inputstring.set(((StateLevelMaker::Args*)args)->levelname);
+		delete args;
+	}
 	
 	goback = new Button(new Sprite("img/goback.png"));
 	goback->getShape()->position = r2vec(540, 500);
@@ -32,6 +36,7 @@ void StateMakeLevel::update() {
 }
 
 void StateMakeLevel::render() {
+	GameObject::renderAll();
 	inputbox->render(640, 300, true);
 	inputtext->render(640, 320);
 }

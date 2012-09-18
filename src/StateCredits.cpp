@@ -16,6 +16,10 @@ StateCredits::StateCredits(ArgsBase* args) {
 	quit->connect(Button::CLICKED, this, &StateCredits::handleQuit);
 }
 
+void StateCredits::render() {
+	GameObject::renderAll();
+}
+
 void StateCredits::handleGoBack(const observer::Event& event, bool& stop) {
 	throw new Change("StateMainMenu");
 }

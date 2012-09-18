@@ -18,9 +18,9 @@ StateMainMenu::StateMainMenu(ArgsBase* args) {
 	ranking->getShape()->position = r2vec(640, 200);
 	ranking->connect(Button::CLICKED, this, &StateMainMenu::handleRanking);
 	
-	directions = new Button(new Sprite("img/directions.png"));
-	directions->getShape()->position = r2vec(640, 300);
-	directions->connect(Button::CLICKED, this, &StateMainMenu::handleDirections);
+	instructions = new Button(new Sprite("img/instructions.png"));
+	instructions->getShape()->position = r2vec(640, 300);
+	instructions->connect(Button::CLICKED, this, &StateMainMenu::handleInstructions);
 	
 	credits = new Button(new Sprite("img/credits.png"));
 	credits->getShape()->position = r2vec(640, 400);
@@ -35,6 +35,7 @@ void StateMainMenu::update() {
 }
 
 void StateMainMenu::render() {
+	GameObject::renderAll();
 }
 
 void StateMainMenu::handleNewGame(const observer::Event& event, bool& stop) {
@@ -45,8 +46,8 @@ void StateMainMenu::handleRanking(const observer::Event& event, bool& stop) {
 	throw new Change("StateRanking");
 }
 
-void StateMainMenu::handleDirections(const observer::Event& event, bool& stop) {
-	throw new Change("StateDirections");
+void StateMainMenu::handleInstructions(const observer::Event& event, bool& stop) {
+	throw new Change("StateInstructions");
 }
 
 void StateMainMenu::handleCredits(const observer::Event& event, bool& stop) {

@@ -48,4 +48,5 @@ void StateLevel::update() {
 }
 
 void StateLevel::render() {
+	GameObject::renderAll();
 }

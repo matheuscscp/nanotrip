@@ -125,9 +125,6 @@ void State::externRender() {
 	if (bg)
 		bg->render();
 	
-	// all game objects
-	GameObject::renderAll();
-	
 	// specific game state
 	render();
 }
