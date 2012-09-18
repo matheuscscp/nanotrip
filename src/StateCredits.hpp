@@ -9,7 +9,6 @@ class StateCredits : public State {
 GAMESTATE
 private:
 	Button* goback;
-	Button* quit;
 public:
 	StateCredits(ArgsBase* args);
 	

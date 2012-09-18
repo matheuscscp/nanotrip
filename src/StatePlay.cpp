@@ -27,9 +27,9 @@ StatePlay::StatePlay(ArgsBase* args) {
 	goback->getShape()->position = r2vec(540, 500);
 	goback->connect(Button::CLICKED, this, &StatePlay::handleGoBack);
 	
-	quit = new Button(new Sprite("img/quit.png"));
-	quit->getShape()->position = r2vec(740, 500);
-	quit->connect(Button::CLICKED, this, &StatePlay::handleQuit);
+	play = new Button(new Sprite("img/play.png"));
+	play->getShape()->position = r2vec(740, 500);
+	play->connect(Button::CLICKED, this, &StatePlay::handleEnter);
 }
 
 void StatePlay::update() {

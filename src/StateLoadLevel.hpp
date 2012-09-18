@@ -17,7 +17,7 @@ private:
 	bool warning_hidden;
 	
 	Button* goback;
-	Button* quit;
+	Button* play;
 public:
 	StateLoadLevel(ArgsBase* args);
 	

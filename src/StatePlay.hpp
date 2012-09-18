@@ -15,7 +15,7 @@ private:
 	InputString inputstring;
 	
 	Button* goback;
-	Button* quit;
+	Button* play;
 public:
 	StatePlay(ArgsBase* args);
 	

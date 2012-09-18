@@ -25,10 +25,6 @@ StateNewGame::StateNewGame(ArgsBase* args) {
 	goback = new Button(new Sprite("img/goback.png"));
 	goback->getShape()->position = r2vec(640, 400);
 	goback->connect(Button::CLICKED, this, &StateNewGame::handleGoBack);
-	
-	quit = new Button(new Sprite("img/quit.png"));
-	quit->getShape()->position = r2vec(640, 500);
-	quit->connect(Button::CLICKED, this, &StateNewGame::handleQuit);
 }
 
 void StateNewGame::update() {

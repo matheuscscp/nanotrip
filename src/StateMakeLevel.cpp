@@ -26,9 +26,9 @@ StateMakeLevel::StateMakeLevel(ArgsBase* args) {
 	goback->getShape()->position = r2vec(540, 500);
 	goback->connect(Button::CLICKED, this, &StateMakeLevel::handleGoBack);
 	
-	quit = new Button(new Sprite("img/quit.png"));
-	quit->getShape()->position = r2vec(740, 500);
-	quit->connect(Button::CLICKED, this, &StateMakeLevel::handleQuit);
+	makelevel = new Button(new Sprite("img/makelevel.png"));
+	makelevel->getShape()->position = r2vec(740, 500);
+	makelevel->connect(Button::CLICKED, this, &StateMakeLevel::handleEnter);
 }
 
 void StateMakeLevel::update() {

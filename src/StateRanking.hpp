@@ -9,7 +9,6 @@ class StateRanking : public State {
 GAMESTATE
 private:
 	Button* goback;
-	Button* quit;
 public:
 	StateRanking(ArgsBase* args);
 	

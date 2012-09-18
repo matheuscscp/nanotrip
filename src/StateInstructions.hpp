@@ -9,7 +9,6 @@ class StateInstructions : public State {
 GAMESTATE
 private:
 	Button* goback;
-	Button* quit;
 public:
 	StateInstructions(ArgsBase* args);
 	

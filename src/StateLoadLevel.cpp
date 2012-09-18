@@ -29,9 +29,9 @@ StateLoadLevel::StateLoadLevel(ArgsBase* args) : warning_hidden(true) {
 	goback->getShape()->position = r2vec(540, 500);
 	goback->connect(Button::CLICKED, this, &StateLoadLevel::handleGoBack);
 	
-	quit = new Button(new Sprite("img/quit.png"));
-	quit->getShape()->position = r2vec(740, 500);
-	quit->connect(Button::CLICKED, this, &StateLoadLevel::handleQuit);
+	play = new Button(new Sprite("img/play.png"));
+	play->getShape()->position = r2vec(740, 500);
+	play->connect(Button::CLICKED, this, &StateLoadLevel::handleEnter);
 }
 
 void StateLoadLevel::update() {
