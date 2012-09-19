@@ -124,13 +124,17 @@ Particle* StateLevel::assembleParticle(const Configuration& conf) {
 	particle->charge = conf.getReal("q");
 	
 	// sprite
-	if (avatar->charge < 0)
-		avatar->sprite = sprite_negative;
-	else if (avatar->charge == 0)
-		avatar->sprite = sprite_neutral;
-	else
-		avatar->sprite = sprite_positive;
-	((Circle*)particle->getShape())->setRadius(avatar->sprite->srcW()/2);
+	if (particle->charge == 0)
+		particle->sprite = sprite_neutral;
+	else if (particle->charge < 0) {
+		particle->sprite = sprite_negative;
+		bg->gradient(particle->getShape()->position.x(0), particle->getShape()->position.x(1), 2000000*particle->charge*particle->charge, 200, 0, 0, 0);
+	}
+	else {
+		particle->sprite = sprite_positive;
+		bg->gradient(particle->getShape()->position.x(0), particle->getShape()->position.x(1), 2000000*particle->charge*particle->charge, 0, 0, 200, 0);
+	}
+	((Circle*)particle->getShape())->setRadius(particle->sprite->srcW()/2);
 	
 	return particle;
 }

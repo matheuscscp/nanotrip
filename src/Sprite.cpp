@@ -178,5 +178,115 @@ float Sprite::angle () const
 
 void Sprite::setAlpha(float a) {
 	int alpha = a * 255;
-	SDL_SetAlpha(src, 0, alpha);
+	SDL_SetAlpha(src, SDL_SRCALPHA, alpha);
+}
+
+/**
+ * Cria um gradiente radial quadratico com uma posicao, raio e cor definidos
+ * \param x coordenada x do centro do gradiente
+ * \param y coordenada y do centro do gradiente
+ * \param radius raio da circunferencia (nenhum pixel fora desse raio eh alterado)
+ * \param red/green/blue/alpha componentes da cor do gradiente
+ */
+void Sprite::gradient(Uint32 x, Uint32 y, int radius, Uint8 red, Uint8 green, Uint8 blue, Uint8 alpha){
+	float distance, ratio, circleAlpha, transparency;
+	Uint8 r8, g8, b8, a8;
+	Uint32 r, g, b, a;
+	Uint32 xDraw, yDraw;
+	for (int i = -radius; i <= radius; i++){
+		for (int j = -radius; j <= radius; j++){
+			//setPixel(i, j, SDL_MapRGBA(surface->format, r, g, b, a * ( i*xStep * j*yStep ) ) );
+			//setPixel(i, j, SDL_MapRGBA(surface->format, r, g, b, a *( sin(i*xStep) * sin(j*yStep) ) ) );
+			distance = sqrt(i*i + j*j);
+			ratio = 1-(distance/radius);
+			xDraw = x+i;
+			yDraw = y+j;
+			if (i*i+j*j<radius*radius && xDraw>0 && xDraw<src->w && yDraw>0 && yDraw<src->h){
+				circleAlpha = ratio*ratio;
+				transparency = (1-circleAlpha);
+				//std::cout<<circleAlpha<<","<<transparency<<std::endl;
+				SDL_GetRGBA(getPixel(xDraw, yDraw), src->format, &r8, &g8, &b8, &a8);
+				r = red*circleAlpha + r8*transparency;
+				if (r>255) r = 255;
+				g = green*circleAlpha + g8*transparency;
+				if (g>255) g = 255;
+				b = blue*circleAlpha + b8*transparency;
+				if (b>255) b = 255;
+				a = alpha*circleAlpha + a8*transparency;
+				if (a>255) a = 255;
+				setPixel(x+i, y+j, SDL_MapRGBA(src->format, r, g, b, a));
+			}
+		}
+	}
+}
+//From http://sdl.beuc.net/sdl.wiki/Pixel_Access
+Uint32 Sprite::getPixel(int x, int y){
+	int bpp = src->format->BytesPerPixel;
+	/* Here p is the address to the pixel we want to retrieve */
+	Uint8 *p = (Uint8 *)src->pixels + y * src->pitch + x * bpp;
+	
+	switch(bpp) {
+	case 1:
+		return *p;
+		break;
+		
+	case 2:
+		return *(Uint16 *)p;
+		break;
+		
+	case 3:
+		if(SDL_BYTEORDER == SDL_BIG_ENDIAN)
+			return p[0] << 16 | p[1] << 8 | p[2];
+		else
+			return p[0] | p[1] << 8 | p[2] << 16;
+		break;
+		
+	case 4:
+		return *(Uint32*)p;
+		break;
+		
+	default:
+		break;
+	}
+	
+	return 0;	/* shouldn't happen, but avoids warnings */
+}
+
+//From http://sdl.beuc.net/sdl.wiki/Pixel_Access
+void Sprite::setPixel(int x, int y, Uint32 pixel){
+	if ( x<0 || x>src->w || y<0 || y>src->h )
+		return;
+	
+	int bpp = src->format->BytesPerPixel;
+	/* Here p is the address to the pixel we want to set */
+	Uint8 *p = (Uint8 *)src->pixels + y * src->pitch + x * bpp;
+	
+	switch(bpp) {
+	case 1:
+		*p = pixel;
+		break;
+		
+	case 2:
+		*(Uint16 *)p = pixel;
+		break;
+		
+	case 3:
+		if(SDL_BYTEORDER == SDL_BIG_ENDIAN) {
+			p[0] = (pixel >> 16) & 0xff;
+			p[1] = (pixel >> 8) & 0xff;
+			p[2] = pixel & 0xff;
+		} else {
+			p[0] = pixel & 0xff;
+			p[1] = (pixel >> 8) & 0xff;
+			p[2] = (pixel >> 16) & 0xff;
+		}
+		break;
+		
+	case 4:
+		*(Uint32 *)p = pixel;
+		break;
+		
+	default:
+		break;
+	}
 }
