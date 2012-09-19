@@ -119,11 +119,6 @@ public:
 	static std::list<State*> states;
 protected:
 	bool frozen_;
-	Sprite* bg;
-	std::list<Sprite*> sprites;
-	std::list<Text*> texts;
-	std::list<GameObject*> game_objects;
-	std::list<Interaction*> interactions;
 public:
 	/// Empty constructor.
 	State();
@@ -141,9 +136,6 @@ public:
 	/// The state tells if it's frozen, or not.
 	bool frozen() const;
 	
-	void externUpdate();
-	void externRender();
-protected:
 	virtual void update();
 	virtual void render();
 	

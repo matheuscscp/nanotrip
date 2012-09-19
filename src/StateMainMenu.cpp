@@ -8,7 +8,7 @@ using namespace common;
 GAMESTATE_DEF(StateMainMenu)
 
 StateMainMenu::StateMainMenu(ArgsBase* args) {
-	bg = new Sprite("img/bg_opaco.png");
+	bg = new Sprite("img/level/background.png");
 	
 	newgame = new Button(new Sprite("img/newgame.png"));
 	newgame->getShape()->position = r2vec(640, 100);
@@ -31,11 +31,41 @@ StateMainMenu::StateMainMenu(ArgsBase* args) {
 	quit->connect(Button::CLICKED, this, &StateMainMenu::handleQuit);
 }
 
+StateMainMenu::~StateMainMenu() {
+	delete bg;
+	
+	delete newgame->sprite;
+	delete newgame;
+	
+	delete ranking->sprite;
+	delete ranking;
+	
+	delete instructions->sprite;
+	delete instructions;
+	
+	delete credits->sprite;
+	delete credits;
+	
+	delete quit->sprite;
+	delete quit;
+}
+
 void StateMainMenu::update() {
+	newgame->update();
+	ranking->update();
+	instructions->update();
+	credits->update();
+	quit->update();
 }
 
 void StateMainMenu::render() {
-	GameObject::renderAll();
+	bg->render();
+	
+	newgame->render();
+	ranking->render();
+	instructions->render();
+	credits->render();
+	quit->render();
 }
 
 void StateMainMenu::handleNewGame(const observer::Event& event, bool& stop) {

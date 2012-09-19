@@ -10,7 +10,6 @@
 #ifndef SPRITE_HPP
 #define SPRITE_HPP
 
-#include <list>
 #include <string>
 
 #include "SDL.h"
@@ -19,8 +18,6 @@
 /// the screen.
 /// @brief Class to hold SDL surfaces
 class Sprite {
-public:
-	static std::list< std::list<Sprite*>* > all;
 protected:
 	/// @brief Pointer to the SDL surface
 	SDL_Surface* src;
@@ -65,8 +62,6 @@ private:
 	/// @brief Frees the memory used by the surface
 	void unload ();
 public:
-	static void updateAll();
-	
 	virtual void update();
 	
 	/// This method sets the rectangle to take a piece of the surface.
@@ -112,6 +107,8 @@ public:
 	void restore ();
 	
 	float angle () const;
+	
+	void setAlpha(float a);
 };
 
 #endif

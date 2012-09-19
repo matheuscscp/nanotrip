@@ -2,8 +2,10 @@
 #ifndef STATELEVEL_HPP
 #define STATELEVEL_HPP
 
+#include "configfile.hpp"
+
 #include "State.hpp"
-#include "Level.hpp"
+#include "Particle.hpp"
 
 class StateLevel : public State {
 GAMESTATE
@@ -14,15 +16,30 @@ public:
 		Args(const std::string& levelname);
 	};
 protected:
-	Level level;
+	Sprite* bg;
+	Sprite* sprite_avatar;
+	Sprite* sprite_negative;
+	Sprite* sprite_neutral;
+	Sprite* sprite_positive;
 	
-	Sprite* positive_sprite;
-	Sprite* negative_sprite;
+	Configuration raw;
+	
+	std::list<Interaction> interactions;
+	
+	Particle* avatar;
+	std::list<Particle*> particles;
 public:
 	StateLevel(ArgsBase* args);
+	~StateLevel();
 	
 	void update();
 	void render();
+protected:
+	void reload();
+	void assemble();
+	void assembleAvatar();
+	Particle* assembleParticle(const Configuration& conf);
+	void clear();
 };
 
 #endif

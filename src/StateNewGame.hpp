@@ -8,12 +8,15 @@
 class StateNewGame : public State {
 GAMESTATE
 private:
+	Sprite* bg;
+	
 	Button* play;
 	Button* loadlevel;
 	Button* makelevel;
 	Button* goback;
 public:
 	StateNewGame(ArgsBase* args);
+	~StateNewGame();
 	
 	void update();
 	void render();

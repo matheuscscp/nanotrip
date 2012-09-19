@@ -13,7 +13,7 @@ using namespace common;
 GAMESTATE_DEF(StatePlay)
 
 StatePlay::StatePlay(ArgsBase* args) {
-	bg = new Sprite("img/bg_opaco.png");
+	bg = new Sprite("img/level/background.png");
 	
 	inputbox = new Sprite("img/inputname.png");
 	
@@ -32,14 +32,34 @@ StatePlay::StatePlay(ArgsBase* args) {
 	play->connect(Button::CLICKED, this, &StatePlay::handleEnter);
 }
 
+StatePlay::~StatePlay() {
+	delete bg;
+	
+	delete inputbox;
+	delete inputtext;
+	
+	delete goback->sprite;
+	delete goback;
+	
+	delete play->sprite;
+	delete play;
+}
+
 void StatePlay::update() {
 	inputstring.update();
+	
+	goback->update();
+	play->update();
 }
 
 void StatePlay::render() {
-	GameObject::renderAll();
+	bg->render();
+	
 	inputbox->render(640, 300, true);
 	inputtext->render(640, 320);
+	
+	goback->render();
+	play->render();
 }
 
 void StatePlay::handleInput(const observer::Event& event, bool& stop) {

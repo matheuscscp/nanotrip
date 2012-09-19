@@ -8,22 +8,15 @@
 #include "SDLBase.hpp"
 #include "SurfaceManager.hpp"
 
-using std::list;
 using std::string;
 
-list< list<Sprite*>* > Sprite::all;
-
-Sprite::Sprite() : src(0), rotozoomed(0), angle_(0), zoomx(1), zoomy(1) {
-	all.back()->push_back(this);
-}
+Sprite::Sprite() : src(0), rotozoomed(0), angle_(0), zoomx(1), zoomy(1) {}
 
 Sprite::Sprite(const string& filename) : rotozoomed(0), angle_(0), zoomx(1), zoomy(1) {
-	all.back()->push_back(this);
 	load_(filename);
 }
 
 Sprite::~Sprite() {
-	all.back()->remove(this);
 	unload();
 }
 
@@ -54,11 +47,6 @@ void Sprite::unload ()
 		
 		restore ();
 	}
-}
-
-void Sprite::updateAll() {
-	for (list<Sprite*>::iterator it = all.back()->begin(); it != all.back()->end(); ++it)
-		(*it)->update();
 }
 
 void Sprite::update() {}
@@ -186,4 +174,9 @@ void Sprite::restore()
 float Sprite::angle () const
 {
 	return angle_;
+}
+
+void Sprite::setAlpha(float a) {
+	int alpha = a * 255;
+	SDL_SetAlpha(src, 0, alpha);
 }

@@ -8,6 +8,8 @@
 class StateMainMenu : public State {
 GAMESTATE
 private:
+	Sprite* bg;
+	
 	Button* newgame;
 	Button* ranking;
 	Button* instructions;
@@ -15,6 +17,7 @@ private:
 	Button* quit;
 public:
 	StateMainMenu(ArgsBase* args);
+	~StateMainMenu();
 	
 	void update();
 	void render();

@@ -10,6 +10,8 @@
 class StateLoadLevel : public State {
 GAMESTATE
 private:
+	Sprite* bg;
+	
 	Sprite* inputbox;
 	Text* inputtext;
 	InputString inputstring;
@@ -20,6 +22,7 @@ private:
 	Button* play;
 public:
 	StateLoadLevel(ArgsBase* args);
+	~StateLoadLevel();
 	
 	void update();
 	void render();

@@ -8,10 +8,14 @@
 class StateInstructions : public State {
 GAMESTATE
 private:
+	Sprite* bg;
+	
 	Button* goback;
 public:
 	StateInstructions(ArgsBase* args);
+	~StateInstructions();
 	
+	void update();
 	void render();
 private:
 	void handleGoBack(const observer::Event& event, bool& stop);

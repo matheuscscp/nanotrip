@@ -96,14 +96,14 @@ void StateManager::update() {
 	for (list<State*>::iterator it = State::states.begin(); it != State::states.end(); ++it) {
 		// update if not frozen
 		if (!(*it)->frozen())
-			(*it)->externUpdate();
+			(*it)->update();
 	}
 }
 
 void StateManager::render() {
 	// for all the other loaded states
 	for (list<State*>::iterator it = State::states.begin(); it != State::states.end(); ++it) {
-		(*it)->externRender();
+		(*it)->render();
 		// render stack screen if frozen
 		if ((*it)->frozen())
 			SDLBase::renderStackScreen();

@@ -13,7 +13,7 @@ using namespace common;
 GAMESTATE_DEF(StateLoadLevel)
 
 StateLoadLevel::StateLoadLevel(ArgsBase* args) : warning_hidden(true) {
-	bg = new Sprite("img/bg_opaco.png");
+	bg = new Sprite("img/level/background.png");
 	
 	inputbox = new Sprite("img/inputlevelname.png");
 	
@@ -34,16 +34,37 @@ StateLoadLevel::StateLoadLevel(ArgsBase* args) : warning_hidden(true) {
 	play->connect(Button::CLICKED, this, &StateLoadLevel::handleEnter);
 }
 
+StateLoadLevel::~StateLoadLevel() {
+	delete bg;
+	
+	delete inputbox;
+	delete inputtext;
+	delete warning;
+	
+	delete goback->sprite;
+	delete goback;
+	
+	delete play->sprite;
+	delete play;
+}
+
 void StateLoadLevel::update() {
 	inputstring.update();
+	
+	goback->update();
+	play->update();
 }
 
 void StateLoadLevel::render() {
-	GameObject::renderAll();
+	bg->render();
+	
 	inputbox->render(640, 300, true);
 	inputtext->render(640, 320);
 	if (!warning_hidden)
 		warning->render(640, 345);
+	
+	goback->render();
+	play->render();
 }
 
 void StateLoadLevel::handleInput(const observer::Event& event, bool& stop) {

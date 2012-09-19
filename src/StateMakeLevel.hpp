@@ -10,6 +10,8 @@
 class StateMakeLevel : public State {
 GAMESTATE
 private:
+	Sprite* bg;
+	
 	Sprite* inputbox;
 	Text* inputtext;
 	InputString inputstring;
@@ -18,6 +20,7 @@ private:
 	Button* makelevel;
 public:
 	StateMakeLevel(ArgsBase* args);
+	~StateMakeLevel();
 	
 	void update();
 	void render();

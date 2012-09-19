@@ -53,45 +53,11 @@ State::ArgsBase* State::Unstack::args() const { return args_; }
 std::map<string, State* (*)(State::ArgsBase*)> State::builders;
 list<State*> State::states;
 
-State::State() : frozen_(false), bg(0) {
-	// all sprites
-	Sprite::all.push_back(&sprites);
-	
-	// all texts
-	Text::all.push_back(&texts);
-	
-	// all game objects
-	GameObject::all.push_back(&game_objects);
-	
-	// all game objects interactions
-	Interaction::all.push_back(&interactions);
-	
-	// quit event
+State::State() : frozen_(false) {
 	InputManager::instance()->connect(InputManager::QUIT, this, &State::handleQuit);
 }
 
 State::~State() {
-	// all sprites
-	while (sprites.size())
-		delete sprites.back();
-	Sprite::all.pop_back();
-	
-	// all texts
-	while (texts.size())
-		delete texts.back();
-	Text::all.pop_back();
-	
-	// all game objects
-	while (game_objects.size())
-		delete game_objects.back();
-	GameObject::all.pop_back();
-	
-	// all game objects interactions
-	while (interactions.size())
-		delete interactions.back();
-	Interaction::all.pop_back();
-	
-	// quit event
 	InputManager::instance()->disconnect(this);
 }
 
@@ -105,29 +71,6 @@ State* State::build(const string& name, ArgsBase* args) {
 void State::handleUnstack(ArgsBase* args) {}
 
 bool State::frozen() const { return frozen_; }
-
-void State::externUpdate() {
-	// all sprites
-	Sprite::updateAll();
-	
-	// game objects interactions
-	Interaction::interactAll();
-	
-	// all game objects
-	GameObject::updateAll();
-	
-	// specific game state
-	update();
-}
-
-void State::externRender() {
-	// background
-	if (bg)
-		bg->render();
-	
-	// specific game state
-	render();
-}
 
 void State::update() {}
 void State::render() {}

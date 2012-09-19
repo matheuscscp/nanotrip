@@ -8,10 +8,14 @@
 class StateRanking : public State {
 GAMESTATE
 private:
+	Sprite* bg;
+	
 	Button* goback;
 public:
 	StateRanking(ArgsBase* args);
+	~StateRanking();
 	
+	void update();
 	void render();
 private:
 	void handleGoBack(const observer::Event& event, bool& stop);

@@ -17,6 +17,8 @@ private:
 	
 	int state;
 	
+	Sprite* bg;
+	
 	Sprite* hud;
 public:
 	StateLevelMaker(ArgsBase* args);

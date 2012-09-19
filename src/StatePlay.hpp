@@ -10,6 +10,8 @@
 class StatePlay : public State {
 GAMESTATE
 private:
+	Sprite* bg;
+	
 	Sprite* inputbox;
 	Text* inputtext;
 	InputString inputstring;
@@ -18,6 +20,7 @@ private:
 	Button* play;
 public:
 	StatePlay(ArgsBase* args);
+	~StatePlay();
 	
 	void update();
 	void render();

@@ -1,21 +1,15 @@
 #ifndef TEXT_HPP
 #define TEXT_HPP
 
-#include <list>
-
 #include "SDL_ttf.h"
 
-class Text
-{
+class Text {
 public:
-	enum render_types
-	{
+	enum render_types {
 		solid,
 		blended,
 		shaded
 	};
-	
-	static std::list< std::list<Text*>* > all;
 private:
 	TTF_Font* font;
 	SDL_Surface* surface;

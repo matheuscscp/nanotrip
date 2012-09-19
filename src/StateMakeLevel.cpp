@@ -8,7 +8,7 @@ using namespace lalge;
 GAMESTATE_DEF(StateMakeLevel)
 
 StateMakeLevel::StateMakeLevel(ArgsBase* args) {
-	bg = new Sprite("img/bg_opaco.png");
+	bg = new Sprite("img/level/background.png");
 	
 	inputbox = new Sprite("img/inputlevelname.png");
 	
@@ -31,14 +31,34 @@ StateMakeLevel::StateMakeLevel(ArgsBase* args) {
 	makelevel->connect(Button::CLICKED, this, &StateMakeLevel::handleEnter);
 }
 
+StateMakeLevel::~StateMakeLevel() {
+	delete bg;
+	
+	delete inputbox;
+	delete inputtext;
+	
+	delete goback->sprite;
+	delete goback;
+	
+	delete makelevel->sprite;
+	delete makelevel;
+}
+
 void StateMakeLevel::update() {
 	inputstring.update();
+	
+	goback->update();
+	makelevel->update();
 }
 
 void StateMakeLevel::render() {
-	GameObject::renderAll();
+	bg->render();
+	
 	inputbox->render(640, 300, true);
 	inputtext->render(640, 320);
+	
+	goback->render();
+	makelevel->render();
 }
 
 void StateMakeLevel::handleInput(const observer::Event& event, bool& stop) {

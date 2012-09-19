@@ -11,13 +11,11 @@ levelname(((Args*)args)->levelname), state(1) {
 	delete args;
 	
 	// only one opaque background renderization
-	bg = new Sprite("img/bg_opaco.png");
+	bg = new Sprite("img/level/background.png");
 	bg->render();
-	delete bg;
+	bg->setAlpha(0.3f);
 	
-	bg = new Sprite("img/bg_transparente.png");
-	
-	hud = new Sprite("img/hud.png");
+	hud = new Sprite("img/level/hud.png");
 	
 	InputManager::instance()->connect(InputManager::KEYDOWN, this, &StateLevelMaker::handleKeyDown);
 	InputManager::instance()->connect(InputManager::MOUSEDOWN_LEFT, this, &StateLevelMaker::handleMouseDownLeft);
