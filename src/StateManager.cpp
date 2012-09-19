@@ -101,17 +101,12 @@ void StateManager::update() {
 }
 
 void StateManager::render() {
-	State::states.front()->externRender();
-	
 	// for all the other loaded states
-	list<State*>::iterator it = State::states.begin();
-	++it;
-	for (it = it; it != State::states.end(); ++it) {
-		// render if not frozen
-		if (!(*it)->frozen()) {
+	for (list<State*>::iterator it = State::states.begin(); it != State::states.end(); ++it) {
+		(*it)->externRender();
+		// render stack screen if frozen
+		if ((*it)->frozen())
 			SDLBase::renderStackScreen();
-			(*it)->externRender();
-		}
 	}
 	
 	renderFPS();
@@ -131,6 +126,9 @@ void StateManager::renderFPS() {
 }
 
 void StateManager::handleMexception(mexception* e) {
+	if (!e)
+		return;
+	
 	try {
 		string what = e->what();
 		if (what == "Quit") {
@@ -155,6 +153,7 @@ void StateManager::handleMexception(mexception* e) {
 	catch (State::StackUp* su) {
 		observer::Stack::push();
 		State::states.push_back(State::build(su->state(), su->args()));
+		delete e;
 	}
 	// maybe unstack a game state
 	catch (State::Unstack* us) {
@@ -165,12 +164,21 @@ void StateManager::handleMexception(mexception* e) {
 		delete State::states.back();
 		State::states.pop_back();
 		observer::Stack::pop();
-		State::states.back()->handleUnstack(us->args());
+		// handle the unstack args
+		State::ArgsBase* args = us->args();
+		delete e;
+		try {
+			State::states.back()->handleUnstack(args);
+		}
+		// handle again if needed
+		catch (mexception* us_e) {
+			handleMexception(us_e);
+		}
 	}
 	// change the last pointer
 	catch (State::Change* ch) {
 		delete State::states.back();
 		State::states.back() = State::build(ch->state(), ch->args());
+		delete e;
 	}
-	delete e;
 }
