@@ -19,7 +19,7 @@ StateLevel::StateLevel(ArgsBase* args) {
 	bg->setAlpha(0.3f);
 	
 	// all sprites
-	sprite_avatar = new Animation("img/level/avatar.png", 0, 7, 1, 16);
+	sprite_avatar = new Animation("img/level/avatar_positive.png", 0, 7, 1, 16);
 	sprite_negative = new Sprite("img/level/negative.png");
 	sprite_neutral = new Sprite("img/level/neutral.png");
 	sprite_positive = new Sprite("img/level/positive.png");
