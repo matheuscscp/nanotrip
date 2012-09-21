@@ -268,7 +268,7 @@ void SDLBase::delayFrame ()
 
 int SDLBase::dt ()
 {
-	return dt_;
+	return 1000 / fps;
 }
 
 float SDLBase::FPS ()
