@@ -71,16 +71,22 @@ void Particle::manageParticleCollision(GameObject* target) {
 	Scalar m2 = ((Particle*)target)->mass;
 	Scalar M = m1 + m2;
 	
-	Scalar v1i = tmp * speed;
-	Scalar v2i = tmp * ((Particle*)target)->speed;
+	// pinned particles have null speed
+	Scalar v1i = ((!pinned) ? tmp * speed : 0);
+	// pinned particles have null speed
+	Scalar v2i = ((!((Particle*)target)->pinned) ? tmp * ((Particle*)target)->speed : 0);
 	
 	Scalar v1f = ((v1i*(m1-m2))	+ (v2i*2*m2)	)/M;
 	Scalar v2f = ((v1i*2*m1)	+ (v2i*(m2-m1))	)/M;
 	
 	R2Vector normal = rotate(90, tmp);
 	
-	speed						= ((tmp * v1f) + normal.proj(speed)							) * k_res;
-	((Particle*)target)->speed	= ((tmp * v2f) + normal.proj(((Particle*)target)->speed)	) * k_res;
+	// only not pinned particles should update the speed
+	if (!pinned)
+		speed = ((tmp * v1f) + normal.proj(speed)) * k_res;
+	// only not pinned particles should update the speed
+	if (!((Particle*)target)->pinned)
+		((Particle*)target)->speed = ((tmp * v2f) + normal.proj(((Particle*)target)->speed)) * k_res;
 }
 
 bool Particle::collides(const Particle& target) const {
