@@ -34,7 +34,7 @@ public:
 	void addParticleFieldForces(GameObject* target);
 	lalge::R2Vector gravitationalForce(const Particle& target) const;
 	lalge::R2Vector electricalForce(const Particle& target) const;
-	lalge::R2Vector magneticForce(const Particle& target) const;	// FIXME: someday
+	lalge::R2Vector magneticForce(const Particle& target) const;
 };
 
 #endif

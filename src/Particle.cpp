@@ -54,7 +54,9 @@ R2Vector Particle::electricalForce(const Particle& target) const {
 }
 
 R2Vector Particle::magneticForce(const Particle& target) const {
-	return R2Vector();	// FIXME: someday
+	// There is no obvious expression to calculate magnetic force between
+	// particles. So we're going to despise it in this game.
+	return R2Vector();
 }
 
 void Particle::manageParticleCollision(GameObject* target) {
