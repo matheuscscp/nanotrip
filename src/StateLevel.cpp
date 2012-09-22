@@ -26,11 +26,7 @@ life(3)
 	bg->setAlpha(0.3f);
 	hud = new Sprite("img/level/hud.png");
 	eatles = new Sprite("img/level/eatles.png");
-	
-	sprite_life[0].load("img/level/0life.png");
-	sprite_life[1].load("img/level/1life.png");
-	sprite_life[2].load("img/level/2life.png");
-	sprite_life[3].load("img/level/3life.png");
+	sprite_life = new Animation("img/level/life.png", 3, 1, 4, 1);
 	
 	// all sprites
 	sprite_avatar = new Animation("img/level/avatar_positive.png", 0, 7, 1, 16);
@@ -66,6 +62,7 @@ StateLevel::~StateLevel() {
 	delete bg;
 	delete hud;
 	delete eatles;
+	delete sprite_life;
 	delete sprite_avatar;
 	delete sprite_hole;
 	delete sprite_negative;
@@ -89,6 +86,8 @@ void StateLevel::handleUnstack(ArgsBase* args) {
 }
 
 void StateLevel::update() {
+	((Animation*)sprite_life)->setFrame(life);
+	
 	// avatar animation
 	sprite_avatar->update();
 	
@@ -111,7 +110,7 @@ void StateLevel::render() {
 	bg->render();
 	hud->render();
 	eatles->render(45, 30);
-	sprite_life[life].render(236, 161);
+	sprite_life->render(236, 161);
 	
 	// all particles
 	for (list<Particle*>::iterator it = particles.begin(); it != particles.end(); ++it) {
@@ -250,6 +249,10 @@ void StateLevel::handleKeyDown(const observer::Event& event, bool& stop) {
 		
 	case SDLK_SPACE:
 		avatar->pinned = false;
+		break;
+		
+	case SDLK_p:
+		life--;
 		break;
 		
 	default:

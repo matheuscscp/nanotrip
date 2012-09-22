@@ -27,7 +27,7 @@ protected:
 	Sprite* eatles;
 	
 	int life;
-	Sprite sprite_life[4];
+	Sprite* sprite_life;
 	
 	Sprite* sprite_avatar;
 	Sprite* sprite_hole;
