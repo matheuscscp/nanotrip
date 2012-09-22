@@ -20,6 +20,8 @@ public:
 		Args(const std::string& levelname);
 	};
 protected:
+	bool is_bg_init;
+	
 	Sprite* bg;
 	Sprite* sprite_avatar;
 	Sprite* sprite_negative;

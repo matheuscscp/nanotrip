@@ -14,7 +14,7 @@ GAMESTATE_DEF(StateLevel)
 
 StateLevel::Args::Args(const std::string& levelname) : levelname(levelname) {}
 
-StateLevel::StateLevel(ArgsBase* args) {
+StateLevel::StateLevel(ArgsBase* args) : is_bg_init(false) {
 	// background
 	bg = new Sprite("img/level/background.png");
 	bg->render();
@@ -125,6 +125,8 @@ void StateLevel::assemble() {
 		
 		particles.push_back(particle);
 	}
+	
+	is_bg_init = true;
 }
 
 void StateLevel::assembleAvatar() {
@@ -155,11 +157,13 @@ Particle* StateLevel::assembleParticle(const Configuration& conf) {
 		particle->sprite = sprite_neutral;
 	else if (particle->charge < 0) {
 		particle->sprite = sprite_negative;
-		bg->gradient(particle->getShape()->position.x(0), particle->getShape()->position.x(1), 1500000*particle->charge*particle->charge, 255, 31, 77, 0);
+		if (!is_bg_init)
+			bg->gradient(particle->getShape()->position.x(0), particle->getShape()->position.x(1), 1500000*particle->charge*particle->charge, 255, 31, 77, 0);
 	}
 	else {
 		particle->sprite = sprite_positive;
-		bg->gradient(particle->getShape()->position.x(0), particle->getShape()->position.x(1), 1500000*particle->charge*particle->charge, 51, 74, 144, 0);
+		if (!is_bg_init)
+			bg->gradient(particle->getShape()->position.x(0), particle->getShape()->position.x(1), 1500000*particle->charge*particle->charge, 51, 74, 144, 0);
 	}
 	((Circle*)particle->getShape())->setRadius(particle->sprite->srcW()/2);
 	
