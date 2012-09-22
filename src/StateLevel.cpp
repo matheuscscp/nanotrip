@@ -17,7 +17,8 @@ StateLevel::Args::Args(const std::string& levelname) : levelname(levelname) {}
 StateLevel::StateLevel(ArgsBase* args) :
 is_bg_init(false),
 max_abs_charge(1),
-charge_cursor_position(640)
+charge_cursor_position(640),
+attempts(3)
 {
 	// background
 	bg = new Sprite("img/level/background.png");
@@ -26,6 +27,7 @@ charge_cursor_position(640)
 	
 	// all sprites
 	sprite_avatar = new Animation("img/level/avatar_positive.png", 0, 7, 1, 16);
+	sprite_hole = new Sprite("img/level/hole.png");
 	sprite_negative = new Sprite("img/level/negative.png");
 	sprite_neutral = new Sprite("img/level/neutral.png");
 	sprite_positive = new Sprite("img/level/positive.png");
@@ -56,6 +58,7 @@ StateLevel::~StateLevel() {
 	// all sprites
 	delete bg;
 	delete sprite_avatar;
+	delete sprite_hole;
 	delete sprite_negative;
 	delete sprite_neutral;
 	delete sprite_positive;
@@ -101,21 +104,24 @@ void StateLevel::render() {
 	// background
 	bg->render();
 	
-	// the avatar
-	avatar->render();
-	
 	// all particles
 	for (list<Particle*>::iterator it = particles.begin(); it != particles.end(); ++it) {
 		(*it)->render();
 	}
 	
+	// the hole
+	hole->render();
+	
+	// the avatar
+	avatar->render();
+	
+	// charge changer
+	charge_bar->render(0, 710);
+	charge_cursor->render(charge_cursor_position, 715, true);
+	
 	// press space to start
 	if ((avatar->pinned) && ((SDL_GetTicks()/600) % 2))
 		press_space->render(640, 360);
-	
-	// charge changer
-	charge_bar->render(0, 704);
-	charge_cursor->render(charge_cursor_position, 712, true);
 }
 
 void StateLevel::reload() {
@@ -125,6 +131,11 @@ void StateLevel::reload() {
 
 void StateLevel::assemble() {
 	assembleAvatar();
+	
+	assembleHole();
+	
+	// avatar-hole force interaction
+	interactions.push_back(Interaction(avatar, hole, (Interaction::callback)&Particle::addParticleFieldForces, true));
 	
 	// all particles
 	list<Configuration> conf = raw.getConfigList("particle");
@@ -152,7 +163,7 @@ void StateLevel::assembleAvatar() {
 	avatar = new Particle();
 	avatar->pinned = true;
 	avatar->getShape()->position = r2vec(conf.getReal("x"), conf.getReal("y"));
-	avatar->speed = r2vec(conf.getReal("speedX"), conf.getReal("speedX"));
+	avatar->speed = r2vec(conf.getReal("speedX"), conf.getReal("speedY"));
 	avatar->setElasticity(conf.getReal("k"));
 	avatar->setMass(conf.getReal("m"));
 	avatar->charge = conf.getReal("q");
@@ -160,6 +171,22 @@ void StateLevel::assembleAvatar() {
 	// sprite
 	avatar->sprite = sprite_avatar;
 	((Circle*)avatar->getShape())->setRadius(avatar->sprite->rectW()/2);
+}
+
+void StateLevel::assembleHole() {
+	Configuration conf = raw.getConfig("hole");
+	hole = new Particle();
+	hole->pinned = true;
+	hole->getShape()->position = r2vec(conf.getReal("x"), conf.getReal("y"));
+	hole->setElasticity(conf.getReal("k"));
+	hole->setMass(conf.getReal("m"));
+	hole->charge = conf.getReal("q");
+	
+	// sprite
+	hole->sprite = sprite_hole;
+	if (!is_bg_init)
+		bg->gradient(hole->getShape()->position.x(0), hole->getShape()->position.x(1), 100, 127, 127, 127, 0);
+	((Circle*)hole->getShape())->setRadius(hole->sprite->rectW()/2);
 }
 
 Particle* StateLevel::assembleParticle(const Configuration& conf) {
@@ -192,6 +219,9 @@ void StateLevel::clear() {
 	// the avatar
 	delete avatar;
 	
+	// the hole
+	delete hole;
+	
 	// all particles
 	while (particles.size()) {
 		delete particles.back();
@@ -211,10 +241,6 @@ void StateLevel::handleKeyDown(const observer::Event& event, bool& stop) {
 		
 	case SDLK_SPACE:
 		avatar->pinned = false;
-		break;
-		
-	case 'r':
-		reload();
 		break;
 		
 	default:

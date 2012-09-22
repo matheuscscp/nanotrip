@@ -24,6 +24,7 @@ protected:
 	
 	Sprite* bg;
 	Sprite* sprite_avatar;
+	Sprite* sprite_hole;
 	Sprite* sprite_negative;
 	Sprite* sprite_neutral;
 	Sprite* sprite_positive;
@@ -35,12 +36,15 @@ protected:
 	std::list<Interaction> interactions;
 	
 	Particle* avatar;
+	Particle* hole;
 	std::list<Particle*> particles;
 	
 	Sprite* charge_cursor;
 	Sprite* charge_bar;
 	lalge::Scalar max_abs_charge;
 	lalge::Scalar charge_cursor_position;
+	
+	int attempts;
 public:
 	StateLevel(ArgsBase* args);
 	~StateLevel();
@@ -53,6 +57,7 @@ protected:
 	void reload();
 	void assemble();
 	void assembleAvatar();
+	void assembleHole();
 	Particle* assembleParticle(const Configuration& conf);
 	void clear();
 	
