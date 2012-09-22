@@ -18,12 +18,19 @@ StateLevel::StateLevel(ArgsBase* args) :
 is_bg_init(false),
 max_abs_charge(1),
 charge_cursor_position(640),
-attempts(3)
+life(3)
 {
 	// background
 	bg = new Sprite("img/level/background.png");
 	bg->render();
 	bg->setAlpha(0.3f);
+	hud = new Sprite("img/level/hud.png");
+	eatles = new Sprite("img/level/eatles.png");
+	
+	sprite_life[0].load("img/level/0life.png");
+	sprite_life[1].load("img/level/1life.png");
+	sprite_life[2].load("img/level/2life.png");
+	sprite_life[3].load("img/level/3life.png");
 	
 	// all sprites
 	sprite_avatar = new Animation("img/level/avatar_positive.png", 0, 7, 1, 16);
@@ -57,6 +64,8 @@ StateLevel::~StateLevel() {
 	
 	// all sprites
 	delete bg;
+	delete hud;
+	delete eatles;
 	delete sprite_avatar;
 	delete sprite_hole;
 	delete sprite_negative;
@@ -100,6 +109,9 @@ void StateLevel::update() {
 void StateLevel::render() {
 	// background
 	bg->render();
+	hud->render();
+	eatles->render(45, 30);
+	sprite_life[life].render(236, 161);
 	
 	// all particles
 	for (list<Particle*>::iterator it = particles.begin(); it != particles.end(); ++it) {

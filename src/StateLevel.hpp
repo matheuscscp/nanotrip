@@ -23,6 +23,12 @@ protected:
 	bool is_bg_init;
 	
 	Sprite* bg;
+	Sprite* hud;
+	Sprite* eatles;
+	
+	int life;
+	Sprite sprite_life[4];
+	
 	Sprite* sprite_avatar;
 	Sprite* sprite_hole;
 	Sprite* sprite_negative;
@@ -43,8 +49,6 @@ protected:
 	Sprite* charge_bar;
 	lalge::Scalar max_abs_charge;
 	lalge::Scalar charge_cursor_position;
-	
-	int attempts;
 public:
 	StateLevel(ArgsBase* args);
 	~StateLevel();
