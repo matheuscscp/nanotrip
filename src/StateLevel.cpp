@@ -72,14 +72,11 @@ StateLevel::~StateLevel() {
 }
 
 void StateLevel::handleUnstack(ArgsBase* args) {
-	/*switch (((Args*)args)->unstack_op) {
-	case x:
-		x;
-		break;
-		
-	default:
-		break;
-	}*/
+	frozen_ = false;
+	if (args) {
+		delete args;
+		throw new Change("StateMainMenu");
+	}
 }
 
 void StateLevel::update() {
@@ -235,8 +232,8 @@ void StateLevel::clear() {
 void StateLevel::handleKeyDown(const observer::Event& event, bool& stop) {
 	switch (inputmanager_event.key.keysym.sym) {
 	case SDLK_ESCAPE:
-		frozen_ = (!frozen_);
-		//throw new StackUp("StatePause", 0);
+		frozen_ = true;
+		throw new StackUp("StateMenu");
 		break;
 		
 	case SDLK_SPACE:
