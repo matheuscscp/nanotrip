@@ -18,7 +18,11 @@ StateLevel::StateLevel(ArgsBase* args) :
 is_bg_init(false),
 max_abs_charge(1),
 charge_cursor_position(640),
-life(3)
+life(3),
+border_top(0),
+border_right(0),
+border_bottom(0),
+border_left(0)
 {
 	// background
 	bg = new Sprite("img/level/background.png");
@@ -50,9 +54,25 @@ life(3)
 	press_space = new Text("ttf/Swiss721BlackRoundedBT.ttf", "Press space", 100, 0, SDLBase::getColor(255, 255, 255), Text::blended, SDLBase::getColor(0, 0, 0));
 	
 	// charge changer
-	max_abs_charge = raw.getConfig("general").getReal("max_abs_charge");
 	charge_bar = new Sprite("img/level/charge_bar.png");
 	charge_cursor = new Sprite("img/level/charge_cursor.png");
+	
+	// general config
+	{
+		Configuration general = raw.getConfig("general");
+		
+		max_abs_charge = general.getReal("max_abs_charge");
+		
+		// borders
+		if (general.getInt("border_top"))
+			border_top = new Sprite("img/level/border_top_bottom.png");
+		if (general.getInt("border_right"))
+			border_right = new Sprite("img/level/border_right.png");
+		if (general.getInt("border_bottom"))
+			border_bottom = new Sprite("img/level/border_top_bottom.png");
+		if (general.getInt("border_left"))
+			border_left = new Sprite("img/level/border_left.png");
+	}
 }
 
 StateLevel::~StateLevel() {
@@ -68,6 +88,16 @@ StateLevel::~StateLevel() {
 	delete sprite_negative;
 	delete sprite_neutral;
 	delete sprite_positive;
+	
+	// borders
+	if (border_top)
+		delete border_top;
+	if (border_right)
+		delete border_right;
+	if (border_bottom)
+		delete border_bottom;
+	if (border_left)
+		delete border_left;
 	
 	// press space to start
 	delete press_space;
@@ -108,9 +138,6 @@ void StateLevel::update() {
 void StateLevel::render() {
 	// background
 	bg->render();
-	hud->render();
-	eatles->render(45, 30);
-	sprite_life->render(236, 161);
 	
 	// all particles
 	for (list<Particle*>::iterator it = particles.begin(); it != particles.end(); ++it) {
@@ -122,6 +149,21 @@ void StateLevel::render() {
 	
 	// the avatar
 	avatar->render();
+	
+	// borders
+	if (border_top)
+		border_top->render();
+	if (border_right)
+		border_right->render(1250, 0);
+	if (border_bottom)
+		border_bottom->render(0, 700);
+	if (border_left)
+		border_left->render();
+	
+	// hud
+	hud->render();
+	eatles->render(45, 30);
+	sprite_life->render(236, 161);
 	
 	// charge changer
 	charge_bar->render(0, 710);

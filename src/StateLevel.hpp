@@ -29,6 +29,11 @@ protected:
 	int life;
 	Sprite* sprite_life;
 	
+	Sprite* border_top;
+	Sprite* border_right;
+	Sprite* border_bottom;
+	Sprite* border_left;
+	
 	Sprite* sprite_avatar;
 	Sprite* sprite_hole;
 	Sprite* sprite_negative;
