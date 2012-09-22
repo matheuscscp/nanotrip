@@ -10,6 +10,10 @@
 class StateLevel : public State {
 GAMESTATE
 public:
+	enum {
+		
+	};
+	
 	class Args : public ArgsBase {
 	public:
 		std::string levelname;
@@ -22,6 +26,8 @@ protected:
 	Sprite* sprite_neutral;
 	Sprite* sprite_positive;
 	
+	Text* press_space;
+	
 	Configuration raw;
 	
 	std::list<Interaction> interactions;
@@ -32,6 +38,8 @@ public:
 	StateLevel(ArgsBase* args);
 	~StateLevel();
 	
+	void handleUnstack(ArgsBase* args);
+	
 	void update();
 	void render();
 protected:
@@ -40,6 +48,8 @@ protected:
 	void assembleAvatar();
 	Particle* assembleParticle(const Configuration& conf);
 	void clear();
+	
+	void handleKeyDown(const observer::Event& event, bool& stop);
 };
 
 #endif

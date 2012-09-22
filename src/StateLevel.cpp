@@ -2,6 +2,8 @@
 
 #include "Animation.hpp"
 #include "Circle.hpp"
+#include "InputManager.hpp"
+#include "SDLBase.hpp"
 
 using namespace common;
 using namespace lalge;
@@ -30,6 +32,12 @@ StateLevel::StateLevel(ArgsBase* args) {
 	assemble();
 	
 	delete args;
+	
+	// input hooks
+	InputManager::instance()->connect(InputManager::KEYDOWN, this, &StateLevel::handleKeyDown);
+	
+	// press space to start
+	press_space = new Text("ttf/Swiss721BlackRoundedBT.ttf", "Press space", 100, 0, SDLBase::getColor(255, 255, 255), Text::blended, SDLBase::getColor(0, 0, 0));
 }
 
 StateLevel::~StateLevel() {
@@ -41,6 +49,20 @@ StateLevel::~StateLevel() {
 	delete sprite_negative;
 	delete sprite_neutral;
 	delete sprite_positive;
+	
+	// press space to start
+	delete press_space;
+}
+
+void StateLevel::handleUnstack(ArgsBase* args) {
+	/*switch (((Args*)args)->unstack_op) {
+	case x:
+		x;
+		break;
+		
+	default:
+		break;
+	}*/
 }
 
 void StateLevel::update() {
@@ -72,6 +94,10 @@ void StateLevel::render() {
 	for (list<Particle*>::iterator it = particles.begin(); it != particles.end(); ++it) {
 		(*it)->render();
 	}
+	
+	// press space to start
+	if ((avatar->pinned) && ((SDL_GetTicks()/600) % 2))
+		press_space->render(640, 360);
 }
 
 void StateLevel::reload() {
@@ -104,6 +130,7 @@ void StateLevel::assemble() {
 void StateLevel::assembleAvatar() {
 	Configuration conf = raw.getConfig("avatar");
 	avatar = new Particle();
+	avatar->pinned = true;
 	avatar->getShape()->position = r2vec(conf.getReal("x"), conf.getReal("y"));
 	avatar->speed = r2vec(conf.getReal("speedX"), conf.getReal("speedX"));
 	avatar->setElasticity(conf.getReal("k"));
@@ -151,4 +178,24 @@ void StateLevel::clear() {
 	
 	// all interactions
 	interactions.clear();
+}
+
+void StateLevel::handleKeyDown(const observer::Event& event, bool& stop) {
+	switch (inputmanager_event.key.keysym.sym) {
+	case SDLK_ESCAPE:
+		frozen_ = (!frozen_);
+		//throw new StackUp("StatePause", 0);
+		break;
+		
+	case SDLK_SPACE:
+		avatar->pinned = false;
+		break;
+		
+	case 'r':
+		reload();
+		break;
+		
+	default:
+		break;
+	}
 }

@@ -108,7 +108,7 @@ public:
 	
 	float angle () const;
 	
-	void setAlpha(float a);
+	void setAlpha(float alpha);
 	
 	// gradiente
 	void gradient(Uint32 x, Uint32 y, int radius, Uint8 red, Uint8 green, Uint8 blue, Uint8 alpha);

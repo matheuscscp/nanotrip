@@ -10,8 +10,10 @@ Particle::Particle() : elasticity(0), mass(1), charge(0), pinned(false) { setSha
 Particle::~Particle() {}
 
 void Particle::update() {
-	if (pinned)
+	if (pinned) {
+		force = 0;
 		return;
+	}
 	
 	Scalar dt = Scalar(SDLBase::dt())/1000;
 	getShape()->position += ((speed*dt) + acceleration*(dt*dt/2));

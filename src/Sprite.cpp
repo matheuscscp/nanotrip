@@ -176,9 +176,8 @@ float Sprite::angle () const
 	return angle_;
 }
 
-void Sprite::setAlpha(float a) {
-	int alpha = a * 255;
-	SDL_SetAlpha(src, SDL_SRCALPHA, alpha);
+void Sprite::setAlpha(float alpha) {
+	SDL_SetAlpha(src, SDL_SRCALPHA, alpha * 255);
 }
 
 /**
