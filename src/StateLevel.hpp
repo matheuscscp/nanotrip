@@ -28,6 +28,8 @@ protected:
 	
 	int life;
 	Sprite* sprite_life;
+	int level_time;
+	int current_time;
 	
 	Sprite* border_top;
 	Sprite* border_right;
@@ -41,6 +43,7 @@ protected:
 	Sprite* sprite_positive;
 	
 	Text* press_space;
+	Text* time_text;
 	
 	Configuration raw;
 	

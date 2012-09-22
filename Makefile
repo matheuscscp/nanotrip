@@ -29,7 +29,7 @@ OBJ7 = $(OBJ6) $(OBJDIR)/Button.o $(OBJDIR)/StateNewGame.o $(OBJDIR)/StateLoadLe
 OBJ8 = $(OBJ7) $(OBJDIR)/StateMainMenu.o $(OBJDIR)/StateLevel.o $(OBJDIR)/StatePlay.o
 OBJ9 = $(OBJ8) $(OBJDIR)/StateMakeLevel.o $(OBJDIR)/StateMovie.o $(OBJDIR)/StateRanking.o
 OBJ10 = $(OBJ9) $(OBJDIR)/StateInstructions.o $(OBJDIR)/StateCredits.o $(OBJDIR)/StateMenu.o
-OBJ11 = $(OBJ10) 
+OBJ11 = $(OBJ10) $(OBJDIR)/Stopwatch.o
 
 OBJ  = $(OBJ11)
 

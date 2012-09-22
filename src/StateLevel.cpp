@@ -50,8 +50,9 @@ border_left(0)
 	InputManager::instance()->connect(InputManager::KEYDOWN, this, &StateLevel::handleKeyDown);
 	InputManager::instance()->connect(InputManager::MOUSEMOTION, this, &StateLevel::handleMouseMotion);
 	
-	// press space to start
-	press_space = new Text("ttf/Swiss721BlackRoundedBT.ttf", "Press space", 100, 0, SDLBase::getColor(255, 255, 255), Text::blended, SDLBase::getColor(0, 0, 0));
+	// texts
+	press_space = new Text("ttf/Swiss721BlackRoundedBT.ttf", "Press space", 100, 0, SDLBase::getColor(255, 255, 255), Text::blended);
+	time_text = new Text("ttf/Swiss721BlackRoundedBT.ttf", "0:00", 14, 0, SDLBase::getColor(255, 31, 77), Text::blended);
 	
 	// charge changer
 	charge_bar = new Sprite("img/level/charge_bar.png");
@@ -99,8 +100,9 @@ StateLevel::~StateLevel() {
 	if (border_left)
 		delete border_left;
 	
-	// press space to start
+	// texts
 	delete press_space;
+	delete time_text;
 	
 	// charge cursor
 	delete charge_bar;
@@ -163,6 +165,7 @@ void StateLevel::render() {
 	// hud
 	hud->render();
 	eatles->render(45, 30);
+	time_text->render(288, 54);
 	sprite_life->render(236, 161);
 	
 	// charge changer
@@ -235,7 +238,7 @@ void StateLevel::assembleHole() {
 	// sprite
 	hole->sprite = sprite_hole;
 	if (!is_bg_init)
-		bg->gradient(hole->getShape()->position.x(0), hole->getShape()->position.x(1), 100, 127, 127, 127, 0);
+		bg->gradient(hole->getShape()->position.x(0), hole->getShape()->position.x(1), 200, 127, 127, 127, 0);
 	((Circle*)hole->getShape())->setRadius(hole->sprite->rectW()/2);
 }
 
@@ -291,10 +294,6 @@ void StateLevel::handleKeyDown(const observer::Event& event, bool& stop) {
 		
 	case SDLK_SPACE:
 		avatar->pinned = false;
-		break;
-		
-	case SDLK_p:
-		life--;
 		break;
 		
 	default:
