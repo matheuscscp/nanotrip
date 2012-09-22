@@ -36,6 +36,11 @@ protected:
 	
 	Particle* avatar;
 	std::list<Particle*> particles;
+	
+	Sprite* charge_cursor;
+	Sprite* charge_bar;
+	lalge::Scalar max_abs_charge;
+	lalge::Scalar charge_cursor_position;
 public:
 	StateLevel(ArgsBase* args);
 	~StateLevel();
@@ -52,6 +57,7 @@ protected:
 	void clear();
 	
 	void handleKeyDown(const observer::Event& event, bool& stop);
+	void handleMouseMotion(const observer::Event& event, bool& stop);
 };
 
 #endif

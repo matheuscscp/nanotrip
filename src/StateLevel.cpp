@@ -14,7 +14,11 @@ GAMESTATE_DEF(StateLevel)
 
 StateLevel::Args::Args(const std::string& levelname) : levelname(levelname) {}
 
-StateLevel::StateLevel(ArgsBase* args) : is_bg_init(false) {
+StateLevel::StateLevel(ArgsBase* args) :
+is_bg_init(false),
+max_abs_charge(1),
+charge_cursor_position(640)
+{
 	// background
 	bg = new Sprite("img/level/background.png");
 	bg->render();
@@ -35,9 +39,15 @@ StateLevel::StateLevel(ArgsBase* args) : is_bg_init(false) {
 	
 	// input hooks
 	InputManager::instance()->connect(InputManager::KEYDOWN, this, &StateLevel::handleKeyDown);
+	InputManager::instance()->connect(InputManager::MOUSEMOTION, this, &StateLevel::handleMouseMotion);
 	
 	// press space to start
 	press_space = new Text("ttf/Swiss721BlackRoundedBT.ttf", "Press space", 100, 0, SDLBase::getColor(255, 255, 255), Text::blended, SDLBase::getColor(0, 0, 0));
+	
+	// charge changer
+	max_abs_charge = raw.getConfig("general").getReal("max_abs_charge");
+	charge_bar = new Sprite("img/level/charge_bar.png");
+	charge_cursor = new Sprite("img/level/charge_cursor.png");
 }
 
 StateLevel::~StateLevel() {
@@ -52,6 +62,10 @@ StateLevel::~StateLevel() {
 	
 	// press space to start
 	delete press_space;
+	
+	// charge cursor
+	delete charge_bar;
+	delete charge_cursor;
 }
 
 void StateLevel::handleUnstack(ArgsBase* args) {
@@ -98,6 +112,10 @@ void StateLevel::render() {
 	// press space to start
 	if ((avatar->pinned) && ((SDL_GetTicks()/600) % 2))
 		press_space->render(640, 360);
+	
+	// charge changer
+	charge_bar->render(0, 704);
+	charge_cursor->render(charge_cursor_position, 712, true);
 }
 
 void StateLevel::reload() {
@@ -202,4 +220,10 @@ void StateLevel::handleKeyDown(const observer::Event& event, bool& stop) {
 	default:
 		break;
 	}
+}
+
+void StateLevel::handleMouseMotion(const observer::Event& event, bool& stop) {
+	// handling avatar charge variables
+	charge_cursor_position = InputManager::instance()->mouseX();
+	avatar->charge = max_abs_charge*(charge_cursor_position - 640)/640;
 }
