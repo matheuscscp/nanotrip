@@ -10,9 +10,9 @@ INCLUDE = -I /usr/include/SDL -I /usr/local/include/SDL
 
 EXE = game
 
-RUNFPS = 
-FIRSTATE = StateMainMenu
-RUNFLAGS = $(RUNFPS) -p $(CURDIR)/ -s $(FIRSTATE)
+FPS = 
+STATE = StateMainMenu
+RUNFLAGS = $(FPS) -p $(CURDIR)/ -s $(STATE)
 
 LIB = -lSDL -lSDL_image -lSDL_gfx -lSDL_ttf -lSDL_mixer
 
