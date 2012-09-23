@@ -14,8 +14,15 @@
 class StateLevel : public State {
 GAMESTATE
 public:
-	enum {
+	class UnstackArgs : public ArgsBase {
+	public:
+		enum {
+			TRYAGAIN,
+			MAINMENU
+		};
 		
+		int op;
+		UnstackArgs(int op);
 	};
 	
 	class Args : public ArgsBase {
@@ -30,6 +37,8 @@ protected:
 	Rectangle screen_box;
 	
 	Sprite* bg;
+	Sprite* bg_grad;
+	Sprite* bg_nograd;
 	Sprite* hud;
 	Sprite* eatles;
 	
@@ -47,8 +56,10 @@ protected:
 	Sprite* sprite_avatar;
 	Sprite* sprite_hole;
 	Sprite* sprite_negative;
+	Sprite* sprite_negative_anim;
 	Sprite* sprite_neutral;
 	Sprite* sprite_positive;
+	Sprite* sprite_positive_anim;
 	
 	Audio* sound_lose;
 	
@@ -92,6 +103,7 @@ protected:
 	
 	void lose();
 	void gameOver();
+	void unpinParticles();
 };
 
 #endif

@@ -16,6 +16,8 @@ using std::list;
 
 GAMESTATE_DEF(StateLevel)
 
+StateLevel::UnstackArgs::UnstackArgs(int op) : op(op) {}
+
 StateLevel::Args::Args(const std::string& levelname) : levelname(levelname) {}
 
 StateLevel::StateLevel(ArgsBase* args) :
@@ -36,19 +38,23 @@ border_left(0)
 	screen_box.setHeight(720);
 	
 	// background
-	bg = new Sprite("img/level/background.png");
-	bg->render();
-	bg->setAlpha(0.3f);
+	bg_grad = new Sprite("img/level/background.png");
+	bg_nograd = new Sprite("img/level/background.png");
+	bg_grad->render();
+	bg_grad->setAlpha(0.3f);
+	bg_nograd->setAlpha(0.15f);
 	hud = new Sprite("img/level/hud.png");
 	eatles = new Sprite("img/level/eatles.png");
 	sprite_life = new Animation("img/level/life.png", 3, 1, 4, 1);
 	
 	// all sprites
 	sprite_avatar = new Animation("img/level/avatar_positive.png", 0, 7, 1, 16);
-	sprite_hole = new Sprite("img/level/hole.png");
+	sprite_hole = new Sprite("img/level/blackhole.png");
 	sprite_negative = new Sprite("img/level/negative.png");
+	sprite_negative_anim = new Animation("img/level/negative_ssheet.png", 0, 20, 1, 16);
 	sprite_neutral = new Sprite("img/level/neutral.png");
 	sprite_positive = new Sprite("img/level/positive.png");
+	sprite_positive_anim = new Animation("img/level/positive_ssheet.png", 0, 20, 1, 16);
 	
 	// all sounds
 	sound_lose = new Audio("sfx/level/lose.wav");
@@ -103,15 +109,18 @@ StateLevel::~StateLevel() {
 	clear();
 	
 	// all sprites
-	delete bg;
+	delete bg_grad;
+	delete bg_nograd;
 	delete hud;
 	delete eatles;
 	delete sprite_life;
 	delete sprite_avatar;
 	delete sprite_hole;
 	delete sprite_negative;
+	delete sprite_negative_anim;
 	delete sprite_neutral;
 	delete sprite_positive;
+	delete sprite_positive_anim;
 	
 	// all sounds
 	delete sound_lose;
@@ -138,9 +147,26 @@ StateLevel::~StateLevel() {
 
 void StateLevel::handleUnstack(ArgsBase* args) {
 	frozen_ = false;
-	if (args) {
-		delete args;
+	if (!args)
+		return;
+	
+	int op = ((UnstackArgs*)args)->op;
+	delete args;
+	
+	switch (op) {
+	case UnstackArgs::TRYAGAIN:
+		life = 3;
+		((Animation*)sprite_life)->setFrame(life);
+		lose_ = false;
+		reload();
+		break;
+		
+	case UnstackArgs::MAINMENU:
 		throw new Change("StateMainMenu");
+		break;
+		
+	default:
+		break;
 	}
 }
 
@@ -148,8 +174,10 @@ void StateLevel::update() {
 	// timer
 	timer.update();
 	
-	// avatar animation
+	// animations
 	sprite_avatar->update();
+	sprite_negative_anim->update();
+	sprite_positive_anim->update();
 	
 	// all interactions
 	for (list<Interaction>::iterator it = interactions.begin(); it != interactions.end(); ++it) {
@@ -173,6 +201,12 @@ void StateLevel::update() {
 		// checking if the avatar is far away
 		if (!screen_box.Shape::pointInside(avatar->getShape()->position))
 			lose();
+		
+		// unpin particles
+		if ((timer.time()) && (timer.time() <= 2000) && (bg == bg_grad)) {
+			bg = bg_nograd;
+			unpinParticles();
+		}
 	}
 	// if the message was shown
 	else if (stopwatch.time() >= LOSE_DELAY) {
@@ -237,6 +271,8 @@ void StateLevel::reload() {
 void StateLevel::assemble() {
 	setTimeText(level_time);
 	
+	bg = bg_grad;
+	
 	assembleAvatar();
 	
 	assembleHole();
@@ -291,8 +327,8 @@ void StateLevel::assembleHole() {
 	
 	// sprite
 	hole->sprite = sprite_hole;
-	if (!is_bg_init)
-		bg->gradient(hole->getShape()->position.x(0), hole->getShape()->position.x(1), 200, 127, 127, 127, 0);
+	//if (!is_bg_init)
+		//bg->gradient(hole->getShape()->position.x(0), hole->getShape()->position.x(1), 200, 127, 127, 127, 0);
 	((Circle*)hole->getShape())->setRadius(hole->sprite->rectW()/2);
 }
 
@@ -308,16 +344,16 @@ Particle* StateLevel::assembleParticle(const Configuration& conf) {
 	if (particle->charge == 0)
 		particle->sprite = sprite_neutral;
 	else if (particle->charge < 0) {
-		particle->sprite = sprite_negative;
+		particle->sprite = sprite_negative_anim;
 		if (!is_bg_init)
 			bg->gradient(particle->getShape()->position.x(0), particle->getShape()->position.x(1), 1500000*particle->charge*particle->charge, 255, 31, 77, 0);
 	}
 	else {
-		particle->sprite = sprite_positive;
+		particle->sprite = sprite_positive_anim;
 		if (!is_bg_init)
 			bg->gradient(particle->getShape()->position.x(0), particle->getShape()->position.x(1), 1500000*particle->charge*particle->charge, 51, 74, 144, 0);
 	}
-	((Circle*)particle->getShape())->setRadius(particle->sprite->srcW()/2);
+	((Circle*)particle->getShape())->setRadius(particle->sprite->rectW()/2);
 	
 	return particle;
 }
@@ -363,7 +399,6 @@ void StateLevel::handleKeyDown(const observer::Event& event, bool& stop) {
 			return;
 		avatar->pinned = false;
 		timer.start(level_time*1000);
-		
 		break;
 		
 	default:
@@ -384,14 +419,30 @@ void StateLevel::handleTimerDone(const observer::Event& event, bool& stop) {
 
 void StateLevel::lose() {
 	lose_ = true;
+	
 	life--;
 	if (life >= 0)
 		((Animation*)sprite_life)->setFrame(life);
+	
 	timer.cancel();
+	
 	sound_lose->play(1);
+	
 	stopwatch.start();
 }
 
 void StateLevel::gameOver() {
 	//TODO
+}
+
+void StateLevel::unpinParticles() {
+	for (list<Particle*>::iterator it = particles.begin(); it != particles.end(); ++it) {
+		(*it)->pinned = false;
+		
+		// sprite
+		if ((*it)->charge < 0)
+			(*it)->sprite = sprite_negative;
+		else if ((*it)->charge > 0)
+			(*it)->sprite = sprite_positive;
+	}
 }
