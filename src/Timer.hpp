@@ -1,20 +1,32 @@
-#ifndef STOPWATCH_HPP
-#define STOPWATCH_HPP
+#ifndef TIMER_HPP
+#define TIMER_HPP
 
 #include "observer.hpp"
 
-class Stopwatch {
-private:
-	int initialtime;
-	int pausetime;
-	bool paused;
+class Timer {
+SUBJECT
 public:
-	Stopwatch();
-	~Stopwatch();
+	enum {
+		DONE = 0,
+		
+		// don't change this
+		LASTEVENT
+	};
+private:
+	bool done;
+	bool paused;
+	int done_ticks;
+	int pausetime;
+public:
+	Timer();
+	~Timer();
 	
-	void start();
+	void update();
+	
+	void start(int ms);
 	void pause();
 	void resume();
+	void cancel();
 	
 	int time() const;
 	bool ispaused() const;

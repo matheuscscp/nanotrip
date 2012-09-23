@@ -11,8 +11,7 @@ public:
 	Circle();
 	virtual ~Circle();
 	
-	bool mouseInside() const;
-	bool mouseDownInside() const;
+	bool pointInside(int x, int y) const;
 	
 	lalge::Scalar getRadius() const;
 	void setRadius(lalge::Scalar radius);

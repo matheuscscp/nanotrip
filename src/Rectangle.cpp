@@ -1,28 +1,16 @@
 #include "Rectangle.hpp"
 
-#include "InputManager.hpp"
-
 using namespace lalge;
 
 Rectangle::Rectangle() : width(1), height(1) {}
 Rectangle::~Rectangle() {}
 
-bool Rectangle::mouseInside() const {
-	int mousex = InputManager::instance()->mouseX();
-	int mousey = InputManager::instance()->mouseY();
-	if ((mousex >= position.x(0) - width/2) && (mousex < position.x(0) + width/2)) {
-		return ((mousey >= position.x(1) - height/2) && (mousey < position.x(1) + height/2));
+bool Rectangle::pointInside(int x, int y) const {
+	if ((x >= position.x(0) - width/2) && (x < position.x(0) + width/2)) {
+		return ((y >= position.x(1) - height/2) && (y < position.x(1) + height/2));
 	}
 	return false;
-}
-
-bool Rectangle::mouseDownInside() const {
-	int mousex = InputManager::instance()->mouseDownX();
-	int mousey = InputManager::instance()->mouseDownY();
-	if ((mousex >= position.x(0) - width/2) && (mousex < position.x(0) + width/2)) {
-		return ((mousey >= position.x(1) - height/2) && (mousey < position.x(1) + height/2));
-	}
-	return false;
+	
 }
 
 Scalar Rectangle::getWidth() const { return width; }

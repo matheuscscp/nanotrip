@@ -12,8 +12,7 @@ public:
 	Rectangle();
 	virtual ~Rectangle();
 	
-	bool mouseInside() const;
-	bool mouseDownInside() const;
+	bool pointInside(int x, int y) const;
 	
 	lalge::Scalar getWidth() const;
 	void setWidth(lalge::Scalar width);

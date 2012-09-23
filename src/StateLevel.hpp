@@ -6,6 +6,10 @@
 
 #include "State.hpp"
 #include "Particle.hpp"
+#include "Timer.hpp"
+#include "Stopwatch.hpp"
+#include "Rectangle.hpp"
+#include "Audio.hpp"
 
 class StateLevel : public State {
 GAMESTATE
@@ -21,16 +25,20 @@ public:
 	};
 protected:
 	bool is_bg_init;
+	bool win_;
+	bool lose_;
+	Rectangle screen_box;
 	
 	Sprite* bg;
 	Sprite* hud;
 	Sprite* eatles;
 	
 	int life;
-	Sprite* sprite_life;
 	int level_time;
-	int current_time;
+	Timer timer;
+	Stopwatch stopwatch;
 	
+	Sprite* sprite_life;
 	Sprite* border_top;
 	Sprite* border_right;
 	Sprite* border_bottom;
@@ -42,8 +50,11 @@ protected:
 	Sprite* sprite_neutral;
 	Sprite* sprite_positive;
 	
-	Text* press_space;
-	Text* time_text;
+	Audio* sound_lose;
+	
+	Text* text_press_space;
+	Text* text_time;
+	Text* text_you_lose;
 	
 	Configuration raw;
 	
@@ -73,8 +84,14 @@ protected:
 	Particle* assembleParticle(const Configuration& conf);
 	void clear();
 	
+	void setTimeText(int seconds);
+	
 	void handleKeyDown(const observer::Event& event, bool& stop);
 	void handleMouseMotion(const observer::Event& event, bool& stop);
+	void handleTimerDone(const observer::Event& event, bool& stop);
+	
+	void lose();
+	void gameOver();
 };
 
 #endif

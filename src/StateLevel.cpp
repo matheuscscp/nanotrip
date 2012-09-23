@@ -1,9 +1,13 @@
+#include <sstream>
+
 #include "StateLevel.hpp"
 
 #include "Animation.hpp"
 #include "Circle.hpp"
 #include "InputManager.hpp"
 #include "SDLBase.hpp"
+
+#define LOSE_DELAY	4000
 
 using namespace common;
 using namespace lalge;
@@ -16,6 +20,8 @@ StateLevel::Args::Args(const std::string& levelname) : levelname(levelname) {}
 
 StateLevel::StateLevel(ArgsBase* args) :
 is_bg_init(false),
+win_(false),
+lose_(false),
 max_abs_charge(1),
 charge_cursor_position(640),
 life(3),
@@ -24,6 +30,11 @@ border_right(0),
 border_bottom(0),
 border_left(0)
 {
+	// screen box
+	screen_box.position = r2vec(640, 360);
+	screen_box.setWidth(1280);
+	screen_box.setHeight(720);
+	
 	// background
 	bg = new Sprite("img/level/background.png");
 	bg->render();
@@ -39,10 +50,11 @@ border_left(0)
 	sprite_neutral = new Sprite("img/level/neutral.png");
 	sprite_positive = new Sprite("img/level/positive.png");
 	
+	// all sounds
+	sound_lose = new Audio("sfx/level/lose.wav");
+	
 	// configuration file
 	raw.readTxt(RootPath::get("level/" + ((Args*)args)->levelname + ".conf"));
-	
-	assemble();
 	
 	delete args;
 	
@@ -51,8 +63,9 @@ border_left(0)
 	InputManager::instance()->connect(InputManager::MOUSEMOTION, this, &StateLevel::handleMouseMotion);
 	
 	// texts
-	press_space = new Text("ttf/Swiss721BlackRoundedBT.ttf", "Press space", 100, 0, SDLBase::getColor(255, 255, 255), Text::blended);
-	time_text = new Text("ttf/Swiss721BlackRoundedBT.ttf", "0:00", 14, 0, SDLBase::getColor(255, 31, 77), Text::blended);
+	text_press_space = new Text("ttf/Swiss721BlackRoundedBT.ttf", "Press space", 100, 0, SDLBase::getColor(255, 255, 255), Text::blended);
+	text_time = new Text("ttf/Swiss721BlackRoundedBT.ttf", "0:00", 14, 0, SDLBase::getColor(255, 31, 77), Text::blended);
+	text_you_lose = new Text("ttf/Swiss721BlackRoundedBT.ttf", "You lose", 100, 0, SDLBase::getColor(255, 255, 255), Text::blended);
 	
 	// charge changer
 	charge_bar = new Sprite("img/level/charge_bar.png");
@@ -61,6 +74,14 @@ border_left(0)
 	// general config
 	{
 		Configuration general = raw.getConfig("general");
+		
+		// level time
+		level_time = general.getInt("level_time");
+		if (level_time < 5)
+			level_time = 5;
+		else if (level_time > 599)
+			level_time = 599;
+		timer.connect(Timer::DONE, this, &StateLevel::handleTimerDone);
 		
 		max_abs_charge = general.getReal("max_abs_charge");
 		
@@ -74,6 +95,8 @@ border_left(0)
 		if (general.getInt("border_left"))
 			border_left = new Sprite("img/level/border_left.png");
 	}
+	
+	assemble();
 }
 
 StateLevel::~StateLevel() {
@@ -90,6 +113,9 @@ StateLevel::~StateLevel() {
 	delete sprite_neutral;
 	delete sprite_positive;
 	
+	// all sounds
+	delete sound_lose;
+	
 	// borders
 	if (border_top)
 		delete border_top;
@@ -101,8 +127,9 @@ StateLevel::~StateLevel() {
 		delete border_left;
 	
 	// texts
-	delete press_space;
-	delete time_text;
+	delete text_press_space;
+	delete text_time;
+	delete text_you_lose;
 	
 	// charge cursor
 	delete charge_bar;
@@ -118,7 +145,8 @@ void StateLevel::handleUnstack(ArgsBase* args) {
 }
 
 void StateLevel::update() {
-	((Animation*)sprite_life)->setFrame(life);
+	// timer
+	timer.update();
 	
 	// avatar animation
 	sprite_avatar->update();
@@ -134,6 +162,28 @@ void StateLevel::update() {
 	// all particles
 	for (list<Particle*>::iterator it = particles.begin(); it != particles.end(); ++it) {
 		(*it)->update();
+	}
+	
+	// handling possibilities to lose
+	if (!lose_) {
+		// update the time text only after the level starts
+		if (!avatar->pinned)
+			setTimeText(round(float(timer.time())/1000));
+		
+		// checking if the avatar is far away
+		if (!screen_box.Shape::pointInside(avatar->getShape()->position))
+			lose();
+	}
+	// if the message was shown
+	else if (stopwatch.time() >= LOSE_DELAY) {
+		// if it was the last try
+		if (life < 0) {
+			frozen_ = true;
+			throw new StackUp("StateGameOver");
+		}
+		
+		lose_ = false;
+		reload();
 	}
 }
 
@@ -165,16 +215,18 @@ void StateLevel::render() {
 	// hud
 	hud->render();
 	eatles->render(45, 30);
-	time_text->render(288, 54);
+	text_time->render(288, 54);
 	sprite_life->render(236, 161);
 	
 	// charge changer
 	charge_bar->render(0, 710);
 	charge_cursor->render(charge_cursor_position, 715, true);
 	
-	// press space to start
-	if ((avatar->pinned) && ((SDL_GetTicks()/600) % 2))
-		press_space->render(640, 360);
+	// main message
+	if ((lose_) && (stopwatch.time() <= LOSE_DELAY - 1000))
+		text_you_lose->render(640, 360);
+	else if ((avatar->pinned) && ((SDL_GetTicks()/600) % 2))
+		text_press_space->render(640, 360);
 }
 
 void StateLevel::reload() {
@@ -183,6 +235,8 @@ void StateLevel::reload() {
 }
 
 void StateLevel::assemble() {
+	setTimeText(level_time);
+	
 	assembleAvatar();
 	
 	assembleHole();
@@ -285,6 +339,18 @@ void StateLevel::clear() {
 	interactions.clear();
 }
 
+void StateLevel::setTimeText(int seconds) {
+	std::stringstream ss;
+	int minutes = seconds/60;
+	seconds -= (minutes*60);
+	ss << minutes;
+	ss << ":";
+	if (seconds < 10)
+		ss << "0";
+	ss << seconds;
+	text_time->setText(ss.str());
+}
+
 void StateLevel::handleKeyDown(const observer::Event& event, bool& stop) {
 	switch (inputmanager_event.key.keysym.sym) {
 	case SDLK_ESCAPE:
@@ -293,7 +359,11 @@ void StateLevel::handleKeyDown(const observer::Event& event, bool& stop) {
 		break;
 		
 	case SDLK_SPACE:
+		if (!avatar->pinned)
+			return;
 		avatar->pinned = false;
+		timer.start(level_time*1000);
+		
 		break;
 		
 	default:
@@ -305,4 +375,23 @@ void StateLevel::handleMouseMotion(const observer::Event& event, bool& stop) {
 	// handling avatar charge variables
 	charge_cursor_position = InputManager::instance()->mouseX();
 	avatar->charge = max_abs_charge*(charge_cursor_position - 640)/640;
+}
+
+void StateLevel::handleTimerDone(const observer::Event& event, bool& stop) {
+	if ((!lose_) && (!win_))
+		lose();
+}
+
+void StateLevel::lose() {
+	lose_ = true;
+	life--;
+	if (life >= 0)
+		((Animation*)sprite_life)->setFrame(life);
+	timer.cancel();
+	sound_lose->play(1);
+	stopwatch.start();
+}
+
+void StateLevel::gameOver() {
+	//TODO
 }

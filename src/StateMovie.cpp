@@ -58,7 +58,7 @@ void StateMovie::load(StateArgs* args)
 	
 	loadData( ( (StateArgsMovie*) args )->path );
 	
-	timer.start();
+	stopwatch.start();
 	if( bgm )
 		bgm->play( 1 );
 }
@@ -81,26 +81,26 @@ void StateMovie::unload()
 void StateMovie::update() {
 	if( sizes )
 	{
-		if( timer.time() >= sizes[ index ] )
+		if( stopwatch.time() >= sizes[ index ] )
 		{
 			++index;
-			timer.start();
+			stopwatch.start();
 		}
 	}
 	
-	if( ( index == amount ) || ( skip_timer.time() >= skip_fade ) )
+	if( ( index == amount ) || ( skip_stopwatch.time() >= skip_fade ) )
 	{
 		if( bgm )
 			bgm->stop();
 		//args = new StateArgs( nextstate );
 	}
-	else if( skip_timer.time() >= 0 )
-		SDLBase::setFadeOpacity( float( skip_timer.time() ) / skip_fade );
+	else if( skip_stopwatch.time() >= 0 )
+		SDLBase::setFadeOpacity( float( skip_stopwatch.time() ) / skip_fade );
 }
 
 void StateMovie::render() {
 	frames[ index ].render();
-	if( skip_timer.time() >= 0 )
+	if( skip_stopwatch.time() >= 0 )
 		SDLBase::renderFade();
 }
 
@@ -108,16 +108,16 @@ void StateMovie::handleKeyDown(const observer::Event& event, bool& stop)
 {
 	if(	( inputmanager_event.key.keysym.sym == SDLK_SPACE ) &&
 		( skip_able ) &&
-		( skip_timer.time() < 0 )	)
+		( skip_stopwatch.time() < 0 )	)
 	{
-		skip_timer.start();
+		skip_stopwatch.start();
 		if( bgm )
 			bgm->stop( skip_fade );
 	}
 	else if(	( inputmanager_event.key.keysym.sym == SDLK_KP_ENTER ) ||
 				( inputmanager_event.key.keysym.sym == SDLK_RETURN )	)
 	{
-		if( ( pause_able ) && ( skip_timer.time() < 0 ) )
+		if( ( pause_able ) && ( skip_stopwatch.time() < 0 ) )
 		{
 			//args = new StateArgs(
 			//	GameStates::PAUSE_MANAGER, GameStates::STACK_UP

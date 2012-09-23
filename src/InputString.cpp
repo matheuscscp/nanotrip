@@ -44,7 +44,7 @@ void InputString::set(const std::string& input) {
 
 void InputString::update() {
 	if ((InputManager::instance()->keyPressed(SDLK_BACKSPACE)) &&
-		(!timer.ispaused()) && (timer.time() >= 500) && (buf.size())) {
+		(!stopwatch.ispaused()) && (stopwatch.time() >= 500) && (buf.size())) {
 		buf.erase(buf.size() - 1);
 		subject.broadcast(observer::Event(UPDATE));
 	}
@@ -80,7 +80,7 @@ void InputString::handleKeyDown(const observer::Event& event, bool& stop) {
 	
 	if( ( tmp == SDLK_BACKSPACE ) && ( buf.size() ) ) {
 		buf.erase( buf.size() - 1 );
-		timer.start();
+		stopwatch.start();
 	}
 	else if( ( tmp == SDLK_KP_ENTER ) || ( tmp == SDLK_RETURN ) ) {
 		subject.broadcast( observer::Event( ENTER ) );
@@ -115,5 +115,5 @@ void InputString::handleKeyDown(const observer::Event& event, bool& stop) {
 
 void InputString::handleKeyUp(const observer::Event& event, bool& stop) {
 	if (inputmanager_event.key.keysym.sym == SDLK_BACKSPACE)
-		timer.pause();
+		stopwatch.pause();
 }

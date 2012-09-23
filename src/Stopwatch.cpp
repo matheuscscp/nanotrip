@@ -2,23 +2,23 @@
 
 #include "observer.hpp"
 
-#include "Timer.hpp"
+#include "Stopwatch.hpp"
 
-Timer::Timer() : initialtime(-1), paused(false) {
-	observer::Stack::connect(this, &Timer::handleObsStackPush, &Timer::handleObsStackPop);
+Stopwatch::Stopwatch() : initialtime(-1), paused(false) {
+	observer::Stack::connect(this, &Stopwatch::handleObsStackPush, &Stopwatch::handleObsStackPop);
 }
 
-Timer::~Timer() {
+Stopwatch::~Stopwatch() {
 	observer::Stack::disconnect(this);
 }
 
-void Timer::start()
+void Stopwatch::start()
 {
 	initialtime = SDL_GetTicks();
 	paused = false;
 }
 
-void Timer::pause()
+void Stopwatch::pause()
 {
 	if( ( !paused ) && ( initialtime != -1 ) )
 	{
@@ -27,7 +27,7 @@ void Timer::pause()
 	}
 }
 
-void Timer::resume()
+void Stopwatch::resume()
 {
 	if( paused )
 	{
@@ -36,7 +36,7 @@ void Timer::resume()
 	}
 }
 
-int Timer::time() const
+int Stopwatch::time() const
 {
 	if( initialtime == -1 )
 		return -1;
@@ -46,7 +46,7 @@ int Timer::time() const
 	return( SDL_GetTicks() - initialtime );
 }
 
-bool Timer::ispaused() const { return paused; }
+bool Stopwatch::ispaused() const { return paused; }
 
-void Timer::handleObsStackPush(const observer::Event& event, bool& stop) { pause(); }
-void Timer::handleObsStackPop(const observer::Event& event, bool& stop) { resume(); }
+void Stopwatch::handleObsStackPush(const observer::Event& event, bool& stop) { pause(); }
+void Stopwatch::handleObsStackPop(const observer::Event& event, bool& stop) { resume(); }

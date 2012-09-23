@@ -6,7 +6,7 @@
 
 #include "observer.hpp"
 
-#include "Timer.hpp"
+#include "Stopwatch.hpp"
 
 class InputString {
 SUBJECT
@@ -23,7 +23,7 @@ private:
 	
 	std::string buf;
 	int max_size;
-	Timer timer;
+	Stopwatch stopwatch;
 public:
 	InputString(const std::string& str = "");
 	~InputString();

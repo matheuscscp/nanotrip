@@ -4,7 +4,7 @@
 #include "State.hpp"
 #include "Sprite.hpp"
 #include "Audio.hpp"
-#include "Timer.hpp"
+#include "Stopwatch.hpp"
 
 class StateMovie : public State {
 GAMESTATE
@@ -36,8 +36,8 @@ private:
 	
 	Audio* bgm;
 	
-	Timer timer;
-	Timer skip_timer;
+	Stopwatch stopwatch;
+	Stopwatch skip_stopwatch;
 public:
 	StateMovie(ArgsBase* args);
 	~StateMovie();

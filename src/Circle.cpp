@@ -1,18 +1,12 @@
 #include "Circle.hpp"
 
-#include "InputManager.hpp"
-
 using namespace lalge;
 
 Circle::Circle() : radius(1) {}
 Circle::~Circle() {}
 
-bool Circle::mouseInside() const {
-	return ((position - r2vec(InputManager::instance()->mouseX(), InputManager::instance()->mouseY())).size() <= radius);
-}
-
-bool Circle::mouseDownInside() const {
-	return ((position - r2vec(InputManager::instance()->mouseDownX(), InputManager::instance()->mouseDownY())).size() <= radius);
+bool Circle::pointInside(int x, int y) const {
+	return ((position - r2vec(x, y)).size() <= radius);
 }
 
 Scalar Circle::getRadius() const { return radius; }
