@@ -15,6 +15,8 @@ private:
 	static bool sound_mute;
 	static bool music_mute;
 	
+	bool paused;
+	
 	Mix_Chunk* sound;
 	Mix_Music* music;
 	int channel;

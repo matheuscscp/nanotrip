@@ -7,7 +7,8 @@
 #include "InputManager.hpp"
 #include "SDLBase.hpp"
 
-#define LOSE_DELAY	4000
+#define LOSE_MESSAGE_DELAY	4000
+#define UNPIN_TIME			2000
 
 using namespace common;
 using namespace lalge;
@@ -18,19 +19,25 @@ GAMESTATE_DEF(StateLevel)
 
 StateLevel::UnstackArgs::UnstackArgs(int op) : op(op) {}
 
-StateLevel::Args::Args(const std::string& levelname) : levelname(levelname) {}
+StateLevel::Args::Args(const std::string& levelname, const std::string& nextstate, ArgsBase* nextargs) :
+levelname(levelname), nextstate(nextstate), nextargs(nextargs) {}
+
+StateLevel::FinalArgs::FinalArgs(int points, ArgsBase* nextargs) :
+points(points), nextargs(nextargs) {}
 
 StateLevel::StateLevel(ArgsBase* args) :
+nextstate(((Args*)args)->nextstate),
+nextargs(((Args*)args)->nextargs),
 is_bg_init(false),
-win_(false),
 lose_(false),
-max_abs_charge(1),
-charge_cursor_position(640),
+win_(false),
 life(3),
 border_top(0),
 border_right(0),
 border_bottom(0),
-border_left(0)
+border_left(0),
+max_abs_charge(1),
+charge_cursor_position(640)
 {
 	// screen box
 	screen_box.position = r2vec(640, 360);
@@ -49,7 +56,7 @@ border_left(0)
 	
 	// all sprites
 	sprite_avatar = new Animation("img/level/avatar_positive.png", 0, 7, 1, 16);
-	sprite_hole = new Animation("img/level/blackhole.png", 0, 12, 1, 20);
+	sprite_blackhole = new Animation("img/level/blackhole.png", 0, 30, 1, 20);
 	sprite_negative = new Sprite("img/level/negative.png");
 	sprite_negative_anim = new Animation("img/level/negative_ssheet.png", 0, 20, 1, 9);
 	sprite_neutral = new Sprite("img/level/neutral.png");
@@ -58,6 +65,7 @@ border_left(0)
 	
 	// all sounds
 	sound_lose = new Audio("sfx/level/lose.wav");
+	sound_win = new Audio("sfx/level/win.wav");
 	
 	// configuration file
 	raw.readTxt(RootPath::get("level/" + ((Args*)args)->levelname + ".conf"));
@@ -114,7 +122,7 @@ StateLevel::~StateLevel() {
 	delete eatles;
 	delete sprite_life;
 	delete sprite_avatar;
-	delete sprite_hole;
+	delete sprite_blackhole;
 	delete sprite_negative;
 	delete sprite_negative_anim;
 	delete sprite_neutral;
@@ -123,6 +131,7 @@ StateLevel::~StateLevel() {
 	
 	// all sounds
 	delete sound_lose;
+	delete sound_win;
 	
 	// borders
 	if (border_top)
@@ -156,12 +165,17 @@ void StateLevel::handleUnstack(ArgsBase* args) {
 	case UnstackArgs::TRYAGAIN:
 		life = 3;
 		((Animation*)sprite_life)->setFrame(life);
-		lose_ = false;
 		reload();
 		break;
 		
 	case UnstackArgs::MAINMENU:
+		if (nextargs)
+			delete nextargs;
 		throw new Change("StateMainMenu");
+		break;
+		
+	case UnstackArgs::GOAHEAD:
+		throw new Change(nextstate, new FinalArgs(points, nextargs));
 		break;
 		
 	default:
@@ -175,7 +189,7 @@ void StateLevel::update() {
 	
 	// animations
 	sprite_avatar->update();
-	sprite_hole->update();
+	sprite_blackhole->update();
 	if ((SDL_GetTicks()/5) % 2) {
 		((Animation*)sprite_negative_anim)->setFrame(rand()%9);
 		((Animation*)sprite_positive_anim)->setFrame(rand()%9);
@@ -194,8 +208,7 @@ void StateLevel::update() {
 		(*it)->update();
 	}
 	
-	// handling possibilities to lose
-	if (!lose_) {
+	if ((!lose_) && (!win_)) {
 		// update the time text only after the level starts
 		if (!avatar->pinned)
 			setTimeText(round(float(timer.time())/1000));
@@ -203,23 +216,27 @@ void StateLevel::update() {
 		// checking if the avatar is far away
 		if (!screen_box.Shape::pointInside(avatar->getShape()->position))
 			lose();
-		
-		// unpin particles
-		if ((timer.time()) && (timer.time() <= 2000) && (bg == bg_grad)) {
+		// unpin all particles if the time is ending
+		else if ((round(float(timer.time())/1000) == UNPIN_TIME) && (bg == bg_grad)) {
 			bg = bg_nograd;
 			unpinParticles();
 		}
-	}
-	// if the message was shown
-	else if (stopwatch.time() >= LOSE_DELAY) {
-		// if it was the last try
-		if (life < 0) {
-			frozen_ = true;
-			throw new StackUp("StateGameOver");
-		}
 		
-		lose_ = false;
-		reload();
+	}
+	else if (stopwatch.time() >= LOSE_MESSAGE_DELAY) {
+		if (lose_) {
+			// if it was the last try
+			if (life < 0) {
+				frozen_ = true;
+				throw new StackUp("StateGameOver");
+			}
+			
+			reload();
+		}
+		else {
+			frozen_ = true;
+			throw new StackUp("StateYouWin", new FinalArgs(points));
+		}
 	}
 }
 
@@ -232,8 +249,8 @@ void StateLevel::render() {
 		(*it)->render();
 	}
 	
-	// the hole
-	hole->render();
+	// the blackhole
+	blackhole->render();
 	
 	// the avatar
 	avatar->render();
@@ -259,28 +276,32 @@ void StateLevel::render() {
 	charge_cursor->render(charge_cursor_position, 715, true);
 	
 	// main message
-	if ((lose_) && (stopwatch.time() <= LOSE_DELAY - 1000))
-		text_you_lose->render(640, 360);
-	else if ((avatar->pinned) && ((SDL_GetTicks()/600) % 2))
+	if ((avatar->pinned) && ((SDL_GetTicks()/600) % 2))
 		text_press_space->render(640, 360);
+	else if ((stopwatch.time() <= LOSE_MESSAGE_DELAY - 1000) && (lose_))
+		text_you_lose->render(640, 360);
 }
 
 void StateLevel::reload() {
 	clear();
+	lose_ = false;
+	win_ = false;
 	assemble();
 }
 
 void StateLevel::assemble() {
+	points = 0;
 	setTimeText(level_time);
 	
 	bg = bg_grad;
 	
 	assembleAvatar();
 	
-	assembleHole();
+	assembleBlackHole();
 	
-	// avatar-hole force interaction
-	interactions.push_back(Interaction(avatar, hole, (Interaction::callback)&Particle::addParticleFieldForces, true));
+	// avatar-blackhole interactions
+	interactions.push_back(Interaction(avatar, blackhole, (Interaction::callback)&Particle::addParticleFieldForces, true));
+	interactions.push_back(Interaction(avatar, blackhole, (Interaction::callback)&Avatar::checkBlackHole));
 	
 	// all particles
 	list<Configuration> conf = raw.getConfigList("particle");
@@ -305,7 +326,8 @@ void StateLevel::assemble() {
 
 void StateLevel::assembleAvatar() {
 	Configuration conf = raw.getConfig("avatar");
-	avatar = new Particle();
+	avatar = new Avatar();
+	avatar->connect(Avatar::BEINGSWALLOWED, this, &StateLevel::handleAvatarBeingSwallowed);
 	avatar->pinned = true;
 	avatar->getShape()->position = r2vec(conf.getReal("x"), conf.getReal("y"));
 	avatar->speed = r2vec(conf.getReal("speedX"), conf.getReal("speedY"));
@@ -318,18 +340,18 @@ void StateLevel::assembleAvatar() {
 	((Circle*)avatar->getShape())->setRadius(avatar->sprite->rectW()/2);
 }
 
-void StateLevel::assembleHole() {
-	Configuration conf = raw.getConfig("hole");
-	hole = new Particle();
-	hole->pinned = true;
-	hole->getShape()->position = r2vec(conf.getReal("x"), conf.getReal("y"));
-	hole->setElasticity(conf.getReal("k"));
-	hole->setMass(conf.getReal("m"));
-	hole->charge = conf.getReal("q");
+void StateLevel::assembleBlackHole() {
+	Configuration conf = raw.getConfig("blackhole");
+	blackhole = new Particle();
+	blackhole->pinned = true;
+	blackhole->getShape()->position = r2vec(conf.getReal("x"), conf.getReal("y"));
+	blackhole->setElasticity(conf.getReal("k"));
+	blackhole->setMass(conf.getReal("m"));
+	blackhole->charge = conf.getReal("q");
 	
 	// sprite
-	hole->sprite = sprite_hole;
-	((Circle*)hole->getShape())->setRadius(hole->sprite->rectW()/2);
+	blackhole->sprite = sprite_blackhole;
+	((Circle*)blackhole->getShape())->setRadius(blackhole->sprite->rectW()/2);
 }
 
 Particle* StateLevel::assembleParticle(const Configuration& conf) {
@@ -362,8 +384,8 @@ void StateLevel::clear() {
 	// the avatar
 	delete avatar;
 	
-	// the hole
-	delete hole;
+	// the blackhole
+	delete blackhole;
 	
 	// all particles
 	while (particles.size()) {
@@ -390,6 +412,8 @@ void StateLevel::setTimeText(int seconds) {
 void StateLevel::handleKeyDown(const observer::Event& event, bool& stop) {
 	switch (inputmanager_event.key.keysym.sym) {
 	case SDLK_ESCAPE:
+		if ((lose_) || (win_))
+			return;
 		frozen_ = true;
 		throw new StackUp("StateMenu");
 		break;
@@ -413,8 +437,11 @@ void StateLevel::handleMouseMotion(const observer::Event& event, bool& stop) {
 }
 
 void StateLevel::handleTimerDone(const observer::Event& event, bool& stop) {
-	if ((!lose_) && (!win_))
-		lose();
+	lose();
+}
+
+void StateLevel::handleAvatarBeingSwallowed(const observer::Event& event, bool& stop) {
+	win();
 }
 
 void StateLevel::lose() {
@@ -424,15 +451,11 @@ void StateLevel::lose() {
 	if (life >= 0)
 		((Animation*)sprite_life)->setFrame(life);
 	
-	timer.cancel();
+	timer.pause();
 	
 	sound_lose->play(1);
 	
 	stopwatch.start();
-}
-
-void StateLevel::gameOver() {
-	//TODO
 }
 
 void StateLevel::unpinParticles() {
@@ -445,4 +468,14 @@ void StateLevel::unpinParticles() {
 		else if ((*it)->charge > 0)
 			(*it)->sprite = sprite_positive;
 	}
+}
+
+void StateLevel::win() {
+	win_ = true;
+	
+	timer.pause();
+	
+	sound_win->play(1);
+	
+	stopwatch.start();
 }

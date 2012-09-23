@@ -6,19 +6,19 @@
 
 class Interaction {
 public:
-	typedef void (GameObject::*callback)(GameObject* target);
+	typedef void (GameObject::*callback)(GameObject* target, bool& enable);
 private:
 	GameObject* go1;
 	GameObject* go2;
 	
 	callback handler;
 	
-	bool enabled;
 	bool twice;
 public:
+	bool enabled;
+	
 	Interaction(GameObject* go1, GameObject* go2, callback handler, bool twice = false);
 	void interact();
-	void enable(bool enable);
 };
 
 #endif

@@ -12,7 +12,7 @@ float Audio::music_volume = 1;
 bool Audio::sound_mute = false;
 bool Audio::music_mute = false;
 
-Audio::Audio(const std::string& filename) : sound(NULL), music(NULL)
+Audio::Audio(const std::string& filename) : sound(NULL), music(NULL), channel(0)
 {
 	if( filename[ filename.size() - 1 ] == 'v' )
 	{

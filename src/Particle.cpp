@@ -36,32 +36,7 @@ void Particle::setMass(Scalar mass) {
 		this->mass = mass;
 }
 
-void Particle::addParticleFieldForces(GameObject* target) {
-	force += gravitationalForce(*((Particle*)target));
-	force += electricalForce(*((Particle*)target));
-	// FIXME: someday
-	//force += magneticForce(*target);
-}
-
-R2Vector Particle::gravitationalForce(const Particle& target) const {
-	R2Vector range = getShape()->range(*target.getShape());
-	Scalar size = (grav_const*mass*target.mass)/pow(range.size(), 3);
-	return (range*size);
-}
-
-R2Vector Particle::electricalForce(const Particle& target) const {
-	R2Vector range = target.getShape()->range(*getShape());
-	Scalar size = (elec_const*charge*target.charge)/pow(range.size(), 3);
-	return (range*size);
-}
-
-R2Vector Particle::magneticForce(const Particle& target) const {
-	// There is no obvious expression to calculate magnetic force between
-	// particles. So we're going to despise it in this game.
-	return R2Vector();
-}
-
-void Particle::manageParticleCollision(GameObject* target) {
+void Particle::manageParticleCollision(GameObject* target, bool& enable) {
 	// check collision
 	if (!collides(*((Particle*)target)))
 		return;
@@ -119,4 +94,29 @@ bool Particle::collides(const Particle& target) const {
 	// RESOLVER O SISTEMA LINEAR DOS VETORES DIFERENCA e tal
 	
 	return false;
+}
+
+void Particle::addParticleFieldForces(GameObject* target, bool& enable) {
+	force += gravitationalForce(*((Particle*)target));
+	force += electricalForce(*((Particle*)target));
+	// FIXME: someday
+	//force += magneticForce(*target);
+}
+
+R2Vector Particle::gravitationalForce(const Particle& target) const {
+	R2Vector range = getShape()->range(*target.getShape());
+	Scalar size = (grav_const*mass*target.mass)/pow(range.size(), 3);
+	return (range*size);
+}
+
+R2Vector Particle::electricalForce(const Particle& target) const {
+	R2Vector range = target.getShape()->range(*getShape());
+	Scalar size = (elec_const*charge*target.charge)/pow(range.size(), 3);
+	return (range*size);
+}
+
+R2Vector Particle::magneticForce(const Particle& target) const {
+	// There is no obvious expression to calculate magnetic force between
+	// particles. So we're going to despise it in this game.
+	return R2Vector();
 }

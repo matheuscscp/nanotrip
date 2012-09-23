@@ -19,7 +19,6 @@ public:
 	void update();
 	void render();
 private:
-	void handleKeyDown(const observer::Event& event, bool& stop);
 	void handleTryAgain(const observer::Event& event, bool& stop);
 	void handleMainMenu(const observer::Event& event, bool& stop);
 };

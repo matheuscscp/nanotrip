@@ -28,10 +28,10 @@ public:
 	lalge::Scalar getMass() const;
 	void setMass(lalge::Scalar mass);
 	
-	void manageParticleCollision(GameObject* target);
+	void manageParticleCollision(GameObject* target, bool& enable);
 	bool collides(const Particle& target) const;
 	
-	void addParticleFieldForces(GameObject* target);
+	void addParticleFieldForces(GameObject* target, bool& enable);
 	lalge::R2Vector gravitationalForce(const Particle& target) const;
 	lalge::R2Vector electricalForce(const Particle& target) const;
 	lalge::R2Vector magneticForce(const Particle& target) const;

@@ -13,6 +13,12 @@ using namespace common;
 GAMESTATE_DEF(StateLoadLevel)
 
 StateLoadLevel::StateLoadLevel(ArgsBase* args) : warning_hidden(true) {
+	if (args) {
+		if (((StateLevel::FinalArgs*)args)->nextargs)
+			delete ((StateLevel::FinalArgs*)args)->nextargs;
+		delete args;
+	}
+	
 	bg = new Sprite("img/level/background.png");
 	
 	inputbox = new Sprite("img/inputlevelname.png");
@@ -78,7 +84,7 @@ void StateLoadLevel::handleEnter(const observer::Event& event, bool& stop) {
 		warning_hidden = false;
 	else {
 		f.close();
-		throw new Change("StateLevel", new StateLevel::Args(inputstring.get()));
+		throw new Change("StateLevel", new StateLevel::Args(inputstring.get(), "StateLoadLevel"));
 	}
 }
 

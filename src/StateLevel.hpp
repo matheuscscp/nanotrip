@@ -5,7 +5,7 @@
 #include "configfile.hpp"
 
 #include "State.hpp"
-#include "Particle.hpp"
+#include "Avatar.hpp"
 #include "Timer.hpp"
 #include "Stopwatch.hpp"
 #include "Rectangle.hpp"
@@ -18,7 +18,8 @@ public:
 	public:
 		enum {
 			TRYAGAIN,
-			MAINMENU
+			MAINMENU,
+			GOAHEAD
 		};
 		
 		int op;
@@ -28,12 +29,24 @@ public:
 	class Args : public ArgsBase {
 	public:
 		std::string levelname;
-		Args(const std::string& levelname);
+		std::string nextstate;
+		ArgsBase* nextargs;
+		Args(const std::string& levelname, const std::string& nextstate, ArgsBase* nextargs = 0);
+	};
+	
+	class FinalArgs : public ArgsBase {
+	public:
+		int points;
+		ArgsBase* nextargs;
+		FinalArgs(int points, ArgsBase* nextargs = 0);
 	};
 protected:
+	std::string nextstate;
+	ArgsBase* nextargs;
+	
 	bool is_bg_init;
-	bool win_;
 	bool lose_;
+	bool win_;
 	Rectangle screen_box;
 	
 	Sprite* bg;
@@ -42,6 +55,7 @@ protected:
 	Sprite* hud;
 	Sprite* eatles;
 	
+	int points;
 	int life;
 	int level_time;
 	Timer timer;
@@ -54,7 +68,7 @@ protected:
 	Sprite* border_left;
 	
 	Sprite* sprite_avatar;
-	Sprite* sprite_hole;
+	Sprite* sprite_blackhole;
 	Sprite* sprite_negative;
 	Sprite* sprite_negative_anim;
 	Sprite* sprite_neutral;
@@ -62,6 +76,7 @@ protected:
 	Sprite* sprite_positive_anim;
 	
 	Audio* sound_lose;
+	Audio* sound_win;
 	
 	Text* text_press_space;
 	Text* text_time;
@@ -71,8 +86,8 @@ protected:
 	
 	std::list<Interaction> interactions;
 	
-	Particle* avatar;
-	Particle* hole;
+	Avatar* avatar;
+	Particle* blackhole;
 	std::list<Particle*> particles;
 	
 	Sprite* charge_cursor;
@@ -91,7 +106,7 @@ protected:
 	void reload();
 	void assemble();
 	void assembleAvatar();
-	void assembleHole();
+	void assembleBlackHole();
 	Particle* assembleParticle(const Configuration& conf);
 	void clear();
 	
@@ -100,10 +115,12 @@ protected:
 	void handleKeyDown(const observer::Event& event, bool& stop);
 	void handleMouseMotion(const observer::Event& event, bool& stop);
 	void handleTimerDone(const observer::Event& event, bool& stop);
+	void handleAvatarBeingSwallowed(const observer::Event& event, bool& stop);
 	
 	void lose();
-	void gameOver();
 	void unpinParticles();
+	
+	void win();
 };
 
 #endif
