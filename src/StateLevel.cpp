@@ -49,12 +49,12 @@ border_left(0)
 	
 	// all sprites
 	sprite_avatar = new Animation("img/level/avatar_positive.png", 0, 7, 1, 16);
-	sprite_hole = new Sprite("img/level/blackhole.png");
+	sprite_hole = new Animation("img/level/blackhole.png", 0, 12, 1, 20);
 	sprite_negative = new Sprite("img/level/negative.png");
-	sprite_negative_anim = new Animation("img/level/negative_ssheet.png", 0, 20, 1, 16);
+	sprite_negative_anim = new Animation("img/level/negative_ssheet.png", 0, 20, 1, 9);
 	sprite_neutral = new Sprite("img/level/neutral.png");
 	sprite_positive = new Sprite("img/level/positive.png");
-	sprite_positive_anim = new Animation("img/level/positive_ssheet.png", 0, 20, 1, 16);
+	sprite_positive_anim = new Animation("img/level/positive_ssheet.png", 0, 20, 1, 9);
 	
 	// all sounds
 	sound_lose = new Audio("sfx/level/lose.wav");
@@ -175,8 +175,11 @@ void StateLevel::update() {
 	
 	// animations
 	sprite_avatar->update();
-	sprite_negative_anim->update();
-	sprite_positive_anim->update();
+	sprite_hole->update();
+	if ((SDL_GetTicks()/5) % 2) {
+		((Animation*)sprite_negative_anim)->setFrame(rand()%9);
+		((Animation*)sprite_positive_anim)->setFrame(rand()%9);
+	}
 	
 	// all interactions
 	for (list<Interaction>::iterator it = interactions.begin(); it != interactions.end(); ++it) {
@@ -326,8 +329,6 @@ void StateLevel::assembleHole() {
 	
 	// sprite
 	hole->sprite = sprite_hole;
-	//if (!is_bg_init)
-		//bg->gradient(hole->getShape()->position.x(0), hole->getShape()->position.x(1), 200, 127, 127, 127, 0);
 	((Circle*)hole->getShape())->setRadius(hole->sprite->rectW()/2);
 }
 
