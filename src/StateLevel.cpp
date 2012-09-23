@@ -61,7 +61,6 @@ border_left(0)
 	
 	// configuration file
 	raw.readTxt(RootPath::get("level/" + ((Args*)args)->levelname + ".conf"));
-	
 	delete args;
 	
 	// input hooks
