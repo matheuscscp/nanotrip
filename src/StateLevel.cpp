@@ -18,13 +18,14 @@ GAMESTATE_DEF(StateLevel)
 
 StateLevel::UnstackArgs::UnstackArgs(int op) : op(op) {}
 
-StateLevel::Args::Args(const std::string& levelname, const std::string& nextstate, ArgsBase* nextargs) :
-levelname(levelname), nextstate(nextstate), nextargs(nextargs) {}
+StateLevel::Args::Args(bool history, const std::string& levelname, const std::string& nextstate, ArgsBase* nextargs) :
+history(history), levelname(levelname), nextstate(nextstate), nextargs(nextargs) {}
 
 StateLevel::FinalArgs::FinalArgs(int points, ArgsBase* nextargs) :
 points(points), nextargs(nextargs) {}
 
 StateLevel::StateLevel(ArgsBase* args) :
+history(((Args*)args)->history),
 nextstate(((Args*)args)->nextstate),
 nextargs(((Args*)args)->nextargs),
 is_bg_init(false),
@@ -189,6 +190,17 @@ void StateLevel::handleUnstack(ArgsBase* args) {
 		--life;
 		((Animation*)sprite_life)->setFrame(life);
 		reload();
+		break;
+		
+	case UnstackArgs::MENU:
+		// continue if not nanotrip history
+		if (!history)
+			throw new Change(nextstate, new FinalArgs(points, nextargs));
+		
+		// main menu if nanotrip history
+		if (nextargs)
+			delete nextargs;
+		throw new Change("StateMainMenu");
 		break;
 		
 	default:

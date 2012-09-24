@@ -25,9 +25,9 @@ StatePause::StatePause(ArgsBase* args) : restart(0) {
 		restart->connect(Button::CLICKED, this, &StatePause::handleRestart);
 	}
 	
-	mainmenu = new Button(new Sprite("img/pause/mainmenu.png"));
-	mainmenu->getShape()->position = r2vec(640, 520);
-	mainmenu->connect(Button::CLICKED, this, &StatePause::handleMainMenu);
+	menu = new Button(new Sprite("img/pause/menu.png"));
+	menu->getShape()->position = r2vec(640, 520);
+	menu->connect(Button::CLICKED, this, &StatePause::handleMenu);
 	
 	InputManager::instance()->connect(InputManager::KEYDOWN, this, &StatePause::handleKeyDown);
 }
@@ -45,15 +45,15 @@ StatePause::~StatePause() {
 		delete restart;
 	}
 	
-	delete mainmenu->sprite;
-	delete mainmenu;
+	delete menu->sprite;
+	delete menu;
 }
 
 void StatePause::update() {
 	resume->update();
 	if (restart)
 		restart->update();
-	mainmenu->update();
+	menu->update();
 }
 
 void StatePause::render() {
@@ -62,7 +62,7 @@ void StatePause::render() {
 	resume->render();
 	if (restart)
 		restart->render();
-	mainmenu->render();
+	menu->render();
 }
 
 void StatePause::handleKeyDown(const observer::Event& event, bool& stop) {
@@ -78,6 +78,6 @@ void StatePause::handleRestart(const observer::Event& event, bool& stop) {
 	throw new Unstack(new StateLevel::UnstackArgs(StateLevel::UnstackArgs::RESTART));
 }
 
-void StatePause::handleMainMenu(const observer::Event& event, bool& stop) {
-	throw new Unstack(new StateLevel::UnstackArgs(StateLevel::UnstackArgs::MAINMENU));
+void StatePause::handleMenu(const observer::Event& event, bool& stop) {
+	throw new Unstack(new StateLevel::UnstackArgs(StateLevel::UnstackArgs::MENU));
 }

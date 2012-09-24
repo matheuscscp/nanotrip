@@ -21,7 +21,8 @@ public:
 			TRYAGAIN,
 			MAINMENU,
 			CONTINUE,
-			RESTART
+			RESTART,
+			MENU
 		};
 		
 		int op;
@@ -30,10 +31,11 @@ public:
 	
 	class Args : public ArgsBase {
 	public:
+		bool history;
 		std::string levelname;
 		std::string nextstate;
 		ArgsBase* nextargs;
-		Args(const std::string& levelname, const std::string& nextstate, ArgsBase* nextargs = 0);
+		Args(bool history, const std::string& levelname, const std::string& nextstate, ArgsBase* nextargs = 0);
 	};
 	
 	class FinalArgs : public ArgsBase {
@@ -43,6 +45,7 @@ public:
 		FinalArgs(int points, ArgsBase* nextargs = 0);
 	};
 protected:
+	bool history;
 	std::string nextstate;
 	ArgsBase* nextargs;
 	
