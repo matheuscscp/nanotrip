@@ -8,7 +8,6 @@
 #include "SDLBase.hpp"
 
 #define LOSE_MESSAGE_DELAY	4000
-#define UNPIN_TIME			2000
 
 using namespace common;
 using namespace lalge;
@@ -216,12 +215,6 @@ void StateLevel::update() {
 		// checking if the avatar is far away
 		if (!screen_box.Shape::pointInside(avatar->getShape()->position))
 			lose();
-		// unpin all particles if the time is ending
-		else if ((round(float(timer.time())/1000) == UNPIN_TIME) && (bg == bg_grad)) {
-			bg = bg_nograd;
-			unpinParticles();
-		}
-		
 	}
 	else if (stopwatch.time() >= LOSE_MESSAGE_DELAY) {
 		if (lose_) {
@@ -301,7 +294,9 @@ void StateLevel::assemble() {
 	
 	// avatar-blackhole interactions
 	interactions.push_back(Interaction(avatar, blackhole, (Interaction::callback)&Particle::addParticleFieldForces, true));
+	interaction_blackhole_force = &interactions.back();
 	interactions.push_back(Interaction(avatar, blackhole, (Interaction::callback)&Avatar::checkBlackHole));
+	interaction_blackhole_collision = &interactions.back();
 	
 	// all particles
 	list<Configuration> conf = raw.getConfigList("particle");
@@ -446,6 +441,13 @@ void StateLevel::handleAvatarBeingSwallowed(const observer::Event& event, bool& 
 
 void StateLevel::lose() {
 	lose_ = true;
+	
+	// time's up! particles get free and blackhole goes away
+	bg = bg_nograd;
+	blackhole->hidden = true;
+	interaction_blackhole_force->enabled = false;
+	interaction_blackhole_collision->enabled = false;
+	unpinParticles();
 	
 	life--;
 	if (life >= 0)

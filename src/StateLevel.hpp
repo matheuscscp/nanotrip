@@ -85,6 +85,8 @@ protected:
 	Configuration raw;
 	
 	std::list<Interaction> interactions;
+	Interaction* interaction_blackhole_force;
+	Interaction* interaction_blackhole_collision;
 	
 	Avatar* avatar;
 	Particle* blackhole;
