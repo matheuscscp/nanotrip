@@ -50,7 +50,7 @@ test: build
 
 gdb: build
 	gdb $(EXE)
-#r -f -p /home/matheus/Documents/C_C++/C++/IDJ/nanotrip/ -s StateMainMenu
+#r -f -p /home/matheus/Documents/C_C++/C++/IDJ/nanotrip/ -s StateLoadLevel
 
 clean:
 	rm -rf $(EXE) $(OBJDIR)/* $(ERRLOG)

@@ -6,8 +6,8 @@
 #include "InputManager.hpp"
 #include "SDLBase.hpp"
 
-#define LOSE_MESSAGE_DELAY	4000
-#define EATLES_DELAY		8
+#define SOUND_DELAY		4000
+#define EATLES_DELAY	8
 
 using namespace common;
 using namespace lalge;
@@ -242,7 +242,7 @@ void StateLevel::update() {
 		if (!screen_box.Shape::pointInside(avatar->getShape()->position))
 			lose();
 	}
-	else if (stopwatch.time() >= LOSE_MESSAGE_DELAY) {
+	else if (stopwatch.time() >= SOUND_DELAY) {
 		if (lose_) {
 			// if it was the last try
 			if (life < 0) {
@@ -297,7 +297,7 @@ void StateLevel::render() {
 	// main message
 	if ((avatar->pinned) && ((SDL_GetTicks()/600) % 2))
 		text_press_space->render(640, 360);
-	else if ((stopwatch.time() <= LOSE_MESSAGE_DELAY - 1000) && (lose_))
+	else if ((stopwatch.time() <= SOUND_DELAY - 1000) && (lose_))
 		text_you_lose->render(640, 360);
 }
 

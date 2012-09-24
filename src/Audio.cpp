@@ -134,5 +134,12 @@ bool Audio::musicMuted()
 	return music_mute;
 }
 
-void Audio::handleObsStackPush(const observer::Event& event, bool& stop) { pause(); }
-void Audio::handleObsStackPop(const observer::Event& event, bool& stop) { resume(); }
+void Audio::handleObsStackPush(const observer::Event& event, bool& stop) {
+	if (!sound)
+		pause();
+}
+
+void Audio::handleObsStackPop(const observer::Event& event, bool& stop) {
+	if (!sound)
+		resume();
+}
