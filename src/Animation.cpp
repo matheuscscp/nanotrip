@@ -48,6 +48,7 @@ void Animation::update_ ()
 int Animation::frameAmount () const { return ((matrix*cols) + ((!matrix)*(rows*cols))); }
 int Animation::getFrame() const { return frame; }
 int Animation::getFPS() const { return fps; }
+int Animation::getTimeSize() const { return (frameAmount()*1000)/fps; }
 
 void Animation::setFrame(int frame)
 {

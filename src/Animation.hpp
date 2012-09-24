@@ -29,11 +29,11 @@ public:
 	void update();
 private:
 	void update_();
-	
-	int frameAmount() const;
 public:
+	int frameAmount() const;
 	int getFrame() const;
 	int getFPS() const;
+	int getTimeSize() const;
 	
 	void setFrame(int frame);
 	void setFPS(int fps);

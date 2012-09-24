@@ -10,6 +10,7 @@
 #include "Stopwatch.hpp"
 #include "Rectangle.hpp"
 #include "Audio.hpp"
+#include "Animation.hpp"
 
 class StateLevel : public State {
 GAMESTATE
@@ -54,6 +55,8 @@ protected:
 	Sprite* bg_nograd;
 	Sprite* hud;
 	Sprite* eatles;
+	Sprite* eatles_sheets[6];
+	Stopwatch eatles_stopwatch;
 	
 	int points;
 	int life;

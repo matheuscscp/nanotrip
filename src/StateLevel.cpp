@@ -2,12 +2,12 @@
 
 #include "StateLevel.hpp"
 
-#include "Animation.hpp"
 #include "Circle.hpp"
 #include "InputManager.hpp"
 #include "SDLBase.hpp"
 
 #define LOSE_MESSAGE_DELAY	4000
+#define EATLES_DELAY		8
 
 using namespace common;
 using namespace lalge;
@@ -50,7 +50,18 @@ charge_cursor_position(640)
 	bg_grad->setAlpha(0.3f);
 	bg_nograd->setAlpha(0.15f);
 	hud = new Sprite("img/level/hud.png");
-	eatles = new Sprite("img/level/eatles.png");
+	eatles_sheets[0] = new Sprite("img/level/eatles.png");
+	eatles_sheets[1] = new Animation("img/level/eatles_blink.png", 0, 16, 1, 4);
+	eatles_sheets[2] = new Animation("img/level/eatles_blink.png", 0, 16, 1, 4);
+	eatles_sheets[3] = new Animation("img/level/eatles_blink.png", 0, 16, 1, 4);
+	eatles_sheets[4] = new Animation("img/level/eatles_laugh.png", 0, 8, 1, 8);
+	eatles_sheets[5] = new Animation("img/level/eatles_laugh.png", 0, 8, 1, 8);
+	// eatles_sheets[1] = new Animation("img/level/eatles_wait.png", 0, 16, 1, 6);
+	// eatles_sheets[2] = new Animation("img/level/eatles_wait.png", 0, 16, 1, 6);
+	// eatles_sheets[3] = new Animation("img/level/eatles_wait.png", 0, 16, 1, 6);
+	// eatles_sheets[4] = new Animation("img/level/eatles_wait.png", 0, 16, 1, 6);
+	// eatles_sheets[5] = new Animation("img/level/eatles_wait.png", 0, 16, 1, 6);
+	eatles = eatles_sheets[0];
 	sprite_life = new Animation("img/level/life.png", 3, 1, 4, 1);
 	
 	// all sprites
@@ -118,7 +129,8 @@ StateLevel::~StateLevel() {
 	delete bg_grad;
 	delete bg_nograd;
 	delete hud;
-	delete eatles;
+	for (int i = 0; i < 6; ++i)
+		delete eatles_sheets[i];
 	delete sprite_life;
 	delete sprite_avatar;
 	delete sprite_blackhole;
@@ -207,6 +219,20 @@ void StateLevel::update() {
 		(*it)->update();
 	}
 	
+	// eatles
+	eatles->update();
+	// go back to normal sprite
+	if (eatles != eatles_sheets[0]) {
+		if (((Animation*)eatles)->getTimeSize() <= eatles_stopwatch.time())
+			eatles = eatles_sheets[0];
+	}
+	// get an animation
+	else if (!(rand()%(int(SDLBase::FPS())*EATLES_DELAY))) {
+		eatles = eatles_sheets[rand()%5 + 1];
+		((Animation*)eatles)->setFrame(0);
+		eatles_stopwatch.start();
+	}
+	
 	if ((!lose_) && (!win_)) {
 		// update the time text only after the level starts
 		if (!avatar->pinned)
@@ -260,7 +286,7 @@ void StateLevel::render() {
 	
 	// hud
 	hud->render();
-	eatles->render(45, 30);
+	eatles->render(37, 13);
 	text_time->render(288, 54);
 	sprite_life->render(236, 161);
 	
