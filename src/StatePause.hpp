@@ -1,26 +1,31 @@
 
-#ifndef STATEMENU_HPP
-#define STATEMENU_HPP
+#ifndef STATEPAUSE_HPP
+#define STATEPAUSE_HPP
 
 #include "State.hpp"
 #include "Button.hpp"
+#include "Text.hpp"
 
-class StateMenu : public State {
+class StatePause : public State {
 GAMESTATE
 private:
 	Sprite* bg;
 	
+	Text* pause;
+	
 	Button* resume;
+	Button* restart;
 	Button* mainmenu;
 public:
-	StateMenu(ArgsBase* args);
-	~StateMenu();
+	StatePause(ArgsBase* args);
+	~StatePause();
 	
 	void update();
 	void render();
 private:
 	void handleKeyDown(const observer::Event& event, bool& stop);
 	void handleResume(const observer::Event& event, bool& stop);
+	void handleRestart(const observer::Event& event, bool& stop);
 	void handleMainMenu(const observer::Event& event, bool& stop);
 };
 

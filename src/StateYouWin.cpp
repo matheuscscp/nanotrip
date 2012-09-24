@@ -23,9 +23,9 @@ StateYouWin::StateYouWin(ArgsBase* args) {
 	tryagain->getShape()->position = r2vec(640, 510);
 	tryagain->connect(Button::CLICKED, this, &StateYouWin::handleTryAgain);
 	
-	goahead = new Button(new Sprite("img/youwin/goahead.png"));
-	goahead->getShape()->position = r2vec(640, 560);
-	goahead->connect(Button::CLICKED, this, &StateYouWin::handleGoAhead);
+	cont = new Button(new Sprite("img/youwin/continue.png"));
+	cont->getShape()->position = r2vec(640, 560);
+	cont->connect(Button::CLICKED, this, &StateYouWin::handleContinue);
 }
 
 StateYouWin::~StateYouWin() {
@@ -37,13 +37,13 @@ StateYouWin::~StateYouWin() {
 	delete tryagain->sprite;
 	delete tryagain;
 	
-	delete goahead->sprite;
-	delete goahead;
+	delete cont->sprite;
+	delete cont;
 }
 
 void StateYouWin::update() {
 	tryagain->update();
-	goahead->update();
+	cont->update();
 }
 
 void StateYouWin::render() {
@@ -53,13 +53,13 @@ void StateYouWin::render() {
 	text_points->render(640, 330);
 	
 	tryagain->render();
-	goahead->render();
+	cont->render();
 }
 
 void StateYouWin::handleTryAgain(const observer::Event& event, bool& stop) {
 	throw new Unstack(new StateLevel::UnstackArgs(StateLevel::UnstackArgs::TRYAGAIN));
 }
 
-void StateYouWin::handleGoAhead(const observer::Event& event, bool& stop) {
-	throw new Unstack(new StateLevel::UnstackArgs(StateLevel::UnstackArgs::GOAHEAD));
+void StateYouWin::handleContinue(const observer::Event& event, bool& stop) {
+	throw new Unstack(new StateLevel::UnstackArgs(StateLevel::UnstackArgs::CONTINUE));
 }

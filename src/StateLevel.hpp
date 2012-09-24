@@ -20,7 +20,8 @@ public:
 		enum {
 			TRYAGAIN,
 			MAINMENU,
-			GOAHEAD
+			CONTINUE,
+			RESTART
 		};
 		
 		int op;

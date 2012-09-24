@@ -15,7 +15,7 @@ private:
 	Text* text_points;
 	
 	Button* tryagain;
-	Button* goahead;
+	Button* cont;
 public:
 	StateYouWin(ArgsBase* args);
 	~StateYouWin();
@@ -24,7 +24,7 @@ public:
 	void render();
 private:
 	void handleTryAgain(const observer::Event& event, bool& stop);
-	void handleGoAhead(const observer::Event& event, bool& stop);
+	void handleContinue(const observer::Event& event, bool& stop);
 };
 
 #endif

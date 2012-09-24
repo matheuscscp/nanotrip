@@ -181,8 +181,14 @@ void StateLevel::handleUnstack(ArgsBase* args) {
 		throw new Change("StateMainMenu");
 		break;
 		
-	case UnstackArgs::GOAHEAD:
+	case UnstackArgs::CONTINUE:
 		throw new Change(nextstate, new FinalArgs(points, nextargs));
+		break;
+		
+	case UnstackArgs::RESTART:
+		--life;
+		((Animation*)sprite_life)->setFrame(life);
+		reload();
 		break;
 		
 	default:
@@ -289,9 +295,9 @@ void StateLevel::render() {
 	
 	// main message
 	if ((avatar->pinned) && ((SDL_GetTicks()/600) % 2))
-		text_press_space->render(640, 360);
+		text_press_space->render(640, 355);
 	else if ((stopwatch.time() <= SOUND_DELAY - 1000) && (lose_))
-		text_you_lose->render(640, 360);
+		text_you_lose->render(640, 355);
 }
 
 void StateLevel::reload() {
@@ -430,7 +436,7 @@ void StateLevel::handleKeyDown(const observer::Event& event, bool& stop) {
 		if ((lose_) || (win_))
 			return;
 		frozen_ = true;
-		throw new StackUp("StateMenu");
+		throw new StackUp("StatePause", ((!life) ? new ArgsBase() : 0));
 		break;
 		
 	case SDLK_SPACE:
@@ -474,7 +480,7 @@ void StateLevel::lose() {
 	interaction_blackhole_collision->enabled = false;
 	unpinParticles();
 	
-	life--;
+	--life;
 	if (life >= 0)
 		((Animation*)sprite_life)->setFrame(life);
 	
