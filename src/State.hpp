@@ -129,10 +129,10 @@ public:
 	static State* build(const std::string& name, ArgsBase* args = 0);
 	
 	virtual void handleUnstack(ArgsBase* args);
-protected:
+	
 	/// Access method to the game state ID.
 	virtual id_type id() const = 0;
-public:
+	
 	/// The state tells if it's frozen, or not.
 	bool frozen() const;
 	

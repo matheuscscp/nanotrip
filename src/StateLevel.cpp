@@ -7,7 +7,7 @@
 #include "SDLBase.hpp"
 
 #define SOUND_DELAY		4000
-#define EATLES_DELAY	8
+#define EATLES_DELAY	4
 
 using namespace common;
 using namespace lalge;
@@ -49,19 +49,15 @@ charge_cursor_position(640)
 	bg_grad->render();
 	bg_grad->setAlpha(0.3f);
 	bg_nograd->setAlpha(0.15f);
+	
+	// hud
 	hud = new Sprite("img/level/hud.png");
 	eatles_sheets[0] = new Sprite("img/level/eatles.png");
 	eatles_sheets[1] = new Animation("img/level/eatles_blink.png", 0, 16, 1, 4);
-	eatles_sheets[2] = new Animation("img/level/eatles_blink.png", 0, 16, 1, 4);
+	eatles_sheets[2] = new Animation("img/level/eatles_wait.png", 0, 20, 1, 18);
 	eatles_sheets[3] = new Animation("img/level/eatles_blink.png", 0, 16, 1, 4);
 	eatles_sheets[4] = new Animation("img/level/eatles_laugh.png", 0, 8, 1, 8);
 	eatles_sheets[5] = new Animation("img/level/eatles_laugh.png", 0, 8, 1, 8);
-	// eatles_sheets[1] = new Animation("img/level/eatles_wait.png", 0, 16, 1, 6);
-	// eatles_sheets[2] = new Animation("img/level/eatles_wait.png", 0, 16, 1, 6);
-	// eatles_sheets[3] = new Animation("img/level/eatles_wait.png", 0, 16, 1, 6);
-	// eatles_sheets[4] = new Animation("img/level/eatles_wait.png", 0, 16, 1, 6);
-	// eatles_sheets[5] = new Animation("img/level/eatles_wait.png", 0, 16, 1, 6);
-	eatles = eatles_sheets[0];
 	sprite_life = new Animation("img/level/life.png", 3, 1, 4, 1);
 	
 	// all sprites
@@ -221,19 +217,21 @@ void StateLevel::update() {
 	
 	// eatles
 	eatles->update();
-	// go back to normal sprite
-	if (eatles != eatles_sheets[0]) {
-		if (((Animation*)eatles)->getTimeSize() <= eatles_stopwatch.time())
-			eatles = eatles_sheets[0];
-	}
-	// get an animation
-	else if (!(rand()%(int(SDLBase::FPS())*EATLES_DELAY))) {
-		eatles = eatles_sheets[rand()%5 + 1];
-		((Animation*)eatles)->setFrame(0);
-		eatles_stopwatch.start();
-	}
 	
-	if ((!lose_) && (!win_)) {
+	if (states.back()->id() != StateLevel::getid()) {}	// avoiding throws while stacked
+	else if ((!lose_) && (!win_)) {
+		// eatles go back to normal sprite
+		if (eatles != eatles_sheets[0]) {
+			if (((Animation*)eatles)->getTimeSize() <= eatles_stopwatch.time())
+				eatles = eatles_sheets[0];
+		}
+		// eatles get an animation
+		else if (!(rand()%(int(SDLBase::FPS())*EATLES_DELAY))) {
+			eatles = eatles_sheets[rand()%3 + 1];
+			((Animation*)eatles)->setFrame(0);
+			eatles_stopwatch.start();
+		}
+		
 		// update the time text only after the level starts
 		if (!avatar->pinned)
 			setTimeText(round(float(timer.time())/1000));
@@ -245,17 +243,12 @@ void StateLevel::update() {
 	else if (stopwatch.time() >= SOUND_DELAY) {
 		if (lose_) {
 			// if it was the last try
-			if (life < 0) {
-				frozen_ = true;
+			if (life < 0)
 				throw new StackUp("StateGameOver");
-			}
-			
 			reload();
 		}
-		else {
-			frozen_ = true;
+		else
 			throw new StackUp("StateYouWin", new FinalArgs(points));
-		}
 	}
 }
 
@@ -309,6 +302,7 @@ void StateLevel::reload() {
 }
 
 void StateLevel::assemble() {
+	eatles = eatles_sheets[0];
 	points = 0;
 	setTimeText(level_time);
 	
@@ -466,6 +460,11 @@ void StateLevel::handleAvatarBeingSwallowed(const observer::Event& event, bool& 
 }
 
 void StateLevel::lose() {
+	// eatles animation
+	eatles = eatles_sheets[4];
+	((Animation*)eatles)->setFrame(0);
+	eatles_stopwatch.start();
+	
 	lose_ = true;
 	
 	// time's up! particles get free and blackhole goes away
@@ -499,6 +498,11 @@ void StateLevel::unpinParticles() {
 }
 
 void StateLevel::win() {
+	// eatles animation
+	eatles = eatles_sheets[5];
+	((Animation*)eatles)->setFrame(0);
+	eatles_stopwatch.start();
+	
 	win_ = true;
 	
 	timer.pause();

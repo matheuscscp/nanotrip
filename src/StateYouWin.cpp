@@ -12,7 +12,7 @@ GAMESTATE_DEF(StateYouWin)
 StateYouWin::StateYouWin(ArgsBase* args) {
 	bg = new Sprite("img/youwin/background.png");
 	
-	text_you_win = new Text("ttf/Swiss721BlackRoundedBT.ttf", "You win", 100, 0, SDLBase::getColor(255, 255, 255), Text::blended);
+	text_you_win = new Text("ttf/Swiss721BlackRoundedBT.ttf", "YOU WIN", 100, 0, SDLBase::getColor(255, 255, 255), Text::blended);
 	std::stringstream ss;
 	ss << "Score: ";
 	ss << ((StateLevel::FinalArgs*)args)->points;
