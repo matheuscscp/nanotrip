@@ -597,6 +597,7 @@ void StateLevel::handleItemCollision(const observer::Event& event, bool& stop) {
 	// sprite
 	switch (operation) {
 	case Item::TIME:
+		if ((round(float(timer.time())/1000) > 5) || (value >= 0))
 		{
 			int new_time = round(float(timer.time())/1000) + value;
 			if (new_time < 5)
