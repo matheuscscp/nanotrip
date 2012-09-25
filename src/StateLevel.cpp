@@ -207,10 +207,8 @@ void StateLevel::handleUnstack(ArgsBase* args) {
 		throw new Change(nextstate, new FinalArgs(points, nextargs));
 		break;
 		
-	case UnstackArgs::RESET:
-		--life;
-		((Animation*)sprite_life)->setFrame(life);
-		reload();
+	case UnstackArgs::RETRY:
+		lose();
 		break;
 		
 	case UnstackArgs::QUITLEVEL:

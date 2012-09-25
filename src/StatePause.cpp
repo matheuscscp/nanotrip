@@ -8,7 +8,7 @@ using namespace lalge;
 
 GAMESTATE_DEF(StatePause)
 
-StatePause::StatePause(ArgsBase* args) : reset(0) {
+StatePause::StatePause(ArgsBase* args) : retry(0) {
 	bg = new Sprite("img/pause/background.png");
 	
 	pause = new Text("ttf/Swiss721BlackRoundedBT.ttf", "PAUSE", 100, 0, SDLBase::getColor(255, 255, 255), Text::blended);
@@ -20,9 +20,9 @@ StatePause::StatePause(ArgsBase* args) : reset(0) {
 	if (args)
 		delete args;
 	else {
-		reset = new Button(new Sprite("img/pause/reset.png"));
-		reset->getShape()->position = r2vec(640, 450);
-		reset->connect(Button::CLICKED, this, &StatePause::handleReset);
+		retry = new Button(new Sprite("img/pause/retry.png"));
+		retry->getShape()->position = r2vec(640, 450);
+		retry->connect(Button::CLICKED, this, &StatePause::handleRetry);
 	}
 	
 	quitlevel = new Button(new Sprite("img/pause/quitlevel.png"));
@@ -40,9 +40,9 @@ StatePause::~StatePause() {
 	delete resume->sprite;
 	delete resume;
 	
-	if (reset) {
-		delete reset->sprite;
-		delete reset;
+	if (retry) {
+		delete retry->sprite;
+		delete retry;
 	}
 	
 	delete quitlevel->sprite;
@@ -51,8 +51,8 @@ StatePause::~StatePause() {
 
 void StatePause::update() {
 	resume->update();
-	if (reset)
-		reset->update();
+	if (retry)
+		retry->update();
 	quitlevel->update();
 }
 
@@ -60,8 +60,8 @@ void StatePause::render() {
 	bg->render(640, 360, true);
 	pause->render(640, 260);
 	resume->render();
-	if (reset)
-		reset->render();
+	if (retry)
+		retry->render();
 	quitlevel->render();
 }
 
@@ -74,8 +74,8 @@ void StatePause::handleResume(const observer::Event& event, bool& stop) {
 	throw new Unstack();
 }
 
-void StatePause::handleReset(const observer::Event& event, bool& stop) {
-	throw new Unstack(new StateLevel::UnstackArgs(StateLevel::UnstackArgs::RESET));
+void StatePause::handleRetry(const observer::Event& event, bool& stop) {
+	throw new Unstack(new StateLevel::UnstackArgs(StateLevel::UnstackArgs::RETRY));
 }
 
 void StatePause::handleQuitLevel(const observer::Event& event, bool& stop) {

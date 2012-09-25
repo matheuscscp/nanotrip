@@ -22,7 +22,7 @@ public:
 			TRYAGAIN,
 			MAINMENU,
 			CONTINUE,
-			RESET,
+			RETRY,
 			QUITLEVEL
 		};
 		
