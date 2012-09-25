@@ -20,7 +20,8 @@ public:
 		TIME = 0,
 		POINT,
 		LIFE,
-		MASS
+		MASS,
+		KEY
 	};
 	
 	class Event : public observer::Event {

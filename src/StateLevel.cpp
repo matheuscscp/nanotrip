@@ -66,6 +66,7 @@ charge_cursor_position(640)
 	
 	// all sprites
 	sprite_avatar = new Animation("img/level/avatar_positive.png", 0, 7, 1, 16);
+	sprite_key = new Sprite("img/level/item_key.png");
 	sprite_blackhole = new Animation("img/level/blackhole.png", 0, 30, 1, 20);
 	sprite_negative = new Sprite("img/level/particle_negative.png");
 	sprite_negative_anim = new Animation("img/level/particle_negative_ssheet.png", 0, 20, 1, 9);
@@ -143,6 +144,7 @@ StateLevel::~StateLevel() {
 		delete eatles_sheets[i];
 	delete sprite_life;
 	delete sprite_avatar;
+	delete sprite_key;
 	delete sprite_blackhole;
 	delete sprite_negative;
 	delete sprite_negative_anim;
@@ -219,7 +221,7 @@ void StateLevel::handleUnstack(ArgsBase* args) {
 		// main menu if nanotrip history
 		if (nextargs)
 			delete nextargs;
-		throw new Change("StateMainMenu");
+		throw new Change("StateInstructions");
 		break;
 		
 	default:
@@ -306,6 +308,9 @@ void StateLevel::render() {
 		(*it)->render();
 	}
 	
+	// the key
+	key->render();
+	
 	// the avatar
 	avatar->render();
 	
@@ -354,12 +359,18 @@ void StateLevel::assemble() {
 	
 	assembleAvatar();
 	
+	assembleKey();
+	
+	// avatar-key interaction
+	interactions.push_back(Interaction(key, avatar, (Interaction::callback)&Item::checkAvatarCollision));
+	
 	assembleBlackHole();
 	
 	// avatar-blackhole interactions
 	interactions.push_back(Interaction(avatar, blackhole, (Interaction::callback)&Particle::addParticleFieldForces, true));
 	interaction_blackhole_force = &interactions.back();
 	interactions.push_back(Interaction(avatar, blackhole, (Interaction::callback)&Avatar::checkBlackHoleCollision));
+	interaction_blackhole_collision = &interactions.back();
 	
 	// all particles
 	list<Configuration> conf_particles = raw.getConfigList("particle");
@@ -405,6 +416,19 @@ void StateLevel::assembleAvatar() {
 	// sprite
 	avatar->sprite = sprite_avatar;
 	((Circle*)avatar->getShape())->setRadius(avatar->sprite->rectW()/2);
+}
+
+void StateLevel::assembleKey() {
+	Configuration conf = raw.getConfig("key");
+	key = new Item();
+	key->connect(Item::COLLISION, this, &StateLevel::handleItemCollision);
+	key->pinned = true;
+	key->getShape()->position = r2vec(conf.getReal("x"), conf.getReal("y"));
+	key->operation = Item::KEY;
+	
+	// sprite
+	key->sprite = sprite_key;
+	((Circle*)key->getShape())->setRadius(key->sprite->rectW()/2);
 }
 
 void StateLevel::assembleBlackHole() {
@@ -493,6 +517,9 @@ Item* StateLevel::assembleItem(const Configuration& conf) {
 void StateLevel::clear() {
 	// the avatar
 	delete avatar;
+	
+	// the key
+	delete key;
 	
 	// the blackhole
 	delete blackhole;
@@ -597,6 +624,10 @@ void StateLevel::handleItemCollision(const observer::Event& event, bool& stop) {
 		avatar->addMass(value);
 		break;
 		
+	case Item::KEY:
+		//TODO
+		break;
+		
 	default:
 		break;
 	}
@@ -614,6 +645,7 @@ void StateLevel::lose() {
 	bg = bg_nograd;
 	blackhole->hidden = true;
 	interaction_blackhole_force->enabled = false;
+	interaction_blackhole_collision->enabled = false;
 	unpinParticles();
 	
 	--life;

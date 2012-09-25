@@ -75,6 +75,7 @@ protected:
 	Sprite* border_left;
 	
 	Sprite* sprite_avatar;
+	Sprite* sprite_key;
 	Sprite* sprite_blackhole;
 	Sprite* sprite_negative;
 	Sprite* sprite_negative_anim;
@@ -101,8 +102,10 @@ protected:
 	
 	std::list<Interaction> interactions;
 	Interaction* interaction_blackhole_force;
+	Interaction* interaction_blackhole_collision;
 	
 	Avatar* avatar;
+	Item* key;
 	Particle* blackhole;
 	std::list<Particle*> particles;
 	std::list<Item*> items;
@@ -123,6 +126,7 @@ protected:
 	void reload();
 	void assemble();
 	void assembleAvatar();
+	void assembleKey();
 	void assembleBlackHole();
 	Particle* assembleParticle(const Configuration& conf);
 	Item* assembleItem(const Configuration& conf);
