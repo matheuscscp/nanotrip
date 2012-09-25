@@ -42,12 +42,16 @@ border_left(0),
 max_abs_charge(1),
 charge_cursor_position(640)
 {
+	srand(time(0));
+	
 	// screen box
 	screen_box.position = r2vec(640, 360);
 	screen_box.setWidth(1280);
 	screen_box.setHeight(720);
 	
 	// background
+	bg_x = rand()%641;
+	bg_y = rand()%361;
 	bg_grad = new Sprite("img/level/background.png");
 	bg_nograd = new Sprite("img/level/background.png");
 	bg_grad->render();
@@ -293,7 +297,7 @@ void StateLevel::update() {
 
 void StateLevel::render() {
 	// background
-	bg->render();
+	bg->render(-bg_x, -bg_y);
 	
 	// the blackhole
 	blackhole->render();
@@ -457,12 +461,12 @@ Particle* StateLevel::assembleParticle(const Configuration& conf) {
 	else if (particle->charge < 0) {
 		particle->sprite = sprite_negative_anim;
 		if (!is_bg_init)
-			bg->gradient(particle->getShape()->position.x(0), particle->getShape()->position.x(1), 1500000*particle->charge*particle->charge, 255, 31, 77, 0);
+			bg->gradient(particle->getShape()->position.x(0) + bg_x, particle->getShape()->position.x(1) + bg_y, 1500000*particle->charge*particle->charge, 255, 31, 77, 0);
 	}
 	else {
 		particle->sprite = sprite_positive_anim;
 		if (!is_bg_init)
-			bg->gradient(particle->getShape()->position.x(0), particle->getShape()->position.x(1), 1500000*particle->charge*particle->charge, 51, 74, 144, 0);
+			bg->gradient(particle->getShape()->position.x(0) + bg_x, particle->getShape()->position.x(1) + bg_y, 1500000*particle->charge*particle->charge, 51, 74, 144, 0);
 	}
 	((Circle*)particle->getShape())->setRadius(particle->sprite->rectW()/2);
 	

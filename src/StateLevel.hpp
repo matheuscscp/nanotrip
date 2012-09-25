@@ -49,6 +49,7 @@ protected:
 	std::string nextstate;
 	ArgsBase* nextargs;
 	
+	int bg_x, bg_y;
 	bool is_bg_init;
 	bool lose_;
 	bool win_;
