@@ -8,17 +8,21 @@
 
 #define SOUND_DELAY		4000
 #define EATLES_DELAY	4
+#define TIME_POINTS		1
+#define LIFE_POINTS		1
 
 using namespace common;
 using namespace lalge;
 
+using std::string;
 using std::list;
+using std::stringstream;
 
 GAMESTATE_DEF(StateLevel)
 
 StateLevel::UnstackArgs::UnstackArgs(int op) : op(op) {}
 
-StateLevel::Args::Args(bool history, const std::string& levelname, const std::string& nextstate, ArgsBase* nextargs) :
+StateLevel::Args::Args(bool history, const string& levelname, const string& nextstate, ArgsBase* nextargs) :
 history(history), levelname(levelname), nextstate(nextstate), nextargs(nextargs) {}
 
 StateLevel::FinalArgs::FinalArgs(int points, ArgsBase* nextargs) :
@@ -83,8 +87,9 @@ charge_cursor_position(640)
 	InputManager::instance()->connect(InputManager::MOUSEMOTION, this, &StateLevel::handleMouseMotion);
 	
 	// texts
+	text_time = new Text("ttf/Swiss721BlackRoundedBT.ttf", "0:00", 13, 0, SDLBase::getColor(255, 31, 77), Text::blended);
+	text_points = new Text("ttf/Swiss721BlackRoundedBT.ttf", "0", 12, 0, SDLBase::getColor(65, 217, 255), Text::blended);
 	text_press_space = new Text("ttf/Swiss721BlackRoundedBT.ttf", "Press space", 100, 0, SDLBase::getColor(255, 255, 255), Text::blended);
-	text_time = new Text("ttf/Swiss721BlackRoundedBT.ttf", "0:00", 14, 0, SDLBase::getColor(255, 31, 77), Text::blended);
 	text_you_lose = new Text("ttf/Swiss721BlackRoundedBT.ttf", "You lose", 100, 0, SDLBase::getColor(255, 255, 255), Text::blended);
 	
 	// charge changer
@@ -152,8 +157,9 @@ StateLevel::~StateLevel() {
 		delete border_left;
 	
 	// texts
-	delete text_press_space;
 	delete text_time;
+	delete text_points;
+	delete text_press_space;
 	delete text_you_lose;
 	
 	// charge cursor
@@ -186,13 +192,13 @@ void StateLevel::handleUnstack(ArgsBase* args) {
 		throw new Change(nextstate, new FinalArgs(points, nextargs));
 		break;
 		
-	case UnstackArgs::RESTART:
+	case UnstackArgs::RESET:
 		--life;
 		((Animation*)sprite_life)->setFrame(life);
 		reload();
 		break;
 		
-	case UnstackArgs::MENU:
+	case UnstackArgs::QUITLEVEL:
 		// continue if not nanotrip history
 		if (!history)
 			throw new Change(nextstate, new FinalArgs(points, nextargs));
@@ -298,7 +304,8 @@ void StateLevel::render() {
 	// hud
 	hud->render();
 	eatles->render(37, 13);
-	text_time->render(288, 54);
+	text_time->render(289, 53);
+	text_points->render(281, 115);
 	sprite_life->render(236, 161);
 	
 	// charge changer
@@ -322,6 +329,7 @@ void StateLevel::reload() {
 void StateLevel::assemble() {
 	eatles = eatles_sheets[0];
 	points = 0;
+	addPoints(0);
 	setTimeText(level_time);
 	
 	bg = bg_grad;
@@ -431,7 +439,7 @@ void StateLevel::clear() {
 }
 
 void StateLevel::setTimeText(int seconds) {
-	std::stringstream ss;
+	stringstream ss;
 	int minutes = seconds/60;
 	seconds -= (minutes*60);
 	ss << minutes;
@@ -448,7 +456,7 @@ void StateLevel::handleKeyDown(const observer::Event& event, bool& stop) {
 		if ((lose_) || (win_))
 			return;
 		frozen_ = true;
-		throw new StackUp("StatePause", ((!life) ? new ArgsBase() : 0));
+		throw new StackUp("StatePause", (((!life) || (avatar->pinned)) ? new ArgsBase() : 0));
 		break;
 		
 	case SDLK_SPACE:
@@ -524,8 +532,47 @@ void StateLevel::win() {
 	win_ = true;
 	
 	timer.pause();
+	addPoints(round(TIME_POINTS*float(timer.time())/(1000*level_time)) + LIFE_POINTS*life);
 	
 	sound_win->play(1);
 	
 	stopwatch.start();
+}
+
+void StateLevel::addPoints(int plus) {
+	// the new value
+	points += plus;
+	if (points < 0)
+		points = 0;
+	else if (points > 9999)
+		points = 9999;
+	
+	// the text
+	stringstream ss;
+	string tmp;
+	ss << points;
+	tmp = ss.str();
+	text_points->setText(tmp);
+	
+	// the text size
+	switch (tmp.size()) {
+	case 1:
+		text_points->setSize(30);
+		break;
+		
+	case 2:
+		text_points->setSize(20);
+		break;
+		
+	case 3:
+		text_points->setSize(15);
+		break;
+		
+	case 4:
+		text_points->setSize(12);
+		break;
+		
+	default:
+		break;
+	}
 }

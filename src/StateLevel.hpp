@@ -21,8 +21,8 @@ public:
 			TRYAGAIN,
 			MAINMENU,
 			CONTINUE,
-			RESTART,
-			MENU
+			RESET,
+			QUITLEVEL
 		};
 		
 		int op;
@@ -85,8 +85,9 @@ protected:
 	Audio* sound_lose;
 	Audio* sound_win;
 	
-	Text* text_press_space;
 	Text* text_time;
+	Text* text_points;
+	Text* text_press_space;
 	Text* text_you_lose;
 	
 	Configuration raw;
@@ -130,6 +131,8 @@ protected:
 	void unpinParticles();
 	
 	void win();
+	
+	void addPoints(int plus);
 };
 
 #endif

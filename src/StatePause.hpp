@@ -14,8 +14,8 @@ private:
 	Text* pause;
 	
 	Button* resume;
-	Button* restart;
-	Button* menu;
+	Button* reset;
+	Button* quitlevel;
 public:
 	StatePause(ArgsBase* args);
 	~StatePause();
@@ -25,8 +25,8 @@ public:
 private:
 	void handleKeyDown(const observer::Event& event, bool& stop);
 	void handleResume(const observer::Event& event, bool& stop);
-	void handleRestart(const observer::Event& event, bool& stop);
-	void handleMenu(const observer::Event& event, bool& stop);
+	void handleReset(const observer::Event& event, bool& stop);
+	void handleQuitLevel(const observer::Event& event, bool& stop);
 };
 
 #endif
