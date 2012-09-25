@@ -77,13 +77,11 @@ charge_cursor_position(640)
 	sprite_neutral = new Sprite("img/level/particle_neutral.png");
 	sprite_positive = new Sprite("img/level/particle_positive.png");
 	sprite_positive_anim = new Animation("img/level/particle_positive_ssheet.png", 0, 20, 1, 9);
-	sprite_less_time = new Sprite("img/level/item_less_time.png");
-	sprite_more_time = new Sprite("img/level/item_more_time.png");
-	sprite_less_point = new Sprite("img/level/item_less_point.png");
-	sprite_more_point = new Sprite("img/level/item_more_point.png");
-	sprite_less_life = new Sprite("img/level/item_less_life.png");
-	sprite_more_life = new Sprite("img/level/item_more_life.png");
-	sprite_mass = new Sprite("img/level/item_mass.png");
+	sprite_item_time = new Sprite("img/level/item_time.png");
+	sprite_item_point = new Sprite("img/level/item_point.png");
+	sprite_item_life = new Sprite("img/level/item_life.png");
+	sprite_item_mass = new Sprite("img/level/item_mass.png");
+	sprite_item_barrier = new Sprite("img/level/item_barrier.png");
 	
 	// all sounds
 	sound_lose = new Audio("sfx/level/lose.wav");
@@ -155,13 +153,11 @@ StateLevel::~StateLevel() {
 	delete sprite_neutral;
 	delete sprite_positive;
 	delete sprite_positive_anim;
-	delete sprite_less_time;
-	delete sprite_more_time;
-	delete sprite_less_point;
-	delete sprite_more_point;
-	delete sprite_less_life;
-	delete sprite_more_life;
-	delete sprite_mass;
+	delete sprite_item_time;
+	delete sprite_item_point;
+	delete sprite_item_life;
+	delete sprite_item_mass;
+	delete sprite_item_barrier;
 	
 	// all sounds
 	delete sound_lose;
@@ -480,38 +476,17 @@ Item* StateLevel::assembleItem(const Configuration& conf) {
 	item->getShape()->position = r2vec(conf.getReal("x"), conf.getReal("y"));
 	item->operation = conf.getInt("operation");
 	item->value = conf.getInt("value");
+	if (item->value < 0)
+		item->value *= -1;
 	
 	// sprite
 	switch (item->operation) {
-	case Item::TIME:
-		if (item->value < 0)
-			item->sprite = sprite_less_time;
-		else
-			item->sprite = sprite_more_time;
-		break;
-		
-	case Item::POINT:
-		if (item->value < 0)
-			item->sprite = sprite_less_point;
-		else
-			item->sprite = sprite_more_point;
-		break;
-		
-	case Item::LIFE:
-		if (item->value < 0)
-			item->sprite = sprite_less_life;
-		else
-			item->sprite = sprite_more_life;
-		break;
-		
-	case Item::MASS:
-		if (item->value < 0)
-			item->value *= -1;
-		item->sprite = sprite_mass;
-		break;
-		
-	default:
-		break;
+		case Item::TIME:	item->sprite = sprite_item_time;	break;
+		case Item::POINT:	item->sprite = sprite_item_point;	break;
+		case Item::LIFE:	item->sprite = sprite_item_life;	break;
+		case Item::MASS:	item->sprite = sprite_item_mass;	break;
+		case Item::BARRIER:	item->sprite = sprite_item_barrier;	break;
+		default:												break;
 	}
 	((Circle*)item->getShape())->setRadius(item->sprite->rectW()/2);
 	
@@ -600,13 +575,14 @@ void StateLevel::handleItemCollision(const observer::Event& event, bool& stop) {
 	
 	// sprite
 	switch (operation) {
+	case Item::KEY:
+		//TODO
+		break;
+		
 	case Item::TIME:
-		if ((round(float(timer.time())/1000) > 5) || (value >= 0))
 		{
 			int new_time = round(float(timer.time())/1000) + value;
-			if (new_time < 5)
-				new_time = 5;
-			else if (new_time > 599)
+			if (new_time > 599)
 				new_time = 599;
 			timer.start(new_time*1000);
 		}
@@ -618,9 +594,7 @@ void StateLevel::handleItemCollision(const observer::Event& event, bool& stop) {
 		
 	case Item::LIFE:
 		life += value;
-		if (life < 0)
-			life = 0;
-		else if (life > 3)
+		if (life > 3)
 			life = 3;
 		((Animation*)sprite_life)->setFrame(life);
 		break;
@@ -629,8 +603,9 @@ void StateLevel::handleItemCollision(const observer::Event& event, bool& stop) {
 		avatar->addMass(value);
 		break;
 		
-	case Item::KEY:
-		//TODO
+	case Item::BARRIER:
+		if (value)
+			lose();
 		break;
 		
 	default:
@@ -709,10 +684,10 @@ void StateLevel::addPoints(int plus) {
 	
 	// the text size
 	switch (tmp.size()) {
-	case 1:	text_points->setSize(30);	break;
-	case 2:	text_points->setSize(20);	break;
-	case 3:	text_points->setSize(15);	break;
-	case 4:	text_points->setSize(12);	break;
-	default:							break;
+		case 1:	text_points->setSize(30);	break;
+		case 2:	text_points->setSize(20);	break;
+		case 3:	text_points->setSize(15);	break;
+		case 4:	text_points->setSize(12);	break;
+		default:							break;
 	}
 }

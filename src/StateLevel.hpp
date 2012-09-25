@@ -83,13 +83,11 @@ protected:
 	Sprite* sprite_neutral;
 	Sprite* sprite_positive;
 	Sprite* sprite_positive_anim;
-	Sprite* sprite_less_time;
-	Sprite* sprite_more_time;
-	Sprite* sprite_less_point;
-	Sprite* sprite_more_point;
-	Sprite* sprite_less_life;
-	Sprite* sprite_more_life;
-	Sprite* sprite_mass;
+	Sprite* sprite_item_time;
+	Sprite* sprite_item_point;
+	Sprite* sprite_item_life;
+	Sprite* sprite_item_mass;
+	Sprite* sprite_item_barrier;
 	
 	Audio* sound_lose;
 	Audio* sound_win;

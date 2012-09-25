@@ -17,11 +17,12 @@ public:
 	};
 	
 	enum type {
-		TIME = 0,
-		POINT,
-		LIFE,
-		MASS,
-		KEY
+		KEY = 0,
+		TIME,	// 1
+		POINT,	// 2
+		LIFE,	// 3
+		MASS,	// 4
+		BARRIER	// 5
 	};
 	
 	class Event : public observer::Event {

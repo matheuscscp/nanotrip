@@ -9,8 +9,12 @@ Item::Item() : operation(0), value(0) { subject.init(LASTEVENT); }
 
 void Item::checkAvatarCollision(GameObject* avatar, bool& enable) {
 	if (collides(*((Particle*)avatar))) {
-		enable = false;
-		hidden = true;
+		if (value == BARRIER)
+			manageParticleCollision(avatar, enable);
+		else {
+			enable = false;
+			hidden = true;
+		}
 		subject.broadcast(Event(operation, value));
 	}
 }
