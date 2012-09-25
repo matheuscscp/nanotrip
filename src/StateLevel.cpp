@@ -22,14 +22,13 @@ GAMESTATE_DEF(StateLevel)
 
 StateLevel::UnstackArgs::UnstackArgs(int op) : op(op) {}
 
-StateLevel::Args::Args(bool history, const string& levelname, const string& nextstate, ArgsBase* nextargs) :
-history(history), levelname(levelname), nextstate(nextstate), nextargs(nextargs) {}
+StateLevel::Args::Args(const string& levelname, const string& nextstate, ArgsBase* nextargs) :
+levelname(levelname), nextstate(nextstate), nextargs(nextargs) {}
 
 StateLevel::FinalArgs::FinalArgs(int points, ArgsBase* nextargs) :
 points(points), nextargs(nextargs) {}
 
 StateLevel::StateLevel(ArgsBase* args) :
-history(((Args*)args)->history),
 nextstate(((Args*)args)->nextstate),
 nextargs(((Args*)args)->nextargs),
 is_bg_init(false),
@@ -99,6 +98,8 @@ charge_cursor_position(640)
 	// general config
 	{
 		Configuration general = raw.getConfig("general");
+		
+		history = general.getInt("history");
 		
 		// level time
 		level_time = general.getInt("level_time");

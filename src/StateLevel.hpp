@@ -31,11 +31,10 @@ public:
 	
 	class Args : public ArgsBase {
 	public:
-		bool history;
 		std::string levelname;
 		std::string nextstate;
 		ArgsBase* nextargs;
-		Args(bool history, const std::string& levelname, const std::string& nextstate, ArgsBase* nextargs = 0);
+		Args(const std::string& levelname, const std::string& nextstate, ArgsBase* nextargs = 0);
 	};
 	
 	class FinalArgs : public ArgsBase {

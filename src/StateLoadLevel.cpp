@@ -84,7 +84,7 @@ void StateLoadLevel::handleEnter(const observer::Event& event, bool& stop) {
 		warning_hidden = false;
 	else {
 		f.close();
-		throw new Change("StateLevel", new StateLevel::Args(false, inputstring.get(), "StateLoadLevel"));
+		throw new Change("StateLevel", new StateLevel::Args(inputstring.get(), "StateLoadLevel"));
 	}
 }
 
