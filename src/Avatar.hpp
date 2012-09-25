@@ -23,7 +23,7 @@ public:
 	
 	void update();
 	
-	void checkBlackHole(GameObject* blackhole, bool& enable);
+	void checkBlackHoleCollision(GameObject* blackhole, bool& enable);
 };
 
 #endif

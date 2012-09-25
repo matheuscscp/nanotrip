@@ -6,6 +6,7 @@
 
 #include "State.hpp"
 #include "Avatar.hpp"
+#include "Item.hpp"
 #include "Timer.hpp"
 #include "Stopwatch.hpp"
 #include "Rectangle.hpp"
@@ -80,6 +81,13 @@ protected:
 	Sprite* sprite_neutral;
 	Sprite* sprite_positive;
 	Sprite* sprite_positive_anim;
+	Sprite* sprite_less_time;
+	Sprite* sprite_more_time;
+	Sprite* sprite_less_point;
+	Sprite* sprite_more_point;
+	Sprite* sprite_less_life;
+	Sprite* sprite_more_life;
+	Sprite* sprite_mass;
 	
 	Audio* sound_lose;
 	Audio* sound_win;
@@ -93,11 +101,11 @@ protected:
 	
 	std::list<Interaction> interactions;
 	Interaction* interaction_blackhole_force;
-	Interaction* interaction_blackhole_collision;
 	
 	Avatar* avatar;
 	Particle* blackhole;
 	std::list<Particle*> particles;
+	std::list<Item*> items;
 	
 	Sprite* charge_cursor;
 	Sprite* charge_bar;
@@ -117,6 +125,7 @@ protected:
 	void assembleAvatar();
 	void assembleBlackHole();
 	Particle* assembleParticle(const Configuration& conf);
+	Item* assembleItem(const Configuration& conf);
 	void clear();
 	
 	void setTimeText(int seconds);
@@ -125,6 +134,7 @@ protected:
 	void handleMouseMotion(const observer::Event& event, bool& stop);
 	void handleTimerDone(const observer::Event& event, bool& stop);
 	void handleAvatarBeingSwallowed(const observer::Event& event, bool& stop);
+	void handleItemCollision(const observer::Event& event, bool& stop);
 	
 	void lose();
 	void unpinParticles();

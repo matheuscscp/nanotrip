@@ -67,11 +67,18 @@ charge_cursor_position(640)
 	// all sprites
 	sprite_avatar = new Animation("img/level/avatar_positive.png", 0, 7, 1, 16);
 	sprite_blackhole = new Animation("img/level/blackhole.png", 0, 30, 1, 20);
-	sprite_negative = new Sprite("img/level/negative.png");
-	sprite_negative_anim = new Animation("img/level/negative_ssheet.png", 0, 20, 1, 9);
-	sprite_neutral = new Sprite("img/level/neutral.png");
-	sprite_positive = new Sprite("img/level/positive.png");
-	sprite_positive_anim = new Animation("img/level/positive_ssheet.png", 0, 20, 1, 9);
+	sprite_negative = new Sprite("img/level/particle_negative.png");
+	sprite_negative_anim = new Animation("img/level/particle_negative_ssheet.png", 0, 20, 1, 9);
+	sprite_neutral = new Sprite("img/level/particle_neutral.png");
+	sprite_positive = new Sprite("img/level/particle_positive.png");
+	sprite_positive_anim = new Animation("img/level/particle_positive_ssheet.png", 0, 20, 1, 9);
+	sprite_less_time = new Sprite("img/level/item_less_time.png");
+	sprite_more_time = new Sprite("img/level/item_more_time.png");
+	sprite_less_point = new Sprite("img/level/item_less_point.png");
+	sprite_more_point = new Sprite("img/level/item_more_point.png");
+	sprite_less_life = new Sprite("img/level/item_less_life.png");
+	sprite_more_life = new Sprite("img/level/item_more_life.png");
+	sprite_mass = new Sprite("img/level/item_mass.png");
 	
 	// all sounds
 	sound_lose = new Audio("sfx/level/lose.wav");
@@ -142,6 +149,13 @@ StateLevel::~StateLevel() {
 	delete sprite_neutral;
 	delete sprite_positive;
 	delete sprite_positive_anim;
+	delete sprite_less_time;
+	delete sprite_more_time;
+	delete sprite_less_point;
+	delete sprite_more_point;
+	delete sprite_less_life;
+	delete sprite_more_life;
+	delete sprite_mass;
 	
 	// all sounds
 	delete sound_lose;
@@ -281,13 +295,18 @@ void StateLevel::render() {
 	// background
 	bg->render();
 	
+	// the blackhole
+	blackhole->render();
+	
 	// all particles
 	for (list<Particle*>::iterator it = particles.begin(); it != particles.end(); ++it) {
 		(*it)->render();
 	}
 	
-	// the blackhole
-	blackhole->render();
+	// all items
+	for (list<Item*>::iterator it = items.begin(); it != items.end(); ++it) {
+		(*it)->render();
+	}
 	
 	// the avatar
 	avatar->render();
@@ -342,12 +361,11 @@ void StateLevel::assemble() {
 	// avatar-blackhole interactions
 	interactions.push_back(Interaction(avatar, blackhole, (Interaction::callback)&Particle::addParticleFieldForces, true));
 	interaction_blackhole_force = &interactions.back();
-	interactions.push_back(Interaction(avatar, blackhole, (Interaction::callback)&Avatar::checkBlackHole));
-	interaction_blackhole_collision = &interactions.back();
+	interactions.push_back(Interaction(avatar, blackhole, (Interaction::callback)&Avatar::checkBlackHoleCollision));
 	
 	// all particles
-	list<Configuration> conf = raw.getConfigList("particle");
-	for (list<Configuration>::iterator it1 = conf.begin(); it1 != conf.end(); ++it1) {
+	list<Configuration> conf_particles = raw.getConfigList("particle");
+	for (list<Configuration>::iterator it1 = conf_particles.begin(); it1 != conf_particles.end(); ++it1) {
 		Particle* particle = assembleParticle(*it1);
 		
 		// avatar interactions
@@ -362,8 +380,17 @@ void StateLevel::assemble() {
 		
 		particles.push_back(particle);
 	}
-	
 	is_bg_init = true;
+	
+	// all items
+	list<Configuration> conf_items = raw.getConfigList("item");
+	for (list<Configuration>::iterator it1 = conf_items.begin(); it1 != conf_items.end(); ++it1) {
+		Item* item = assembleItem(*it1);
+		
+		interactions.push_back(Interaction(item, avatar, (Interaction::callback)&Item::checkAvatarCollision));
+		
+		items.push_back(item);
+	}
 }
 
 void StateLevel::assembleAvatar() {
@@ -387,9 +414,7 @@ void StateLevel::assembleBlackHole() {
 	blackhole = new Particle();
 	blackhole->pinned = true;
 	blackhole->getShape()->position = r2vec(conf.getReal("x"), conf.getReal("y"));
-	blackhole->setElasticity(conf.getReal("k"));
 	blackhole->setMass(conf.getReal("m"));
-	blackhole->charge = conf.getReal("q");
 	
 	// sprite
 	blackhole->sprite = sprite_blackhole;
@@ -422,6 +447,51 @@ Particle* StateLevel::assembleParticle(const Configuration& conf) {
 	return particle;
 }
 
+Item* StateLevel::assembleItem(const Configuration& conf) {
+	Item* item = new Item();
+	item->connect(Item::COLLISION, this, &StateLevel::handleItemCollision);
+	item->pinned = true;
+	item->getShape()->position = r2vec(conf.getReal("x"), conf.getReal("y"));
+	item->operation = conf.getInt("operation");
+	item->value = conf.getInt("value");
+	
+	// sprite
+	switch (item->operation) {
+	case Item::TIME:
+		if (item->value < 0)
+			item->sprite = sprite_less_time;
+		else
+			item->sprite = sprite_more_time;
+		break;
+		
+	case Item::POINT:
+		if (item->value < 0)
+			item->sprite = sprite_less_point;
+		else
+			item->sprite = sprite_more_point;
+		break;
+		
+	case Item::LIFE:
+		if (item->value < 0)
+			item->sprite = sprite_less_life;
+		else
+			item->sprite = sprite_more_life;
+		break;
+		
+	case Item::MASS:
+		if (item->value < 0)
+			item->value *= -1;
+		item->sprite = sprite_mass;
+		break;
+		
+	default:
+		break;
+	}
+	((Circle*)item->getShape())->setRadius(item->sprite->rectW()/2);
+	
+	return item;
+}
+
 void StateLevel::clear() {
 	// the avatar
 	delete avatar;
@@ -433,6 +503,12 @@ void StateLevel::clear() {
 	while (particles.size()) {
 		delete particles.back();
 		particles.pop_back();
+	}
+	
+	// all items
+	while (items.size()) {
+		delete items.back();
+		items.pop_back();
 	}
 	
 	// all interactions
@@ -486,6 +562,48 @@ void StateLevel::handleAvatarBeingSwallowed(const observer::Event& event, bool& 
 	win();
 }
 
+void StateLevel::handleItemCollision(const observer::Event& event, bool& stop) {
+	if ((lose_) || (win_))
+		return;
+	
+	char operation = ((Item::Event*)&event)->operation();
+	int value = ((Item::Event*)&event)->value();
+	
+	// sprite
+	switch (operation) {
+	case Item::TIME:
+		{
+			int new_time = round(float(timer.time())/1000) + value;
+			if (new_time < 5)
+				new_time = 5;
+			else if (new_time > 599)
+				new_time = 599;
+			timer.start(new_time*1000);
+		}
+		break;
+		
+	case Item::POINT:
+		addPoints(value);
+		break;
+		
+	case Item::LIFE:
+		life += value;
+		if (life < 0)
+			life = 0;
+		else if (life > 3)
+			life = 3;
+		((Animation*)sprite_life)->setFrame(life);
+		break;
+		
+	case Item::MASS:
+		avatar->addMass(value);
+		break;
+		
+	default:
+		break;
+	}
+}
+
 void StateLevel::lose() {
 	// eatles animation
 	eatles = eatles_sheets[4];
@@ -498,7 +616,6 @@ void StateLevel::lose() {
 	bg = bg_nograd;
 	blackhole->hidden = true;
 	interaction_blackhole_force->enabled = false;
-	interaction_blackhole_collision->enabled = false;
 	unpinParticles();
 	
 	--life;
@@ -557,23 +674,10 @@ void StateLevel::addPoints(int plus) {
 	
 	// the text size
 	switch (tmp.size()) {
-	case 1:
-		text_points->setSize(30);
-		break;
-		
-	case 2:
-		text_points->setSize(20);
-		break;
-		
-	case 3:
-		text_points->setSize(15);
-		break;
-		
-	case 4:
-		text_points->setSize(12);
-		break;
-		
-	default:
-		break;
+	case 1:	text_points->setSize(30);	break;
+	case 2:	text_points->setSize(20);	break;
+	case 3:	text_points->setSize(15);	break;
+	case 4:	text_points->setSize(12);	break;
+	default:							break;
 	}
 }

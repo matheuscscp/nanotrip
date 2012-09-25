@@ -27,6 +27,7 @@ public:
 	
 	lalge::Scalar getMass() const;
 	void setMass(lalge::Scalar mass);
+	void addMass(lalge::Scalar plus);
 	
 	void manageParticleCollision(GameObject* target, bool& enable);
 	bool collides(const Particle& target) const;

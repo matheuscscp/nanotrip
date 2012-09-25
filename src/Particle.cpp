@@ -36,6 +36,11 @@ void Particle::setMass(Scalar mass) {
 		this->mass = mass;
 }
 
+void Particle::addMass(lalge::Scalar plus) {
+	if (mass + plus > 0)
+		mass += plus;
+}
+
 void Particle::manageParticleCollision(GameObject* target, bool& enable) {
 	// check collision
 	if (!collides(*((Particle*)target)))

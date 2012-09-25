@@ -20,7 +20,7 @@ void Avatar::update() {
 	speed = speed + rotate(90, speed)*4;
 }
 
-void Avatar::checkBlackHole(GameObject* blackhole, bool& enable) {
+void Avatar::checkBlackHoleCollision(GameObject* blackhole, bool& enable) {
 	if (collides(*((Particle*)blackhole))) {
 		enable = false;
 		being_swallowed = true;
