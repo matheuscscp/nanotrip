@@ -22,6 +22,7 @@ public:
 	Avatar();
 	
 	void update();
+	virtual void setCharge(lalge::Scalar charge);
 	
 	void checkBlackHoleCollision(GameObject* blackhole, bool& enable);
 };

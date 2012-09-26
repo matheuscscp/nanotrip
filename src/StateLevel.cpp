@@ -446,7 +446,7 @@ void StateLevel::assembleAvatar() {
 	avatar->speed = r2vec(conf.getReal("speedX"), conf.getReal("speedY"));
 	avatar->setElasticity(conf.getReal("k"));
 	avatar->setMass(conf.getReal("m"));
-	avatar->charge = conf.getReal("q");
+	avatar->setCharge(conf.getReal("q"));
 	
 	// sprite
 	avatar->sprite = sprite_avatar;
@@ -494,20 +494,20 @@ Particle* StateLevel::assembleParticle(const Configuration& conf) {
 	particle->getShape()->position = r2vec(conf.getReal("x"), conf.getReal("y"));
 	particle->setElasticity(conf.getReal("k"));
 	particle->setMass(conf.getReal("m"));
-	particle->charge = conf.getReal("q");
+	particle->setCharge(conf.getReal("q"));
 	
 	// sprite
-	if (particle->charge == 0)
+	if (particle->getCharge() == 0)
 		particle->sprite = sprite_neutral;
-	else if (particle->charge < 0) {
+	else if (particle->getCharge() < 0) {
 		particle->sprite = sprite_negative_anim;
 		if (!is_bg_init)
-			bg->gradient(particle->getShape()->position.x(0) - bg_x, particle->getShape()->position.x(1) - bg_y, 1500000*particle->charge*particle->charge, 255, 31, 77, 0);
+			bg->gradient(particle->getShape()->position.x(0) - bg_x, particle->getShape()->position.x(1) - bg_y, 1500000*particle->getCharge()*particle->getCharge(), 255, 31, 77, 0);
 	}
 	else {
 		particle->sprite = sprite_positive_anim;
 		if (!is_bg_init)
-			bg->gradient(particle->getShape()->position.x(0) - bg_x, particle->getShape()->position.x(1) - bg_y, 1500000*particle->charge*particle->charge, 51, 74, 144, 0);
+			bg->gradient(particle->getShape()->position.x(0) - bg_x, particle->getShape()->position.x(1) - bg_y, 1500000*particle->getCharge()*particle->getCharge(), 51, 74, 144, 0);
 	}
 	((Circle*)particle->getShape())->setRadius(particle->sprite->rectW()/2);
 	
@@ -620,7 +620,7 @@ void StateLevel::handleMouseMotion(const observer::Event& event, bool& stop) {
 		charge_cursor_position = 640 - MAX_CURSOR_X;
 	else if (charge_cursor_position > 640 + MAX_CURSOR_X)
 		charge_cursor_position = 640 + MAX_CURSOR_X;
-	avatar->charge = max_abs_charge*(charge_cursor_position - 640)/MAX_CURSOR_X;
+	avatar->setCharge(max_abs_charge*(charge_cursor_position - 640)/MAX_CURSOR_X);
 }
 
 void StateLevel::handleTimerDone(const observer::Event& event, bool& stop) {
@@ -712,9 +712,9 @@ void StateLevel::unpinParticles() {
 		(*it)->pinned = false;
 		
 		// sprite
-		if ((*it)->charge < 0)
+		if ((*it)->getCharge() < 0)
 			(*it)->sprite = sprite_negative;
-		else if ((*it)->charge > 0)
+		else if ((*it)->getCharge() > 0)
 			(*it)->sprite = sprite_positive;
 	}
 	

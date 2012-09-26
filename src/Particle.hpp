@@ -8,9 +8,11 @@ class Particle : public GameObject {
 private:
 	lalge::Scalar elasticity;
 	lalge::Scalar mass;
-public:
+
+protected: 
 	lalge::Scalar charge;
-	
+
+public:
 	lalge::R2Vector speed;
 	lalge::R2Vector acceleration;
 	lalge::R2Vector force;
@@ -28,6 +30,9 @@ public:
 	lalge::Scalar getMass() const;
 	void setMass(lalge::Scalar mass);
 	void addMass(lalge::Scalar plus);
+	
+	virtual lalge::Scalar getCharge() const;
+	virtual void setCharge(lalge::Scalar charge);
 	
 	void manageParticleCollision(GameObject* target, bool& enable);
 	bool collides(const Particle& target) const;

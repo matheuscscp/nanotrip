@@ -112,6 +112,8 @@ public:
 	
 	// gradiente
 	void gradient(Uint32 x, Uint32 y, int radius, Uint8 red, Uint8 green, Uint8 blue, Uint8 alpha);
+	void frameGradient(Uint32 x, Uint32 y, int radius, Uint8 red, Uint8 green, Uint8 blue, Uint8 alpha);
+	
 	Uint32 getPixel(int x, int y);
 	void setPixel(int x, int y, Uint32 pixel);
 };

@@ -191,7 +191,7 @@ void Sprite::gradient(Uint32 x, Uint32 y, int radius, Uint8 red, Uint8 green, Ui
 	float distance, ratio, circleAlpha, transparency;
 	Uint8 r8, g8, b8, a8;
 	Uint32 r, g, b, a;
-	Uint32 xDraw, yDraw;
+	int xDraw, yDraw;
 	for (int i = -radius; i <= radius; i++){
 		for (int j = -radius; j <= radius; j++){
 			//setPixel(i, j, SDL_MapRGBA(surface->format, r, g, b, a * ( i*xStep * j*yStep ) ) );
@@ -218,6 +218,47 @@ void Sprite::gradient(Uint32 x, Uint32 y, int radius, Uint8 red, Uint8 green, Ui
 		}
 	}
 }
+
+/**
+ * Cria um gradiente radial quadratico com uma posicao, raio e cor definidos
+ * \param x coordenada x do centro do gradiente
+ * \param y coordenada y do centro do gradiente
+ * \param radius raio da circunferencia (nenhum pixel fora desse raio eh alterado)
+ * \param red/green/blue/alpha componentes da cor do gradiente
+ */
+void Sprite::frameGradient(Uint32 x, Uint32 y, int radius, Uint8 red, Uint8 green, Uint8 blue, Uint8 alpha){
+	float distance, ratio, circleAlpha, transparency;
+	Uint8 r8, g8, b8, a8;
+	Uint32 r, g, b, a;
+	int xDraw, yDraw;
+	rotozoom(0);
+	for (int i = -radius; i <= radius; i++){
+		for (int j = -radius; j <= radius; j++){
+			//setPixel(i, j, SDL_MapRGBA(surface->format, r, g, b, a * ( i*xStep * j*yStep ) ) );
+			//setPixel(i, j, SDL_MapRGBA(surface->format, r, g, b, a *( sin(i*xStep) * sin(j*yStep) ) ) );
+			distance = sqrt(i*i + j*j);
+			ratio = 1-(distance/radius);
+			xDraw = x+i;
+			yDraw = y+j;
+			if (i*i+j*j<radius*radius && xDraw>0 && xDraw<rotozoomed->w && yDraw>0 && yDraw<rotozoomed->h){
+				circleAlpha = ratio*ratio;
+				transparency = (1-circleAlpha);
+				//std::cout<<circleAlpha<<","<<transparency<<std::endl;
+				SDL_GetRGBA(getPixel(xDraw, yDraw), src->format, &r8, &g8, &b8, &a8);
+				r = red*circleAlpha + r8*transparency;
+				if (r>255) r = 255;
+				g = green*circleAlpha + g8*transparency;
+				if (g>255) g = 255;
+				b = blue*circleAlpha + b8*transparency;
+				if (b>255) b = 255;
+				a = alpha*circleAlpha + a8*transparency;
+				if (a>255) a = 255;
+				setPixel(x+i, y+j, SDL_MapRGBA(src->format, r, g, b, a));
+			}
+		}
+	}
+}
+
 //From http://sdl.beuc.net/sdl.wiki/Pixel_Access
 Uint32 Sprite::getPixel(int x, int y){
 	int bpp = src->format->BytesPerPixel;

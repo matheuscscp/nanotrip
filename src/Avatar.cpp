@@ -28,3 +28,12 @@ void Avatar::checkBlackHoleCollision(GameObject* blackhole, bool& enable) {
 		subject.broadcast(observer::Event(BEINGSWALLOWED));
 	}
 }
+
+void Avatar::setCharge(Scalar charge) {
+	//TODO change avatar color
+	if (this->sprite){
+		//this->sprite->rotozoom(0);
+		//this->sprite->frameGradient(50,50,50,2000*charge,0,0,255);
+	}
+	this->charge = charge;
+}

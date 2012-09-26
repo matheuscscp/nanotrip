@@ -29,6 +29,12 @@ void Particle::setElasticity(Scalar elasticity) {
 		this->elasticity = elasticity;
 }
 
+Scalar Particle::getCharge() const { return charge; }
+
+void Particle::setCharge(Scalar charge) {
+	this->charge = charge;
+}
+
 Scalar Particle::getMass() const { return mass; }
 
 void Particle::setMass(Scalar mass) {
