@@ -10,6 +10,7 @@
 #define EATLES_DELAY	4
 #define TIME_POINTS		1
 #define LIFE_POINTS		1
+#define MAX_CURSOR_X	587
 
 using namespace common;
 using namespace lalge;
@@ -125,11 +126,11 @@ charge_cursor_position(640)
 		
 		// borders
 		if (general.getInt("border_top"))
-			border_top = new Sprite("img/level/border_top_bottom.png");
+			border_top = new Sprite("img/level/border_top.png");
 		if (general.getInt("border_right"))
 			border_right = new Sprite("img/level/border_right.png");
 		if (general.getInt("border_bottom"))
-			border_bottom = new Sprite("img/level/border_top_bottom.png");
+			border_bottom = new Sprite("img/level/border_bottom.png");
 		if (general.getInt("border_left"))
 			border_left = new Sprite("img/level/border_left.png");
 	}
@@ -320,11 +321,11 @@ void StateLevel::render() {
 	
 	// borders
 	if (border_top)
-		border_top->render();
+		border_top->render(30, 0);
 	if (border_right)
 		border_right->render(1250, 0);
 	if (border_bottom)
-		border_bottom->render(0, 700);
+		border_bottom->render(0, 666);
 	if (border_left)
 		border_left->render();
 	
@@ -336,8 +337,8 @@ void StateLevel::render() {
 	sprite_life->render(236, 161);
 	
 	// charge changer
-	charge_bar->render(0, 710);
-	charge_cursor->render(charge_cursor_position, 715, true);
+	charge_bar->render(0, 666);
+	charge_cursor->render(charge_cursor_position, 709, true);
 	
 	// main message
 	if ((avatar->pinned) && ((SDL_GetTicks()/600) % 2))
@@ -615,7 +616,11 @@ void StateLevel::handleKeyDown(const observer::Event& event, bool& stop) {
 void StateLevel::handleMouseMotion(const observer::Event& event, bool& stop) {
 	// handling avatar charge variables
 	charge_cursor_position = InputManager::instance()->mouseX();
-	avatar->charge = max_abs_charge*(charge_cursor_position - 640)/640;
+	if (charge_cursor_position < 640 - MAX_CURSOR_X)
+		charge_cursor_position = 640 - MAX_CURSOR_X;
+	else if (charge_cursor_position > 640 + MAX_CURSOR_X)
+		charge_cursor_position = 640 + MAX_CURSOR_X;
+	avatar->charge = max_abs_charge*(charge_cursor_position - 640)/MAX_CURSOR_X;
 }
 
 void StateLevel::handleTimerDone(const observer::Event& event, bool& stop) {
