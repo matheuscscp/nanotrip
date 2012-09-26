@@ -47,7 +47,13 @@ void Particle::manageParticleCollision(GameObject* target, bool& enable) {
 		return;
 	
 	// respond to collision
-	R2Vector tmp = getShape()->range(*target->getShape()).unitvec();
+	R2Vector tmp = getShape()->range(*target->getShape());
+	if (tmp.size())
+		tmp = tmp.unitvec();
+	else {
+		getShape()->position.add(0, 50);
+		tmp = getShape()->range(*target->getShape()).unitvec();
+	}
 	
 	Scalar k_res = elasticity + ((Particle*)target)->elasticity;
 	

@@ -8,13 +8,18 @@ int Item::Event::value() const { return val; }
 Item::Item() : operation(0), value(0) { subject.init(LASTEVENT); }
 
 void Item::checkAvatarCollision(GameObject* avatar, bool& enable) {
-	if (collides(*((Particle*)avatar))) {
-		if (operation == BARRIER)
-			manageParticleCollision(avatar, enable);
-		else {
-			enable = false;
-			hidden = true;
-		}
-		subject.broadcast(Event(operation, value));
+	if (!collides(*((Particle*)avatar)))
+		return;
+	
+	// normal items collision
+	if (operation != BARRIER) {
+		enable = false;
+		hidden = true;
 	}
+	// barrier collision
+	else {
+		pinned = (!value);	// unpin if the barrier was lethal
+		manageParticleCollision(avatar, enable);
+	}
+	subject.broadcast(Event(operation, value));
 }

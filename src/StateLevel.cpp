@@ -39,6 +39,8 @@ border_top(0),
 border_right(0),
 border_bottom(0),
 border_left(0),
+interaction_blackhole_force(0),
+interaction_blackhole_collision(0),
 max_abs_charge(1),
 charge_cursor_position(640)
 {
@@ -50,8 +52,8 @@ charge_cursor_position(640)
 	screen_box.setHeight(720);
 	
 	// background
-	bg_x = rand()%641;
-	bg_y = rand()%361;
+	bg_x = -(rand()%641);
+	bg_y = -(rand()%361);
 	bg_grad = new Sprite("img/level/background.png");
 	bg_nograd = new Sprite("img/level/background.png");
 	bg_grad->render();
@@ -81,7 +83,7 @@ charge_cursor_position(640)
 	sprite_item_point = new Sprite("img/level/item_point.png");
 	sprite_item_life = new Sprite("img/level/item_life.png");
 	sprite_item_mass = new Sprite("img/level/item_mass.png");
-	sprite_item_barrier = new Sprite("img/level/item_barrier.png");
+	sprite_item_barrier = new Sprite("img/level/death_star.png");
 	
 	// all sounds
 	sound_lose = new Audio("sfx/level/lose.wav");
@@ -254,6 +256,11 @@ void StateLevel::update() {
 		(*it)->update();
 	}
 	
+	// all items
+	for (list<Item*>::iterator it = items.begin(); it != items.end(); ++it) {
+		(*it)->update();
+	}
+	
 	// eatles
 	eatles->update();
 	
@@ -293,7 +300,7 @@ void StateLevel::update() {
 
 void StateLevel::render() {
 	// background
-	bg->render(-bg_x, -bg_y);
+	bg->render(bg_x, bg_y);
 	
 	// the blackhole
 	blackhole->render();
@@ -307,9 +314,6 @@ void StateLevel::render() {
 	for (list<Item*>::iterator it = items.begin(); it != items.end(); ++it) {
 		(*it)->render();
 	}
-	
-	// the key
-	key->render();
 	
 	// the avatar
 	avatar->render();
@@ -359,11 +363,6 @@ void StateLevel::assemble() {
 	
 	assembleAvatar();
 	
-	assembleKey();
-	
-	// avatar-key interaction
-	interactions.push_back(Interaction(key, avatar, (Interaction::callback)&Item::checkAvatarCollision));
-	
 	assembleBlackHole();
 	
 	// avatar-blackhole interactions
@@ -371,6 +370,21 @@ void StateLevel::assemble() {
 	interaction_blackhole_force = &interactions.back();
 	interactions.push_back(Interaction(avatar, blackhole, (Interaction::callback)&Avatar::checkBlackHoleCollision));
 	interaction_blackhole_collision = &interactions.back();
+	
+	Item* key = assembleKey();
+	
+	if (key) {
+		// disable blackhole
+		blackhole->hidden = true;
+		interaction_blackhole_force->enabled = false;
+		interaction_blackhole_collision->enabled = false;
+		
+		// avatar-key interaction
+		interactions.push_back(Interaction(key, avatar, (Interaction::callback)&Item::checkAvatarCollision));
+		interactions_avatar_item.push_back(&interactions.back());
+		
+		items.push_back(key);
+	}
 	
 	// all particles
 	list<Configuration> conf_particles = raw.getConfigList("particle");
@@ -380,6 +394,12 @@ void StateLevel::assemble() {
 		// avatar interactions
 		interactions.push_back(Interaction(particle, avatar, (Interaction::callback)&Particle::manageParticleCollision));
 		interactions.push_back(Interaction(particle, avatar, (Interaction::callback)&Particle::addParticleFieldForces, true));
+		
+		// key interactions
+		if (key) {
+			interactions.push_back(Interaction(particle, key, (Interaction::callback)&Particle::manageParticleCollision));
+			interactions.push_back(Interaction(particle, key, (Interaction::callback)&Particle::addParticleFieldForces, true));
+		}
 		
 		// mutual interactions
 		for (list<Particle*>::iterator it2 = particles.begin(); it2 != particles.end(); ++it2) {
@@ -396,7 +416,21 @@ void StateLevel::assemble() {
 	for (list<Configuration>::iterator it1 = conf_items.begin(); it1 != conf_items.end(); ++it1) {
 		Item* item = assembleItem(*it1);
 		
+		// avatar interactions
 		interactions.push_back(Interaction(item, avatar, (Interaction::callback)&Item::checkAvatarCollision));
+		interactions_avatar_item.push_back(&interactions.back());
+		
+		// mutual interactions
+		for (list<Item*>::iterator it2 = items.begin(); it2 != items.end(); ++it2) {
+			interactions.push_back(Interaction(item, *it2, (Interaction::callback)&Particle::manageParticleCollision));
+			interactions.push_back(Interaction(item, *it2, (Interaction::callback)&Particle::addParticleFieldForces, true));
+		}
+		
+		// particles interactions
+		for (list<Particle*>::iterator it2 = particles.begin(); it2 != particles.end(); ++it2) {
+			interactions.push_back(Interaction(item, *it2, (Interaction::callback)&Particle::manageParticleCollision));
+			interactions.push_back(Interaction(item, *it2, (Interaction::callback)&Particle::addParticleFieldForces, true));
+		}
 		
 		items.push_back(item);
 	}
@@ -418,17 +452,27 @@ void StateLevel::assembleAvatar() {
 	((Circle*)avatar->getShape())->setRadius(avatar->sprite->rectW()/2);
 }
 
-void StateLevel::assembleKey() {
-	Configuration conf = raw.getConfig("key");
-	key = new Item();
+Item* StateLevel::assembleKey() {
+	Configuration conf;
+	try {
+		conf = raw.getConfig("key");
+	}
+	catch(Configuration::VarNotFound&) {
+		return 0;
+	}
+	Item* key = new Item();
 	key->connect(Item::COLLISION, this, &StateLevel::handleItemCollision);
 	key->pinned = true;
 	key->getShape()->position = r2vec(conf.getReal("x"), conf.getReal("y"));
 	key->operation = Item::KEY;
+	key->setElasticity(conf.getReal("k"));
+	key->setMass(conf.getReal("m"));
 	
 	// sprite
 	key->sprite = sprite_key;
 	((Circle*)key->getShape())->setRadius(key->sprite->rectW()/2);
+	
+	return key;
 }
 
 void StateLevel::assembleBlackHole() {
@@ -457,12 +501,12 @@ Particle* StateLevel::assembleParticle(const Configuration& conf) {
 	else if (particle->charge < 0) {
 		particle->sprite = sprite_negative_anim;
 		if (!is_bg_init)
-			bg->gradient(particle->getShape()->position.x(0) + bg_x, particle->getShape()->position.x(1) + bg_y, 1500000*particle->charge*particle->charge, 255, 31, 77, 0);
+			bg->gradient(particle->getShape()->position.x(0) - bg_x, particle->getShape()->position.x(1) - bg_y, 1500000*particle->charge*particle->charge, 255, 31, 77, 0);
 	}
 	else {
 		particle->sprite = sprite_positive_anim;
 		if (!is_bg_init)
-			bg->gradient(particle->getShape()->position.x(0) + bg_x, particle->getShape()->position.x(1) + bg_y, 1500000*particle->charge*particle->charge, 51, 74, 144, 0);
+			bg->gradient(particle->getShape()->position.x(0) - bg_x, particle->getShape()->position.x(1) - bg_y, 1500000*particle->charge*particle->charge, 51, 74, 144, 0);
 	}
 	((Circle*)particle->getShape())->setRadius(particle->sprite->rectW()/2);
 	
@@ -478,6 +522,8 @@ Item* StateLevel::assembleItem(const Configuration& conf) {
 	item->value = conf.getInt("value");
 	if (item->value < 0)
 		item->value *= -1;
+	item->setElasticity(conf.getReal("k"));
+	item->setMass(conf.getReal("m"));
 	
 	// sprite
 	switch (item->operation) {
@@ -499,8 +545,6 @@ Item* StateLevel::assembleItem(const Configuration& conf) {
 		
 	case Item::BARRIER:
 		item->sprite = sprite_item_barrier;
-		item->setElasticity(conf.getReal("k"));
-		item->setMass(conf.getReal("m"));
 		break;
 		
 	default:
@@ -514,9 +558,6 @@ Item* StateLevel::assembleItem(const Configuration& conf) {
 void StateLevel::clear() {
 	// the avatar
 	delete avatar;
-	
-	// the key
-	delete key;
 	
 	// the blackhole
 	delete blackhole;
@@ -535,6 +576,7 @@ void StateLevel::clear() {
 	
 	// all interactions
 	interactions.clear();
+	interactions_avatar_item.clear();
 }
 
 void StateLevel::setTimeText(int seconds) {
@@ -594,7 +636,9 @@ void StateLevel::handleItemCollision(const observer::Event& event, bool& stop) {
 	// sprite
 	switch (operation) {
 	case Item::KEY:
-		//TODO
+		blackhole->hidden = false;
+		interaction_blackhole_force->enabled = true;
+		interaction_blackhole_collision->enabled = true;
 		break;
 		
 	case Item::TIME:
@@ -658,6 +702,7 @@ void StateLevel::lose() {
 }
 
 void StateLevel::unpinParticles() {
+	// normal particles
 	for (list<Particle*>::iterator it = particles.begin(); it != particles.end(); ++it) {
 		(*it)->pinned = false;
 		
@@ -666,6 +711,16 @@ void StateLevel::unpinParticles() {
 			(*it)->sprite = sprite_negative;
 		else if ((*it)->charge > 0)
 			(*it)->sprite = sprite_positive;
+	}
+	
+	// items
+	for (list<Item*>::iterator it = items.begin(); it != items.end(); ++it) {
+		(*it)->pinned = false;
+	}
+	
+	// changing the avatar-item interactions
+	for (list<Interaction*>::iterator it = interactions_avatar_item.begin(); it != interactions_avatar_item.end(); ++it) {
+		(*it)->handler = ((Interaction::callback)&Particle::manageParticleCollision);
 	}
 }
 

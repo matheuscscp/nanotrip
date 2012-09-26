@@ -100,11 +100,11 @@ protected:
 	Configuration raw;
 	
 	std::list<Interaction> interactions;
+	std::list<Interaction*> interactions_avatar_item;
 	Interaction* interaction_blackhole_force;
 	Interaction* interaction_blackhole_collision;
 	
 	Avatar* avatar;
-	Item* key;
 	Particle* blackhole;
 	std::list<Particle*> particles;
 	std::list<Item*> items;
@@ -125,8 +125,8 @@ protected:
 	void reload();
 	void assemble();
 	void assembleAvatar();
-	void assembleKey();
 	void assembleBlackHole();
+	Item* assembleKey();
 	Particle* assembleParticle(const Configuration& conf);
 	Item* assembleItem(const Configuration& conf);
 	void clear();
