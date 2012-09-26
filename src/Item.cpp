@@ -9,7 +9,7 @@ Item::Item() : operation(0), value(0) { subject.init(LASTEVENT); }
 
 void Item::checkAvatarCollision(GameObject* avatar, bool& enable) {
 	if (collides(*((Particle*)avatar))) {
-		if (value == BARRIER)
+		if (operation == BARRIER)
 			manageParticleCollision(avatar, enable);
 		else {
 			enable = false;

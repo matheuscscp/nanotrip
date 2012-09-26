@@ -481,12 +481,30 @@ Item* StateLevel::assembleItem(const Configuration& conf) {
 	
 	// sprite
 	switch (item->operation) {
-		case Item::TIME:	item->sprite = sprite_item_time;	break;
-		case Item::POINT:	item->sprite = sprite_item_point;	break;
-		case Item::LIFE:	item->sprite = sprite_item_life;	break;
-		case Item::MASS:	item->sprite = sprite_item_mass;	break;
-		case Item::BARRIER:	item->sprite = sprite_item_barrier;	break;
-		default:												break;
+	case Item::TIME:
+		item->sprite = sprite_item_time;
+		break;
+		
+	case Item::POINT:
+		item->sprite = sprite_item_point;
+		break;
+		
+	case Item::LIFE:
+		item->sprite = sprite_item_life;
+		break;
+		
+	case Item::MASS:
+		item->sprite = sprite_item_mass;
+		break;
+		
+	case Item::BARRIER:
+		item->sprite = sprite_item_barrier;
+		item->setElasticity(conf.getReal("k"));
+		item->setMass(conf.getReal("m"));
+		break;
+		
+	default:
+		break;
 	}
 	((Circle*)item->getShape())->setRadius(item->sprite->rectW()/2);
 	
