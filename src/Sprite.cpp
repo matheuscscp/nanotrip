@@ -5,6 +5,8 @@
 
 #include "Sprite.hpp"
 
+#include <iostream>
+
 #include "SDLBase.hpp"
 #include "SurfaceManager.hpp"
 
@@ -12,8 +14,9 @@ using std::string;
 
 Sprite::Sprite() : src(0), rotozoomed(0), angle_(0), zoomx(1), zoomy(1) {}
 
-Sprite::Sprite(const string& filename) : rotozoomed(0), angle_(0), zoomx(1), zoomy(1) {
+Sprite::Sprite(const string& filename) : rotozoomed(0), angle_(0), zoomx(1), zoomy(1){
 	load_(filename);
+
 }
 
 Sprite::~Sprite() {
@@ -220,50 +223,17 @@ void Sprite::gradient(Uint32 x, Uint32 y, int radius, Uint8 red, Uint8 green, Ui
 }
 
 /**
- * Cria um gradiente radial quadratico com uma posicao, raio e cor definidos
- * \param x coordenada x do centro do gradiente
- * \param y coordenada y do centro do gradiente
- * \param radius raio da circunferencia (nenhum pixel fora desse raio eh alterado)
- * \param red/green/blue/alpha componentes da cor do gradiente
+ * 
  */
-void Sprite::frameGradient(Uint32 x, Uint32 y, int radius, Uint8 red, Uint8 green, Uint8 blue, Uint8 alpha){
-	float distance, ratio, circleAlpha, transparency;
-	Uint8 r8, g8, b8, a8;
-	Uint32 r, g, b, a;
-	int xDraw, yDraw;
-	rotozoom(0);
-	for (int i = -radius; i <= radius; i++){
-		for (int j = -radius; j <= radius; j++){
-			//setPixel(i, j, SDL_MapRGBA(surface->format, r, g, b, a * ( i*xStep * j*yStep ) ) );
-			//setPixel(i, j, SDL_MapRGBA(surface->format, r, g, b, a *( sin(i*xStep) * sin(j*yStep) ) ) );
-			distance = sqrt(i*i + j*j);
-			ratio = 1-(distance/radius);
-			xDraw = x+i;
-			yDraw = y+j;
-			if (i*i+j*j<radius*radius && xDraw>0 && xDraw<rotozoomed->w && yDraw>0 && yDraw<rotozoomed->h){
-				circleAlpha = ratio*ratio;
-				transparency = (1-circleAlpha);
-				//std::cout<<circleAlpha<<","<<transparency<<std::endl;
-				SDL_GetRGBA(getPixel(xDraw, yDraw), src->format, &r8, &g8, &b8, &a8);
-				r = red*circleAlpha + r8*transparency;
-				if (r>255) r = 255;
-				g = green*circleAlpha + g8*transparency;
-				if (g>255) g = 255;
-				b = blue*circleAlpha + b8*transparency;
-				if (b>255) b = 255;
-				a = alpha*circleAlpha + a8*transparency;
-				if (a>255) a = 255;
-				setPixel(x+i, y+j, SDL_MapRGBA(src->format, r, g, b, a));
-			}
-		}
-	}
+void Sprite::tint(float f){
 }
 
 //From http://sdl.beuc.net/sdl.wiki/Pixel_Access
-Uint32 Sprite::getPixel(int x, int y){
-	int bpp = src->format->BytesPerPixel;
+Uint32 Sprite::getPixel(int x, int y, SDL_Surface* source){
+	if (!source) source = src;
+	int bpp = source->format->BytesPerPixel;
 	/* Here p is the address to the pixel we want to retrieve */
-	Uint8 *p = (Uint8 *)src->pixels + y * src->pitch + x * bpp;
+	Uint8 *p = (Uint8 *)source->pixels + y * source->pitch + x * bpp;
 	
 	switch(bpp) {
 	case 1:
@@ -293,13 +263,14 @@ Uint32 Sprite::getPixel(int x, int y){
 }
 
 //From http://sdl.beuc.net/sdl.wiki/Pixel_Access
-void Sprite::setPixel(int x, int y, Uint32 pixel){
-	if ( x<0 || x>src->w || y<0 || y>src->h )
+void Sprite::setPixel(int x, int y, Uint32 pixel, SDL_Surface* source){
+	if (!source) source = src;
+	if ( x<0 || x>source->w || y<0 || y>source->h )
 		return;
 	
-	int bpp = src->format->BytesPerPixel;
+	int bpp = source->format->BytesPerPixel;
 	/* Here p is the address to the pixel we want to set */
-	Uint8 *p = (Uint8 *)src->pixels + y * src->pitch + x * bpp;
+	Uint8 *p = (Uint8 *)source->pixels + y * source->pitch + x * bpp;
 	
 	switch(bpp) {
 	case 1:

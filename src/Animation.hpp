@@ -4,6 +4,7 @@
 #include <string>
 
 #include "Sprite.hpp"
+#include "rgb_hsv.h"
 
 class Animation : public Sprite
 {
@@ -13,6 +14,13 @@ private:
 	int rows;
 	int cols;
 	bool matrix;
+
+	//TODO move to different class
+	float lastHueShift;
+	int hueInterlace;
+	static const int hueInterlaceFactor = 16; //change this if the game lags
+	std::vector< std::pair<int,int> > tintPixels;
+	std::vector< hsv > tintColors;
 public:
 	int line;
 	
@@ -34,6 +42,9 @@ public:
 	int getFrame() const;
 	int getFPS() const;
 	int getTimeSize() const;
+
+	virtual void tint(float hueShift);
+	
 	
 	void setFrame(int frame);
 	void setFPS(int fps);

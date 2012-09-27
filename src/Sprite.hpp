@@ -11,6 +11,8 @@
 #define SPRITE_HPP
 
 #include <string>
+#include <vector>
+#include <utility>
 
 #include "SDL.h"
 
@@ -31,6 +33,7 @@ private:
 	
 	float zoomx;
 	float zoomy;
+
 public:
 	/// Assigns NULL to the SDL surface pointer.
 	/// @brief Empty constructor
@@ -112,10 +115,10 @@ public:
 	
 	// gradiente
 	void gradient(Uint32 x, Uint32 y, int radius, Uint8 red, Uint8 green, Uint8 blue, Uint8 alpha);
-	void frameGradient(Uint32 x, Uint32 y, int radius, Uint8 red, Uint8 green, Uint8 blue, Uint8 alpha);
+	virtual void tint(float hueShift);
 	
-	Uint32 getPixel(int x, int y);
-	void setPixel(int x, int y, Uint32 pixel);
+	Uint32 getPixel(int x, int y, SDL_Surface* source = NULL);
+	void setPixel(int x, int y, Uint32 pixel, SDL_Surface* target = NULL);
 };
 
 #endif

@@ -1,5 +1,6 @@
 #include "Avatar.hpp"
 
+#include <iostream>
 #include "SDLBase.hpp"
 
 using namespace lalge;
@@ -32,8 +33,7 @@ void Avatar::checkBlackHoleCollision(GameObject* blackhole, bool& enable) {
 void Avatar::setCharge(Scalar charge) {
 	//TODO change avatar color
 	if (this->sprite){
-		//this->sprite->rotozoom(0);
-		//this->sprite->frameGradient(50,50,50,2000*charge,0,0,255);
+		this->sprite->tint((charge-0.03)*10); //TODO use correct charge values
 	}
 	this->charge = charge;
 }

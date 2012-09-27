@@ -5,7 +5,7 @@ DOCDIR = doc
 
 ERRLOG = ErrorLog.txt
 
-CXXFLAGS = -ansi -pedantic -Wall -Wextra -Wunused-parameter -g
+CXXFLAGS = -ansi -pedantic -Wall -Wextra -Wunused-parameter -g -std=c++0x
 INCLUDE = -I /usr/include/SDL -I /usr/local/include/SDL
 
 EXE = game

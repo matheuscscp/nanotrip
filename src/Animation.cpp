@@ -1,3 +1,5 @@
+#include <cmath>
+
 #include "common.hpp"
 
 #include "Animation.hpp"
@@ -24,6 +26,18 @@ Animation::Animation (
 		this->frame = float ( frame );
 	this->fps = ((fps >= 1) ? fps : 1);
 	
+	Uint8 r,g,b,a;
+	std::cout<<filename<<std::endl;
+	for (int i=0; i < src->w; i++){
+		for (int j=0; j < src->h; j++){
+			SDL_GetRGBA(getPixel(i, j), src->format, &r, &g, &b, &a);
+			if (a>0 && r<96 && abs(g-b)<48){ //TODO color key
+				tintPixels.push_back(std::pair<int,int>(i,j));
+				tintColors.push_back(rgb2hsv({r/255.0,g/255.0,b/255.0,a/255.0}));
+			}
+		}
+	}
+
 	update_ ();
 }
 
@@ -61,4 +75,25 @@ void Animation::setFrame(int frame)
 
 void Animation::setFPS(int fps) {
 	this->fps = ((fps >= 1) ? fps : 1);
+}
+
+
+/**
+ * 
+ */
+void Animation::tint(float hueShift){
+	int hueDelta = 360*hueShift;
+
+	hsv hsvColor;
+	rgb rgbColor;
+	if (fabs(lastHueShift-hueShift)>0.003){
+		lastHueShift = hueShift;
+		for (int i=hueInterlace; i<tintPixels.size(); i+=hueInterlaceFactor ){
+			hsvColor = tintColors[i];
+			hsvColor.h = fmod((hsvColor.h-hueDelta),360);
+			rgbColor = hsv2rgb(hsvColor);
+			setPixel(tintPixels[i].first, tintPixels[i].second, SDL_MapRGBA(src->format, rgbColor.r*255, rgbColor.g*255, rgbColor.b*255, hsvColor.a*255));
+		}
+		hueInterlace = ++hueInterlace%hueInterlaceFactor;
+	}
 }
