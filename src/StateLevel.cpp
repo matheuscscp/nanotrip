@@ -6,10 +6,12 @@
 #include "InputManager.hpp"
 #include "SDLBase.hpp"
 
-#define SOUND_DELAY		4000
+#define SOUND_DELAY		3
 #define EATLES_DELAY	4
+
 #define TIME_POINTS		1
 #define LIFE_POINTS		1
+
 #define MAX_CURSOR_X	587
 
 using namespace common;
@@ -35,7 +37,7 @@ nextargs(((Args*)args)->nextargs),
 is_bg_init(false),
 lose_(false),
 win_(false),
-life(3),
+life(0),
 border_top(0),
 border_right(0),
 border_bottom(0),
@@ -67,7 +69,7 @@ charge_cursor_position(640)
 	eatles_sheets[1] = new Animation("img/level/eatles_blink.png", 0, 16, 1, 4);
 	eatles_sheets[2] = new Animation("img/level/eatles_wait.png", 0, 20, 1, 18);
 	eatles_sheets[3] = new Animation("img/level/eatles_pissed.png", 0, 10, 1, 4);
-	eatles_sheets[4] = new Animation("img/level/eatles_laugh.png", 0, 8, 1, 8);
+	eatles_sheets[4] = new Animation("img/level/eatles_laugh.png", 0, 8, 1, 4);
 	sprite_life = new Animation("img/level/life.png", 3, 1, 4, 1);
 	
 	// all sprites
@@ -83,7 +85,7 @@ charge_cursor_position(640)
 	sprite_item_point = new Sprite("img/level/item_point.png");
 	sprite_item_life = new Sprite("img/level/item_life.png");
 	sprite_item_mass = new Sprite("img/level/item_mass.png");
-	sprite_item_barrier = new Sprite("img/level/death_star.png");
+	sprite_item_barrier = new Sprite("img/level/item_death_star.png");
 	
 	// all sounds
 	sound_lose = new Audio("sfx/level/lose.wav");
@@ -101,7 +103,6 @@ charge_cursor_position(640)
 	text_time = new Text("ttf/Swiss721BlackRoundedBT.ttf", "0:00", 13, 0, SDLBase::getColor(255, 31, 77), Text::blended);
 	text_points = new Text("ttf/Swiss721BlackRoundedBT.ttf", "0", 12, 0, SDLBase::getColor(65, 217, 255), Text::blended);
 	text_press_space = new Text("ttf/Swiss721BlackRoundedBT.ttf", "Press space", 100, 0, SDLBase::getColor(255, 255, 255), Text::blended);
-	text_you_lose = new Text("ttf/Swiss721BlackRoundedBT.ttf", "You lose", 100, 0, SDLBase::getColor(255, 255, 255), Text::blended);
 	
 	// charge changer
 	charge_bar = new Sprite("img/level/charge_bar.png");
@@ -179,7 +180,6 @@ StateLevel::~StateLevel() {
 	delete text_time;
 	delete text_points;
 	delete text_press_space;
-	delete text_you_lose;
 	
 	// charge cursor
 	delete charge_bar;
@@ -195,24 +195,18 @@ void StateLevel::handleUnstack(ArgsBase* args) {
 	delete args;
 	
 	switch (op) {
+	case UnstackArgs::RETRY:
+		lose();
+		break;
+		
 	case UnstackArgs::TRYAGAIN:
 		life = 3;
 		((Animation*)sprite_life)->setFrame(life);
 		reload();
 		break;
 		
-	case UnstackArgs::MAINMENU:
-		if (nextargs)
-			delete nextargs;
-		throw new Change("StateMainMenu");
-		break;
-		
 	case UnstackArgs::NEXT:
 		throw new Change(nextstate, new FinalArgs(points, nextargs));
-		break;
-		
-	case UnstackArgs::RETRY:
-		lose();
 		break;
 		
 	case UnstackArgs::MENU:
@@ -220,10 +214,13 @@ void StateLevel::handleUnstack(ArgsBase* args) {
 		if (!history)
 			throw new Change(nextstate, new FinalArgs(points, nextargs));
 		
-		// main menu if nanotrip history
 		if (nextargs)
 			delete nextargs;
-		throw new Change("StateInstructions");
+		
+		if (life < 0)
+			throw new Change("StateInstructions");
+		
+		throw new Change("StatePlay");
 		break;
 		
 	default:
@@ -287,11 +284,13 @@ void StateLevel::update() {
 		if (!screen_box.Shape::pointInside(avatar->getShape()->position))
 			lose();
 	}
-	else if (stopwatch.time() >= SOUND_DELAY) {
+	else if (stopwatch.time() >= SOUND_DELAY*1000) {
 		if (lose_) {
 			// if it was the last try
-			if (life < 0)
-				throw new StackUp("StateGameOver");
+			if (life < 0) {
+				eatles = 0;
+				throw new StackUp("StateYouLose");
+			}
 			reload();
 		}
 		else {
@@ -343,11 +342,9 @@ void StateLevel::render() {
 	charge_bar->render(0, 666);
 	charge_cursor->render(charge_cursor_position, 709, true);
 	
-	// main message
+	// press space to start
 	if ((avatar->pinned) && ((SDL_GetTicks()/600) % 2) && (!frozen_))
 		text_press_space->render(640, 355);
-	else if ((stopwatch.time() <= SOUND_DELAY - 1000) && (lose_))
-		text_you_lose->render(640, 355);
 }
 
 void StateLevel::reload() {
@@ -692,7 +689,6 @@ void StateLevel::lose() {
 	lose_ = true;
 	
 	// time's up! particles get free and blackhole goes away
-	bg = bg_nograd;
 	unpinParticles();
 	blackhole->hidden = true;
 	interaction_blackhole_force->enabled = false;
@@ -710,6 +706,8 @@ void StateLevel::lose() {
 }
 
 void StateLevel::unpinParticles() {
+	bg = bg_nograd;
+	
 	// normal particles
 	for (list<Particle*>::iterator it = particles.begin(); it != particles.end(); ++it) {
 		(*it)->pinned = false;
@@ -734,7 +732,6 @@ void StateLevel::unpinParticles() {
 
 void StateLevel::win() {
 	// particles get free
-	bg = bg_nograd;
 	unpinParticles();
 	
 	// eatles animation

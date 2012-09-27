@@ -19,10 +19,9 @@ public:
 	class UnstackArgs : public ArgsBase {
 	public:
 		enum {
-			TRYAGAIN,
-			MAINMENU,
-			NEXT,
 			RETRY,
+			TRYAGAIN,
+			NEXT,
 			MENU
 		};
 		
@@ -95,7 +94,6 @@ protected:
 	Text* text_time;
 	Text* text_points;
 	Text* text_press_space;
-	Text* text_you_lose;
 	
 	Configuration raw;
 	

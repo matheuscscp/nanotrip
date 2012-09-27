@@ -14,7 +14,7 @@ StateYouWin::StateYouWin(ArgsBase* args) {
 	bg = new Sprite("img/youwin/background.png");
 	
 	shadow = new Sprite("img/youwin/shadow.png");
-	eatles = new Animation("img/youwin/eatles_laugh.png", 0, 8, 1, 8);
+	eatles = new Animation("img/youwin/eatles.png", 0, 8, 1, 4);
 	
 	std::stringstream ss;
 	ss << ((StateLevel::FinalArgs*)args)->points;

@@ -114,6 +114,9 @@ SDL_Surface* SurfaceManager::getCloned(int& x, int& y)
 
 void SurfaceManager::free(SDL_Surface* surface)
 {
+	if (!surface)
+		return;
+	
 	map< SDL_Surface*, int >::iterator it = surfaces.find( surface );
 	
 	if( it->second > 1 )
