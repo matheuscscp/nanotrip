@@ -21,8 +21,8 @@ public:
 		enum {
 			RETRY,
 			TRYAGAIN,
-			NEXT,
-			MENU
+			MENU,
+			NEXT
 		};
 		
 		int op;

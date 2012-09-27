@@ -13,11 +13,11 @@ Button::Button(Sprite* sprite) : clip_y(0), clicked(false) {
 	// width and height by sprite
 	this->sprite = sprite;
 	((Rectangle*)getShape())->setWidth(sprite->srcW());
-	((Rectangle*)getShape())->setHeight(sprite->srcH()/3);
+	((Rectangle*)getShape())->setHeight(sprite->srcH()/4);
 }
 
 Button::~Button() {
-	enable(false);
+	InputManager::instance()->disconnect(this);
 }
 
 void Button::update() {
@@ -26,29 +26,26 @@ void Button::update() {
 	
 	if (clicked) {
 		clicked = false;
-		clip_y = 2*sprite->srcH()/3;
+		clip_y = 2*sprite->srcH()/4;
 	}
 	else if (!getShape()->mouseInside())
 		clip_y = 0;
 	else if (!InputManager::instance()->mousePressed(SDL_BUTTON_LEFT))
-		clip_y = sprite->srcH()/3;
+		clip_y = sprite->srcH()/4;
 	else if (getShape()->mouseDownInside())
-		clip_y = 2*sprite->srcH()/3;
+		clip_y = 2*sprite->srcH()/4;
 	else
 		clip_y = 0;
 	
-	sprite->clip(0, clip_y, sprite->srcW(), sprite->srcH()/3);
-}
-
-void Button::render() {
-	if (enabled)
-		GameObject::render();
+	sprite->clip(0, clip_y, sprite->srcW(), sprite->srcH()/4);
 }
 
 void Button::enable(bool enable) {
 	enabled = enable;
-	if (!enable)
+	if (!enable) {
+		sprite->clip(0, 3*sprite->srcH()/4, sprite->srcW(), sprite->srcH()/4);
 		InputManager::instance()->disconnect(this);
+	}
 	else {
 		InputManager::instance()->connect(InputManager::MOUSEDOWN_LEFT, this, &Button::handleMouseDownLeft);
 		InputManager::instance()->connect(InputManager::MOUSEUP_LEFT, this, &Button::handleMouseUpLeft);

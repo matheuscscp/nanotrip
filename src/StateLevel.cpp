@@ -205,10 +205,6 @@ void StateLevel::handleUnstack(ArgsBase* args) {
 		reload();
 		break;
 		
-	case UnstackArgs::NEXT:
-		throw new Change(nextstate, new FinalArgs(points, nextargs));
-		break;
-		
 	case UnstackArgs::MENU:
 		// next if not nanotrip history
 		if (!history)
@@ -221,6 +217,10 @@ void StateLevel::handleUnstack(ArgsBase* args) {
 			throw new Change("StateInstructions");
 		
 		throw new Change("StatePlay");
+		break;
+		
+	case UnstackArgs::NEXT:
+		throw new Change(nextstate, new FinalArgs(points, nextargs));
 		break;
 		
 	default:

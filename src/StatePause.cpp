@@ -15,19 +15,30 @@ StatePause::StatePause(ArgsBase* args) {
 	menu = new Button(new Sprite("img/pause/menu.png"));
 	resume = new Button(new Sprite("img/pause/resume.png"));
 	
-	retry->getShape()->position = r2vec(600 - (retry->sprite->srcW() + menu->sprite->srcW())/2, 572);
-	retry->connect(Button::CLICKED, this, &StatePause::handleRetry);
 	
-	menu->getShape()->position = r2vec(640, 572);
-	menu->connect(Button::CLICKED, this, &StatePause::handleMenu);
-	
-	resume->getShape()->position = r2vec(680 + (resume->sprite->srcW() + menu->sprite->srcW())/2, 572);
-	resume->connect(Button::CLICKED, this, &StatePause::handleResume);
-	
+	int retry_x, menu_x, resume_x;
 	if (args) {
 		delete args;
 		retry->enable(false);
+		
+		retry_x = 600 - (retry->sprite->srcW() + menu->sprite->srcW())/2;
+		menu_x = 600 - menu->sprite->srcW()/2;
+		resume_x = 680 + menu->sprite->srcW()/2;
 	}
+	else {
+		retry_x = 600 - (retry->sprite->srcW() + menu->sprite->srcW())/2;
+		menu_x = 640;
+		resume_x = 680 + (resume->sprite->srcW() + menu->sprite->srcW())/2;
+	}
+	
+	retry->getShape()->position = r2vec(retry_x, 572);
+	retry->connect(Button::CLICKED, this, &StatePause::handleRetry);
+	
+	menu->getShape()->position = r2vec(menu_x, 572);
+	menu->connect(Button::CLICKED, this, &StatePause::handleMenu);
+	
+	resume->getShape()->position = r2vec(resume_x, 572);
+	resume->connect(Button::CLICKED, this, &StatePause::handleResume);
 	
 	InputManager::instance()->connect(InputManager::KEYDOWN, this, &StatePause::handleKeyDown);
 }

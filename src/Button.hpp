@@ -23,7 +23,6 @@ public:
 	~Button();
 	
 	void update();
-	void render();
 	
 	void enable(bool enable);
 private:
