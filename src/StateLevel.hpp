@@ -21,9 +21,9 @@ public:
 		enum {
 			TRYAGAIN,
 			MAINMENU,
-			CONTINUE,
+			NEXT,
 			RETRY,
-			QUITLEVEL
+			MENU
 		};
 		
 		int op;
@@ -60,7 +60,7 @@ protected:
 	Sprite* bg_nograd;
 	Sprite* hud;
 	Sprite* eatles;
-	Sprite* eatles_sheets[6];
+	Sprite* eatles_sheets[5];
 	Stopwatch eatles_stopwatch;
 	
 	int points;

@@ -40,6 +40,11 @@ void Button::update() {
 	sprite->clip(0, clip_y, sprite->srcW(), sprite->srcH()/3);
 }
 
+void Button::render() {
+	if (enabled)
+		GameObject::render();
+}
+
 void Button::enable(bool enable) {
 	enabled = enable;
 	if (!enable)

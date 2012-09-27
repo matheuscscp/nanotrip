@@ -66,9 +66,8 @@ charge_cursor_position(640)
 	eatles_sheets[0] = new Sprite("img/level/eatles.png");
 	eatles_sheets[1] = new Animation("img/level/eatles_blink.png", 0, 16, 1, 4);
 	eatles_sheets[2] = new Animation("img/level/eatles_wait.png", 0, 20, 1, 18);
-	eatles_sheets[3] = new Animation("img/level/eatles_blink.png", 0, 16, 1, 4);
+	eatles_sheets[3] = new Animation("img/level/eatles_pissed.png", 0, 10, 1, 4);
 	eatles_sheets[4] = new Animation("img/level/eatles_laugh.png", 0, 8, 1, 8);
-	eatles_sheets[5] = new Animation("img/level/eatles_laugh.png", 0, 8, 1, 8);
 	sprite_life = new Animation("img/level/life.png", 3, 1, 4, 1);
 	
 	// all sprites
@@ -145,7 +144,7 @@ StateLevel::~StateLevel() {
 	delete bg_grad;
 	delete bg_nograd;
 	delete hud;
-	for (int i = 0; i < 6; ++i)
+	for (int i = 0; i < 5; ++i)
 		delete eatles_sheets[i];
 	delete sprite_life;
 	delete sprite_avatar;
@@ -208,7 +207,7 @@ void StateLevel::handleUnstack(ArgsBase* args) {
 		throw new Change("StateMainMenu");
 		break;
 		
-	case UnstackArgs::CONTINUE:
+	case UnstackArgs::NEXT:
 		throw new Change(nextstate, new FinalArgs(points, nextargs));
 		break;
 		
@@ -216,8 +215,8 @@ void StateLevel::handleUnstack(ArgsBase* args) {
 		lose();
 		break;
 		
-	case UnstackArgs::QUITLEVEL:
-		// continue if not nanotrip history
+	case UnstackArgs::MENU:
+		// next if not nanotrip history
 		if (!history)
 			throw new Change(nextstate, new FinalArgs(points, nextargs));
 		
@@ -263,7 +262,8 @@ void StateLevel::update() {
 	}
 	
 	// eatles
-	eatles->update();
+	if (eatles)
+		eatles->update();
 	
 	if (states.back()->id() != StateLevel::getid()) {}	// avoiding throws while stacked
 	else if ((!lose_) && (!win_)) {
@@ -274,7 +274,7 @@ void StateLevel::update() {
 		}
 		// eatles get an animation
 		else if (!(rand()%(int(SDLBase::FPS())*EATLES_DELAY))) {
-			eatles = eatles_sheets[rand()%3 + 1];
+			eatles = eatles_sheets[rand()%2 + 1];
 			((Animation*)eatles)->setFrame(0);
 			eatles_stopwatch.start();
 		}
@@ -294,8 +294,10 @@ void StateLevel::update() {
 				throw new StackUp("StateGameOver");
 			reload();
 		}
-		else
+		else {
+			eatles = 0;
 			throw new StackUp("StateYouWin", new FinalArgs(points));
+		}
 	}
 }
 
@@ -331,7 +333,8 @@ void StateLevel::render() {
 	
 	// hud
 	hud->render();
-	eatles->render(37, 13);
+	if (eatles)
+		eatles->render(37, 13);
 	text_time->render(289, 53);
 	text_points->render(281, 115);
 	sprite_life->render(236, 161);
@@ -341,7 +344,7 @@ void StateLevel::render() {
 	charge_cursor->render(charge_cursor_position, 709, true);
 	
 	// main message
-	if ((avatar->pinned) && ((SDL_GetTicks()/600) % 2))
+	if ((avatar->pinned) && ((SDL_GetTicks()/600) % 2) && (!frozen_))
 		text_press_space->render(640, 355);
 	else if ((stopwatch.time() <= SOUND_DELAY - 1000) && (lose_))
 		text_you_lose->render(640, 355);
@@ -682,7 +685,7 @@ void StateLevel::handleItemCollision(const observer::Event& event, bool& stop) {
 
 void StateLevel::lose() {
 	// eatles animation
-	eatles = eatles_sheets[4];
+	eatles = eatles_sheets[3];
 	((Animation*)eatles)->setFrame(0);
 	eatles_stopwatch.start();
 	
@@ -690,10 +693,10 @@ void StateLevel::lose() {
 	
 	// time's up! particles get free and blackhole goes away
 	bg = bg_nograd;
+	unpinParticles();
 	blackhole->hidden = true;
 	interaction_blackhole_force->enabled = false;
 	interaction_blackhole_collision->enabled = false;
-	unpinParticles();
 	
 	--life;
 	if (life >= 0)
@@ -730,8 +733,12 @@ void StateLevel::unpinParticles() {
 }
 
 void StateLevel::win() {
+	// particles get free
+	bg = bg_nograd;
+	unpinParticles();
+	
 	// eatles animation
-	eatles = eatles_sheets[5];
+	eatles = eatles_sheets[4];
 	((Animation*)eatles)->setFrame(0);
 	eatles_stopwatch.start();
 	

@@ -11,11 +11,15 @@ GAMESTATE
 private:
 	Sprite* bg;
 	
-	Text* text_you_win;
+	Sprite* shadow;
+	Sprite* eatles;
+	
+	Text* text_score;
 	Text* text_points;
 	
-	Button* tryagain;
-	Button* cont;
+	Button* retry;
+	Button* menu;
+	Button* next;
 public:
 	StateYouWin(ArgsBase* args);
 	~StateYouWin();
@@ -23,8 +27,9 @@ public:
 	void update();
 	void render();
 private:
-	void handleTryAgain(const observer::Event& event, bool& stop);
-	void handleContinue(const observer::Event& event, bool& stop);
+	void handleRetry(const observer::Event& event, bool& stop);
+	void handleMenu(const observer::Event& event, bool& stop);
+	void handleNext(const observer::Event& event, bool& stop);
 };
 
 #endif
