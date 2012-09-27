@@ -3,8 +3,8 @@
 
 #include <cmath>
 
-#define SQR(X)		( (X) * (X) )
-#define ABSVAL(X)	( ( (X) >= 0 ) ? (X) : (-(X)) )
+#define SQR(X)		((X)*(X))
+#define ABSVAL(X)	(((X) >= 0) ? (X) : (-(X)))
 
 namespace lalge
 {

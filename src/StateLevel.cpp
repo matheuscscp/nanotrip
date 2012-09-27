@@ -6,6 +6,8 @@
 #include "InputManager.hpp"
 #include "SDLBase.hpp"
 
+#define GRADIENT_CONST	15000
+
 #define SOUND_DELAY		3
 #define EATLES_DELAY	4
 
@@ -502,12 +504,12 @@ Particle* StateLevel::assembleParticle(const Configuration& conf) {
 	else if (particle->getCharge() < 0) {
 		particle->sprite = sprite_negative_anim;
 		if (!is_bg_init)
-			bg->gradient(particle->getShape()->position.x(0) - bg_x, particle->getShape()->position.x(1) - bg_y, 1500000*particle->getCharge()*particle->getCharge(), 255, 31, 77, 0);
+			bg->gradient(particle->getShape()->position.x(0) - bg_x, particle->getShape()->position.x(1) - bg_y, GRADIENT_CONST*ABSVAL(particle->getCharge()), 255, 31, 77, 0);
 	}
 	else {
 		particle->sprite = sprite_positive_anim;
 		if (!is_bg_init)
-			bg->gradient(particle->getShape()->position.x(0) - bg_x, particle->getShape()->position.x(1) - bg_y, 1500000*particle->getCharge()*particle->getCharge(), 51, 74, 144, 0);
+			bg->gradient(particle->getShape()->position.x(0) - bg_x, particle->getShape()->position.x(1) - bg_y, GRADIENT_CONST*ABSVAL(particle->getCharge()), 51, 74, 144, 0);
 	}
 	((Circle*)particle->getShape())->setRadius(particle->sprite->rectW()/2);
 	
