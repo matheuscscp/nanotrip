@@ -91,6 +91,7 @@ charge_cursor_position(640)
 	// all sounds
 	sound_lose = new Audio("sfx/level/lose.wav");
 	sound_win = new Audio("sfx/level/win.wav");
+	loadBGM();
 	
 	// configuration file
 	raw.readTxt(RootPath::get("level/" + ((Args*)args)->levelname + ".conf"));
@@ -166,6 +167,7 @@ StateLevel::~StateLevel() {
 	// all sounds
 	delete sound_lose;
 	delete sound_win;
+	delete bgm;
 	
 	// borders
 	if (border_top)
@@ -346,6 +348,15 @@ void StateLevel::render() {
 	// press space to start
 	if ((avatar->pinned) && ((SDL_GetTicks()/600) % 2) && (!frozen_))
 		text_press_space->render(640, 355);
+}
+
+void StateLevel::loadBGM() {
+	stringstream ss;
+	ss << "sfx/level/song";
+	ss << rand()%3;
+	ss << ".mp3";
+	bgm = new Audio(ss.str());
+	bgm->play();
 }
 
 void StateLevel::reload() {

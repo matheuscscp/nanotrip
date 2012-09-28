@@ -90,6 +90,7 @@ protected:
 	
 	Audio* sound_lose;
 	Audio* sound_win;
+	Audio* bgm;
 	
 	Text* text_time;
 	Text* text_points;
@@ -120,6 +121,8 @@ public:
 	void update();
 	void render();
 protected:
+	void loadBGM();
+	
 	void reload();
 	void assemble();
 	void assembleAvatar();

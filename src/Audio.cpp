@@ -1,5 +1,4 @@
 #include "common.hpp"
-#include "observer.hpp"
 
 #include "Audio.hpp"
 
@@ -26,8 +25,6 @@ Audio::Audio(const std::string& filename) : sound(NULL), music(NULL), channel(0)
 		if( !music )
 			throw( mexception( "Mix_LoadMUS error" ) );
 	}
-	
-	observer::Stack::connect(this, &Audio::handleObsStackPush, &Audio::handleObsStackPop);
 }
 
 Audio::~Audio()
@@ -36,8 +33,6 @@ Audio::~Audio()
 		Mix_FreeChunk( sound );
 	else
 		Mix_FreeMusic( music );
-	
-	observer::Stack::disconnect(this);
 }
 
 void Audio::play(int n)
@@ -132,14 +127,4 @@ bool Audio::soundMuted()
 bool Audio::musicMuted()
 {
 	return music_mute;
-}
-
-void Audio::handleObsStackPush(const observer::Event& event, bool& stop) {
-	if (!sound)
-		pause();
-}
-
-void Audio::handleObsStackPop(const observer::Event& event, bool& stop) {
-	if (!sound)
-		resume();
 }

@@ -5,10 +5,7 @@
 
 #include "SDL_mixer.h"
 
-#include "observer.hpp"
-
-class Audio
-{
+class Audio {
 private:
 	static float sound_volume;
 	static float music_volume;
@@ -35,9 +32,6 @@ public:
 	static void musicMute(bool flag);
 	static bool soundMuted();
 	static bool musicMuted();
-private:
-	void handleObsStackPush(const observer::Event& event, bool& stop);
-	void handleObsStackPop(const observer::Event& event, bool& stop);
 };
 
 #endif
