@@ -18,7 +18,7 @@ private:
 	//TODO move to different class
 	float lastHueShift;
 	int hueInterlace;
-	static const int hueInterlaceFactor = 1; //change this if the game lags
+	static const int hueInterlaceFactor = 4; //change this if the game lags
 	std::vector< std::pair<int,int> > tintPixels;
 	std::vector< hsv > tintColors;
 public:

@@ -89,13 +89,12 @@ void Animation::tint(float hueShift){
 	if (fabs(lastHueShift-hueShift)>0.003){
 		lastHueShift = hueShift;
 		int size = tintPixels.size();
-		//for (int i=hueInterlace; i<size; i+=hueInterlaceFactor ){
-		for (int i=0; i<size; ++i){
+		for (int i=hueInterlace; i<size; i+=hueInterlaceFactor ){
 			hsvColor = tintColors[i];
 			hsvColor.h = fmod((hsvColor.h-hueDelta),360);
 			rgbColor = hsv2rgb(hsvColor);
 			setPixel(tintPixels[i].first, tintPixels[i].second, SDL_MapRGBA(src->format, rgbColor.r*255, rgbColor.g*255, rgbColor.b*255, hsvColor.a*255));
 		}
-		//hueInterlace = ++hueInterlace%hueInterlaceFactor;
+		hueInterlace = ++hueInterlace%hueInterlaceFactor;
 	}
 }
