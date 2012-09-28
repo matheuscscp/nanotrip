@@ -267,13 +267,14 @@ void StateLevel::update() {
 	
 	if (states.back()->id() != StateLevel::getid()) {}	// avoiding throws while stacked
 	else if ((!lose_) && (!win_)) {
+		int fps = SDLBase::FPS();
 		// eatles go back to normal sprite
 		if (eatles != eatles_sheets[0]) {
 			if (((Animation*)eatles)->getTimeSize() <= eatles_stopwatch.time())
 				eatles = eatles_sheets[0];
 		}
 		// eatles get an animation
-		else if (!(rand()%(int(SDLBase::FPS())*EATLES_DELAY))) {
+		else if ((fps) && (!(rand()%(fps*EATLES_DELAY)))) {
 			eatles = eatles_sheets[rand()%2 + 1];
 			((Animation*)eatles)->setFrame(0);
 			eatles_stopwatch.start();

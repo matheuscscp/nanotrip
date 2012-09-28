@@ -88,7 +88,8 @@ void Animation::tint(float hueShift){
 	rgb rgbColor;
 	if (fabs(lastHueShift-hueShift)>0.003){
 		lastHueShift = hueShift;
-		for (int i=hueInterlace; i<tintPixels.size(); i+=hueInterlaceFactor ){
+		int size = tintPixels.size();
+		for (int i=hueInterlace; i<size; i+=hueInterlaceFactor ){
 			hsvColor = tintColors[i];
 			hsvColor.h = fmod((hsvColor.h-hueDelta),360);
 			rgbColor = hsv2rgb(hsvColor);
