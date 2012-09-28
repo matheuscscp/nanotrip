@@ -24,7 +24,6 @@ bool DraggableObject::isHooked() const { return hooked; }
 void DraggableObject::handleMouseDownLeft(const observer::Event& event, bool& stop) {
 	if (getShape()->mouseDownInside()) {
 		hooked = true;
-		stop = true;
 		diff_position = getShape()->position - r2vec(InputManager::instance()->mouseDownX(), InputManager::instance()->mouseDownY());
 	}
 }
