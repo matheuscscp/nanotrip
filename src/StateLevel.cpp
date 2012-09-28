@@ -88,7 +88,8 @@ charge_cursor_position(640)
 	sprite_item_point = new Sprite("img/level/item_point.png");
 	sprite_item_life = new Sprite("img/level/item_life.png");
 	sprite_item_mass = new Sprite("img/level/item_mass.png");
-	sprite_item_barrier = new Sprite("img/level/item_death_star.png");
+	sprite_item_barrier = new Sprite("img/level/item_bounce_star.png");
+	sprite_item_lethal_barrier = new Sprite("img/level/item_death_star.png");
 	
 	// all sounds
 	sound_lose = new Audio("sfx/level/lose.wav");
@@ -167,6 +168,7 @@ StateLevel::~StateLevel() {
 	delete sprite_item_life;
 	delete sprite_item_mass;
 	delete sprite_item_barrier;
+	delete sprite_item_lethal_barrier;
 	
 	// all sounds
 	delete sound_lose;
@@ -565,7 +567,10 @@ Item* StateLevel::assembleItem(const Configuration& conf) {
 		break;
 		
 	case Item::BARRIER:
-		item->sprite = sprite_item_barrier;
+		if (!item->value)
+			item->sprite = sprite_item_barrier;
+		else
+			item->sprite = sprite_item_lethal_barrier;
 		break;
 		
 	default:

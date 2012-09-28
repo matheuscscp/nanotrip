@@ -10,19 +10,19 @@ GAMESTATE_DEF(StateMakeLevel)
 StateMakeLevel::StateMakeLevel(ArgsBase* args) : warning_hidden(true) {
 	bg = new Sprite("img/level/background.png");
 	
-	inputbox = new Sprite("img/inputlevelname.png");
+	inputbox = new Sprite("img/menus/inputlevelname.png");
 	
-	inputtext = new Text("ttf/Swiss721BlackRoundedBT.ttf", "", 18, 0, SDLBase::getColor(0, 0, 0), Text::shaded, SDLBase::getColor(255, 255, 255));
+	inputtext = new Text("ttf/Swiss721BlackRoundedBT.ttf", "", 20, 0, SDLBase::getColor(51, 51, 51), Text::blended);
 	
 	inputstring.connect(InputString::UPDATE, this, &StateMakeLevel::handleInput);
 	inputstring.connect(InputString::ENTER, this, &StateMakeLevel::handleEnter);
-	inputstring.setMaxSize(60);
+	inputstring.setMaxSize(30);
 	if (args) {
 		inputstring.set(((StateLevelMaker::Args*)args)->levelname);
 		delete args;
 	}
 	
-	warning = new Text("", "Empty name!", 15, 0, SDLBase::getColor(255, 0, 0), Text::shaded, SDLBase::getColor(255, 255, 255));
+	warning = new Text("", "Empty name!", 15, 0, SDLBase::getColor(255, 0, 0), Text::blended);
 	
 	goback = new Button(new Sprite("img/goback.png"));
 	goback->getShape()->position = r2vec(540, 500);
@@ -58,9 +58,9 @@ void StateMakeLevel::render() {
 	bg->render();
 	
 	inputbox->render(640, 300, true);
-	inputtext->render(640, 320);
+	inputtext->render(640, 315);
 	if (!warning_hidden)
-		warning->render(640, 345);
+		warning->render(640, 340);
 	
 	goback->render();
 	makelevel->render();

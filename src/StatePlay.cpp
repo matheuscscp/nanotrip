@@ -15,13 +15,13 @@ GAMESTATE_DEF(StatePlay)
 StatePlay::StatePlay(ArgsBase* args) {
 	bg = new Sprite("img/level/background.png");
 	
-	inputbox = new Sprite("img/inputname.png");
+	inputbox = new Sprite("img/menus/inputname.png");
 	
-	inputtext = new Text("ttf/Swiss721BlackRoundedBT.ttf", "", 20, 0, SDLBase::getColor(0, 0, 0), Text::shaded, SDLBase::getColor(255, 255, 255));
+	inputtext = new Text("ttf/Swiss721BlackRoundedBT.ttf", "", 20, 0, SDLBase::getColor(51, 51, 51), Text::blended);
 	
 	inputstring.connect(InputString::UPDATE, this, &StatePlay::handleInput);
 	inputstring.connect(InputString::ENTER, this, &StatePlay::handleEnter);
-	inputstring.setMaxSize(60);
+	inputstring.setMaxSize(30);
 	
 	goback = new Button(new Sprite("img/goback.png"));
 	goback->getShape()->position = r2vec(540, 500);
@@ -56,7 +56,7 @@ void StatePlay::render() {
 	bg->render();
 	
 	inputbox->render(640, 300, true);
-	inputtext->render(640, 320);
+	inputtext->render(640, 315);
 	
 	goback->render();
 	play->render();

@@ -35,6 +35,7 @@ private:
 	Sprite* sprite_item_life;
 	Sprite* sprite_item_mass;
 	Sprite* sprite_item_barrier;
+	Sprite* sprite_item_lethal_barrier;
 	Sprite* border_top;
 	Sprite* border_right;
 	Sprite* border_bottom;

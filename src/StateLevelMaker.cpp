@@ -43,7 +43,8 @@ StateLevelMaker::StateLevelMaker(ArgsBase* args) {
 	sprite_item_point = new Sprite("img/levelmaker/item_point.png");
 	sprite_item_life = new Sprite("img/levelmaker/item_life.png");
 	sprite_item_mass = new Sprite("img/levelmaker/item_mass.png");
-	sprite_item_barrier = new Sprite("img/levelmaker/item_death_star.png");
+	sprite_item_barrier = new Sprite("img/levelmaker/item_bounce_star.png");
+	sprite_item_lethal_barrier = new Sprite("img/levelmaker/item_death_star.png");
 	border_top = new Sprite("img/levelmaker/border_top.png");
 	border_right = new Sprite("img/levelmaker/border_right.png");
 	border_bottom = new Sprite("img/levelmaker/border_bottom.png");
@@ -67,6 +68,7 @@ StateLevelMaker::~StateLevelMaker() {
 	delete sprite_item_life;
 	delete sprite_item_mass;
 	delete sprite_item_barrier;
+	delete sprite_item_lethal_barrier;
 	delete border_top;
 	delete border_right;
 	delete border_bottom;
@@ -367,7 +369,10 @@ void StateLevelMaker::assembleItem(const Configuration& conf) {
 		break;
 		
 	case Item::BARRIER:
-		item_obj->sprite = sprite_item_barrier;
+		if (!item_obj->value)
+			item_obj->sprite = sprite_item_barrier;
+		else
+			item_obj->sprite = sprite_item_lethal_barrier;
 		break;
 		
 	default:
