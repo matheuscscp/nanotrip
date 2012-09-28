@@ -33,7 +33,7 @@ Animation::Animation (
 			SDL_GetRGBA(getPixel(i, j), src->format, &r, &g, &b, &a);
 			if (1 || (a>0 && r<96 && abs(g-b)<48)){ //TODO color key
 				tintPixels.push_back(std::pair<int,int>(i,j));
-				tintColors.push_back(rgb2hsv({r/255.0,g/255.0,b/255.0,a/255.0}));
+				tintColors.push_back(rgb2hsv({r/255.0f,g/255.0f,b/255.0f,a/255.0f}));
 			}
 		}
 	}
@@ -89,12 +89,13 @@ void Animation::tint(float hueShift){
 	if (fabs(lastHueShift-hueShift)>0.003){
 		lastHueShift = hueShift;
 		int size = tintPixels.size();
-		for (int i=hueInterlace; i<size; i+=hueInterlaceFactor ){
+		//for (int i=hueInterlace; i<size; i+=hueInterlaceFactor ){
+		for (int i=0; i<size; ++i){
 			hsvColor = tintColors[i];
 			hsvColor.h = fmod((hsvColor.h-hueDelta),360);
 			rgbColor = hsv2rgb(hsvColor);
 			setPixel(tintPixels[i].first, tintPixels[i].second, SDL_MapRGBA(src->format, rgbColor.r*255, rgbColor.g*255, rgbColor.b*255, hsvColor.a*255));
 		}
-		hueInterlace = ++hueInterlace%hueInterlaceFactor;
+		//hueInterlace = ++hueInterlace%hueInterlaceFactor;
 	}
 }

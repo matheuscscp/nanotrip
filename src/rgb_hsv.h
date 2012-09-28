@@ -1,15 +1,15 @@
-    typedef struct {
-    double r;       // percent
-    double g;       // percent
-    double b;       // percent
-    double a;
+typedef struct {
+    float r;       // percent
+    float g;       // percent
+    float b;       // percent
+    float a;       // alpha in percent
 } rgb;
 
-    typedef struct {
-    double h;       // angle in degrees
-    double s;       // percent
-    double v;       // percent
-    double a;
+typedef struct {
+    float h;       // angle in degrees
+    float s;       // percent
+    float v;       // percent
+    float a;       // alpha in percent
 } hsv;
 
     static hsv      rgb2hsv(rgb in);
