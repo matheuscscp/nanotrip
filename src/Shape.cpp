@@ -9,6 +9,10 @@ lalge::R2Vector Shape::range(const Shape& target) const {
 	return (target.position - position);
 }
 
+lalge::R2Vector Shape::range(const lalge::R2Vector& target) const {
+	return (target - position);
+}
+
 bool Shape::pointInside(const lalge::R2Vector& point) const {
 	return pointInside(point.x(0), point.x(1));
 }

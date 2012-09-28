@@ -30,9 +30,10 @@ OBJ8 = $(OBJ7) $(OBJDIR)/StateMainMenu.o $(OBJDIR)/StateLevel.o $(OBJDIR)/StateP
 OBJ9 = $(OBJ8) $(OBJDIR)/StateMakeLevel.o $(OBJDIR)/StateMovie.o $(OBJDIR)/StateRanking.o
 OBJ10 = $(OBJ9) $(OBJDIR)/StateInstructions.o $(OBJDIR)/StateCredits.o $(OBJDIR)/StatePause.o
 OBJ11 = $(OBJ10) $(OBJDIR)/Stopwatch.o $(OBJDIR)/StateYouLose.o $(OBJDIR)/Avatar.o
-OBJ12 = $(OBJ11) $(OBJDIR)/StateYouWin.o $(OBJDIR)/Item.o
+OBJ12 = $(OBJ11) $(OBJDIR)/StateYouWin.o $(OBJDIR)/Item.o $(OBJDIR)/DraggableObject.o
+OBJ13 = $(OBJ12) $(OBJDIR)/LevelMakerObject.o
 
-OBJ  = $(OBJ12)
+OBJ  = $(OBJ13)
 
 all: build
 
@@ -50,7 +51,7 @@ test: build
 
 gdb: build
 	gdb $(EXE)
-#r -f -p /home/matheus/Documents/C_C++/C++/IDJ/nanotrip/ -s StateLoadLevel
+#r -f -p /home/matheus/Documents/C_C++/C++/IDJ/nanotrip/ -s StateMakeLevel
 
 clean:
 	rm -rf $(EXE) $(OBJDIR)/* $(ERRLOG)

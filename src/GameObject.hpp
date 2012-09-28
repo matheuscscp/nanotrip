@@ -18,10 +18,7 @@ public:
 	Shape* getShape() const;
 	void setShape(Shape* shape);
 	
-	static void updateAll();
-	static void renderAll();
-	
-	virtual void update();
+	virtual void update() = 0;
 	virtual void render();
 };
 

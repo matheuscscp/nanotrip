@@ -12,6 +12,7 @@ public:
 	virtual ~Shape();
 	
 	lalge::R2Vector range(const Shape& target) const;
+	lalge::R2Vector range(const lalge::R2Vector& target) const;
 	
 	virtual bool pointInside(int x, int y) const = 0;
 	bool pointInside(const lalge::R2Vector& point) const;

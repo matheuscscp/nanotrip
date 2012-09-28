@@ -26,17 +26,14 @@ public:
 	};
 	
 	class Event : public observer::Event {
-	private:
-		char op;
-		int val;
 	public:
-		Event(char operation, int value);
-		char operation() const;
-		int value() const;
+		char operation;
+		float value;
+		Event(char operation, float value);
 	};
 	
 	char operation;
-	int value;
+	float value;
 	
 	Item();
 	

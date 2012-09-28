@@ -15,8 +15,6 @@ void GameObject::setShape(Shape* shape) {
 	this->shape = shape;
 }
 
-void GameObject::update() {}
-
 void GameObject::render() {
 	if ((sprite) && (!hidden))
 		sprite->render(shape->position.x(0), shape->position.x(1), true);

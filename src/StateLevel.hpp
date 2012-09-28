@@ -58,6 +58,7 @@ protected:
 	Sprite* bg_grad;
 	Sprite* bg_nograd;
 	Sprite* hud;
+	Sprite* sprite_life;
 	Sprite* eatles;
 	Sprite* eatles_sheets[5];
 	Stopwatch eatles_stopwatch;
@@ -68,7 +69,6 @@ protected:
 	Timer timer;
 	Stopwatch stopwatch;
 	
-	Sprite* sprite_life;
 	Sprite* border_top;
 	Sprite* border_right;
 	Sprite* border_bottom;

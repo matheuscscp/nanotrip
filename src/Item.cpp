@@ -1,9 +1,7 @@
 #include "Item.hpp"
 
-Item::Event::Event(char operation, int value) :
-observer::Event(COLLISION), op(operation), val(value) {}
-char Item::Event::operation() const { return op; }
-int Item::Event::value() const { return val; }
+Item::Event::Event(char operation, float value) :
+observer::Event(COLLISION), operation(operation), value(value) {}
 
 Item::Item() : operation(0), value(0) { subject.init(LASTEVENT); }
 

@@ -6,7 +6,7 @@
 
 #include "observer.hpp"
 
-#define inputmanager_event	(*( *((InputManager::Event*)&event) )())
+#define inputmanager_event	(*(*((InputManager::Event*)&event))())
 
 class InputManager {
 SUBJECT

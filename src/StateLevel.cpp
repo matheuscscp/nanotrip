@@ -49,14 +49,13 @@ interaction_blackhole_collision(0),
 max_abs_charge(1),
 charge_cursor_position(640)
 {
-	srand(time(0));
-	
 	// screen box
 	screen_box.position = r2vec(640, 360);
 	screen_box.setWidth(1280);
 	screen_box.setHeight(720);
 	
 	// background
+	srand(time(0));
 	bg_x = -(rand()%641);
 	bg_y = -(rand()%361);
 	bg_grad = new Sprite("img/level/background.png");
@@ -455,6 +454,18 @@ void StateLevel::assembleAvatar() {
 	((Circle*)avatar->getShape())->setRadius(avatar->sprite->rectW()/2);
 }
 
+void StateLevel::assembleBlackHole() {
+	Configuration conf = raw.getConfig("blackhole");
+	blackhole = new Particle();
+	blackhole->pinned = true;
+	blackhole->getShape()->position = r2vec(conf.getReal("x"), conf.getReal("y"));
+	blackhole->setMass(conf.getReal("m"));
+	
+	// sprite
+	blackhole->sprite = sprite_blackhole;
+	((Circle*)blackhole->getShape())->setRadius(blackhole->sprite->rectW()/2);
+}
+
 Item* StateLevel::assembleKey() {
 	Configuration conf;
 	try {
@@ -476,18 +487,6 @@ Item* StateLevel::assembleKey() {
 	((Circle*)key->getShape())->setRadius(key->sprite->rectW()/2);
 	
 	return key;
-}
-
-void StateLevel::assembleBlackHole() {
-	Configuration conf = raw.getConfig("blackhole");
-	blackhole = new Particle();
-	blackhole->pinned = true;
-	blackhole->getShape()->position = r2vec(conf.getReal("x"), conf.getReal("y"));
-	blackhole->setMass(conf.getReal("m"));
-	
-	// sprite
-	blackhole->sprite = sprite_blackhole;
-	((Circle*)blackhole->getShape())->setRadius(blackhole->sprite->rectW()/2);
 }
 
 Particle* StateLevel::assembleParticle(const Configuration& conf) {
@@ -522,7 +521,7 @@ Item* StateLevel::assembleItem(const Configuration& conf) {
 	item->pinned = true;
 	item->getShape()->position = r2vec(conf.getReal("x"), conf.getReal("y"));
 	item->operation = conf.getInt("operation");
-	item->value = conf.getInt("value");
+	item->value = conf.getReal("value");
 	if (item->value < 0)
 		item->value *= -1;
 	item->setElasticity(conf.getReal("k"));
@@ -637,8 +636,8 @@ void StateLevel::handleItemCollision(const observer::Event& event, bool& stop) {
 	if ((lose_) || (win_))
 		return;
 	
-	char operation = ((Item::Event*)&event)->operation();
-	int value = ((Item::Event*)&event)->value();
+	char operation = ((Item::Event*)&event)->operation;
+	int value = ((Item::Event*)&event)->value;
 	
 	// sprite
 	switch (operation) {
