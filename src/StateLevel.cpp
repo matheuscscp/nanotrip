@@ -77,7 +77,7 @@ charge_cursor_position(640)
 	
 	// all sprites
 	sprite_avatar = new Animation("img/level/avatar_positive.png", 0, 7, 1, 16);
-	sprite_key = new Sprite("img/level/item_key.png");
+	sprite_key = new Animation("img/level/item_key.png", 0, 8, 1, 4);
 	sprite_blackhole = new Animation("img/level/blackhole.png", 0, 30, 1, 20);
 	sprite_negative = new Sprite("img/level/particle_negative.png");
 	sprite_negative_anim = new Animation("img/level/particle_negative_ssheet.png", 0, 20, 1, 9);
@@ -245,6 +245,7 @@ void StateLevel::update() {
 	// animations
 	sprite_avatar->update();
 	sprite_blackhole->update();
+	sprite_key->update();
 	if ((SDL_GetTicks()/5) % 2) {
 		((Animation*)sprite_negative_anim)->setFrame(rand()%9);
 		((Animation*)sprite_positive_anim)->setFrame(rand()%9);
