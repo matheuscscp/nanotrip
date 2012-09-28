@@ -23,7 +23,7 @@ StateLoadLevel::StateLoadLevel(ArgsBase* args) : warning_hidden(true) {
 	
 	inputbox = new Sprite("img/inputlevelname.png");
 	
-	inputtext = new Text("", "", 20, 0, SDLBase::getColor(0, 0, 0), Text::shaded, SDLBase::getColor(255, 255, 255));
+	inputtext = new Text("ttf/Swiss721BlackRoundedBT.ttf", "", 18, 0, SDLBase::getColor(0, 0, 0), Text::shaded, SDLBase::getColor(255, 255, 255));
 	
 	inputstring.connect(InputString::UPDATE, this, &StateLoadLevel::handleInput);
 	inputstring.connect(InputString::ENTER, this, &StateLoadLevel::handleEnter);

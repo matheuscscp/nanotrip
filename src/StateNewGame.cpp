@@ -8,7 +8,7 @@ using namespace common;
 GAMESTATE_DEF(StateNewGame)
 
 StateNewGame::StateNewGame(ArgsBase* args) {
-	bg = new Sprite("img/level/background.png");
+	bg = new Sprite("img/menus/background.png");
 	
 	play = new Button(new Sprite("img/play.png"));
 	play->getShape()->position = r2vec(640, 100);

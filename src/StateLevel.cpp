@@ -49,6 +49,8 @@ interaction_blackhole_collision(0),
 max_abs_charge(1),
 charge_cursor_position(640)
 {
+	SDL_ShowCursor(0);
+	
 	// screen box
 	screen_box.position = r2vec(640, 360);
 	screen_box.setWidth(1280);
@@ -141,6 +143,8 @@ charge_cursor_position(640)
 }
 
 StateLevel::~StateLevel() {
+	SDL_ShowCursor(1);
+	
 	clear();
 	
 	// all sprites
@@ -190,6 +194,7 @@ StateLevel::~StateLevel() {
 }
 
 void StateLevel::handleUnstack(ArgsBase* args) {
+	SDL_ShowCursor(0);
 	frozen_ = false;
 	if (!args)
 		return;
@@ -293,12 +298,14 @@ void StateLevel::update() {
 			// if it was the last try
 			if (life < 0) {
 				eatles = 0;
+				SDL_ShowCursor(1);
 				throw new StackUp("StateYouLose");
 			}
 			reload();
 		}
 		else {
 			eatles = 0;
+			SDL_ShowCursor(1);
 			throw new StackUp("StateYouWin", new FinalArgs(points));
 		}
 	}
@@ -611,6 +618,7 @@ void StateLevel::handleKeyDown(const observer::Event& event, bool& stop) {
 		if ((lose_) || (win_))
 			return;
 		frozen_ = true;
+		SDL_ShowCursor(1);
 		throw new StackUp("StatePause", (((!life) || (avatar->pinned)) ? new ArgsBase() : 0));
 		break;
 		

@@ -17,7 +17,7 @@ StatePlay::StatePlay(ArgsBase* args) {
 	
 	inputbox = new Sprite("img/inputname.png");
 	
-	inputtext = new Text("", "", 20, 0, SDLBase::getColor(0, 0, 0), Text::shaded, SDLBase::getColor(255, 255, 255));
+	inputtext = new Text("ttf/Swiss721BlackRoundedBT.ttf", "", 20, 0, SDLBase::getColor(0, 0, 0), Text::shaded, SDLBase::getColor(255, 255, 255));
 	
 	inputstring.connect(InputString::UPDATE, this, &StatePlay::handleInput);
 	inputstring.connect(InputString::ENTER, this, &StatePlay::handleEnter);
