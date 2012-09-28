@@ -11,6 +11,9 @@ GAMESTATE_DEF(StatePause)
 StatePause::StatePause(ArgsBase* args) {
 	bg = new Sprite("img/pause/background.png");
 	
+	shadow = new Sprite("img/pause/shadow.png");
+	eatles = new Animation("img/pause/eatles.png", 0, 20, 1, 18);
+	
 	retry = new Button(new Sprite("img/pause/retry.png"));
 	menu = new Button(new Sprite("img/pause/menu.png"));
 	resume = new Button(new Sprite("img/pause/resume.png"));
@@ -46,6 +49,9 @@ StatePause::StatePause(ArgsBase* args) {
 StatePause::~StatePause() {
 	delete bg;
 	
+	delete shadow;
+	delete eatles;
+	
 	delete retry->sprite;
 	delete retry;
 	
@@ -57,6 +63,8 @@ StatePause::~StatePause() {
 }
 
 void StatePause::update() {
+	eatles->update();
+	
 	retry->update();
 	menu->update();
 	resume->update();
@@ -64,6 +72,10 @@ void StatePause::update() {
 
 void StatePause::render() {
 	bg->render(640, 360, true);
+	
+	shadow->render(640, 442, true);
+	eatles->render(638, 364, true);
+	
 	retry->render();
 	menu->render();
 	resume->render();

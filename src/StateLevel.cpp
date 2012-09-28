@@ -333,7 +333,7 @@ void StateLevel::render() {
 	
 	// hud
 	hud->render();
-	if (eatles)
+	if ((eatles) && (!frozen_))
 		eatles->render(37, 13);
 	text_time->render(289, 53);
 	text_points->render(281, 115);

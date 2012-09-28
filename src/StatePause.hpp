@@ -10,6 +10,9 @@ GAMESTATE
 private:
 	Sprite* bg;
 	
+	Sprite* shadow;
+	Sprite* eatles;
+	
 	Button* retry;
 	Button* menu;
 	Button* resume;
