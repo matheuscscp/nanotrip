@@ -31,9 +31,8 @@ void Avatar::checkBlackHoleCollision(GameObject* blackhole, bool& enable) {
 }
 
 void Avatar::setCharge(Scalar charge) {
-	//TODO change avatar color
-	if (this->sprite){
-		this->sprite->tint((charge-0.03)*10); //TODO use correct charge values
-	}
 	this->charge = charge;
+	if (this->sprite){
+		this->sprite->tint((this->charge-0.03)*10); //TODO use correct charge values
+	}
 }

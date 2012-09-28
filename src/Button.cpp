@@ -61,6 +61,5 @@ void Button::handleMouseUpLeft(const observer::Event& event, bool& stop) {
 	if ((getShape()->mouseDownInside()) && (getShape()->mouseInside()) && (enabled)) {
 		clicked = true;
 		subject.broadcast(observer::Event(CLICKED));
-		stop = true;
 	}
 }
