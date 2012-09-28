@@ -27,7 +27,7 @@ StateLoadLevel::StateLoadLevel(ArgsBase* args) : warning_hidden(true) {
 	
 	inputstring.connect(InputString::UPDATE, this, &StateLoadLevel::handleInput);
 	inputstring.connect(InputString::ENTER, this, &StateLoadLevel::handleEnter);
-	inputstring.setMaxSize(30);
+	inputstring.setMaxSize(25);
 	
 	warning = new Text("", "File not found!", 15, 0, SDLBase::getColor(255, 0, 0), Text::blended);
 	

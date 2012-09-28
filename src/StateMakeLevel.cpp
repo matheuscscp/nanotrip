@@ -16,7 +16,7 @@ StateMakeLevel::StateMakeLevel(ArgsBase* args) : warning_hidden(true) {
 	
 	inputstring.connect(InputString::UPDATE, this, &StateMakeLevel::handleInput);
 	inputstring.connect(InputString::ENTER, this, &StateMakeLevel::handleEnter);
-	inputstring.setMaxSize(30);
+	inputstring.setMaxSize(25);
 	if (args) {
 		inputstring.set(((StateLevelMaker::Args*)args)->levelname);
 		delete args;
