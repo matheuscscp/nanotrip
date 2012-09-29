@@ -96,6 +96,7 @@ charge_cursor_position(640)
 	sound_win = new Audio("sfx/level/win.wav");
 	Particle::sound_collision_elastic = new Audio("sfx/level/collision_elastic.wav");
 	Particle::sound_collision_inelastic = new Audio("sfx/level/collision_inelastic.wav");
+	Audio::musicVolume(0.5);
 	
 	// configuration file
 	raw.readTxt(RootPath::get("level/" + ((Args*)args)->levelname + ".conf"));
