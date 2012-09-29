@@ -10,23 +10,23 @@ GAMESTATE_DEF(StateMainMenu)
 StateMainMenu::StateMainMenu(ArgsBase* args) {
 	bg = new Sprite("img/menus/background.png");
 	
-	newgame = new Button(new Sprite("img/newgame.png"));
+	newgame = new Button(new Sprite("img/menus/button_new_game.png"));
 	newgame->getShape()->position = r2vec(640, 100);
 	newgame->connect(Button::CLICKED, this, &StateMainMenu::handleNewGame);
 	
-	ranking = new Button(new Sprite("img/ranking.png"));
+	ranking = new Button(new Sprite("img/menus/button_ranking.png"));
 	ranking->getShape()->position = r2vec(640, 200);
 	ranking->connect(Button::CLICKED, this, &StateMainMenu::handleRanking);
 	
-	instructions = new Button(new Sprite("img/instructions.png"));
+	instructions = new Button(new Sprite("img/menus/button_instructions.png"));
 	instructions->getShape()->position = r2vec(640, 300);
 	instructions->connect(Button::CLICKED, this, &StateMainMenu::handleInstructions);
 	
-	credits = new Button(new Sprite("img/credits.png"));
+	credits = new Button(new Sprite("img/menus/button_credits.png"));
 	credits->getShape()->position = r2vec(640, 400);
 	credits->connect(Button::CLICKED, this, &StateMainMenu::handleCredits);
 	
-	quit = new Button(new Sprite("img/quit.png"));
+	quit = new Button(new Sprite("img/menus/button_quit.png"));
 	quit->getShape()->position = r2vec(640, 500);
 	quit->connect(Button::CLICKED, this, &StateMainMenu::handleQuit);
 }

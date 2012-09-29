@@ -10,7 +10,7 @@ GAMESTATE_DEF(StateMakeLevel)
 StateMakeLevel::StateMakeLevel(ArgsBase* args) : warning_hidden(true) {
 	bg = new Sprite("img/level/background.png");
 	
-	inputbox = new Sprite("img/menus/inputlevelname.png");
+	inputbox = new Sprite("img/menus/input_level_name.png");
 	
 	inputtext = new Text("ttf/Swiss721BlackRoundedBT.ttf", "", 20, 0, SDLBase::getColor(51, 51, 51), Text::blended);
 	
@@ -24,11 +24,11 @@ StateMakeLevel::StateMakeLevel(ArgsBase* args) : warning_hidden(true) {
 	
 	warning = new Text("", "Empty name!", 15, 0, SDLBase::getColor(255, 0, 0), Text::blended);
 	
-	goback = new Button(new Sprite("img/goback.png"));
-	goback->getShape()->position = r2vec(540, 500);
-	goback->connect(Button::CLICKED, this, &StateMakeLevel::handleGoBack);
+	back = new Button(new Sprite("img/menus/button_back.png"));
+	back->getShape()->position = r2vec(540, 500);
+	back->connect(Button::CLICKED, this, &StateMakeLevel::handleGoBack);
 	
-	makelevel = new Button(new Sprite("img/makelevel.png"));
+	makelevel = new Button(new Sprite("img/menus/button_make_level.png"));
 	makelevel->getShape()->position = r2vec(740, 500);
 	makelevel->connect(Button::CLICKED, this, &StateMakeLevel::handleEnter);
 }
@@ -40,8 +40,8 @@ StateMakeLevel::~StateMakeLevel() {
 	delete inputtext;
 	delete warning;
 	
-	delete goback->sprite;
-	delete goback;
+	delete back->sprite;
+	delete back;
 	
 	delete makelevel->sprite;
 	delete makelevel;
@@ -50,7 +50,7 @@ StateMakeLevel::~StateMakeLevel() {
 void StateMakeLevel::update() {
 	inputstring.update();
 	
-	goback->update();
+	back->update();
 	makelevel->update();
 }
 
@@ -62,7 +62,7 @@ void StateMakeLevel::render() {
 	if (!warning_hidden)
 		warning->render(640, 340);
 	
-	goback->render();
+	back->render();
 	makelevel->render();
 }
 

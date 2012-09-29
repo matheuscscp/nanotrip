@@ -13,7 +13,7 @@ private:
 	Button* play;
 	Button* loadlevel;
 	Button* makelevel;
-	Button* goback;
+	Button* back;
 public:
 	StateNewGame(ArgsBase* args);
 	~StateNewGame();

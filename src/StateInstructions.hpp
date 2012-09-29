@@ -10,7 +10,7 @@ GAMESTATE
 private:
 	Sprite* bg;
 	
-	Button* goback;
+	Button* back;
 public:
 	StateInstructions(ArgsBase* args);
 	~StateInstructions();

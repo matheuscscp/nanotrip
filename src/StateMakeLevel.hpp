@@ -18,7 +18,7 @@ private:
 	Text* warning;
 	bool warning_hidden;
 	
-	Button* goback;
+	Button* back;
 	Button* makelevel;
 public:
 	StateMakeLevel(ArgsBase* args);

@@ -7,25 +7,25 @@ GAMESTATE_DEF(StateInstructions)
 StateInstructions::StateInstructions(ArgsBase* args) {
 	bg = new Sprite("img/level/background.png");
 	
-	goback = new Button(new Sprite("img/goback.png"));
-	goback->getShape()->position = r2vec(100, 680);
-	goback->connect(Button::CLICKED, this, &StateInstructions::handleGoBack);
+	back = new Button(new Sprite("img/menus/button_back.png"));
+	back->getShape()->position = r2vec(100, 680);
+	back->connect(Button::CLICKED, this, &StateInstructions::handleGoBack);
 }
 
 StateInstructions::~StateInstructions() {
 	delete bg;
 	
-	delete goback->sprite;
-	delete goback;
+	delete back->sprite;
+	delete back;
 }
 
 void StateInstructions::update() {
-	goback->update();
+	back->update();
 }
 
 void StateInstructions::render() {
 	bg->render();
-	goback->render();
+	back->render();
 }
 
 void StateInstructions::handleGoBack(const observer::Event& event, bool& stop) {

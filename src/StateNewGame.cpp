@@ -10,21 +10,21 @@ GAMESTATE_DEF(StateNewGame)
 StateNewGame::StateNewGame(ArgsBase* args) {
 	bg = new Sprite("img/menus/background.png");
 	
-	play = new Button(new Sprite("img/play.png"));
+	play = new Button(new Sprite("img/menus/button_play.png"));
 	play->getShape()->position = r2vec(640, 100);
 	play->connect(Button::CLICKED, this, &StateNewGame::handlePlay);
 	
-	loadlevel = new Button(new Sprite("img/loadlevel.png"));
+	loadlevel = new Button(new Sprite("img/menus/button_load_level.png"));
 	loadlevel->getShape()->position = r2vec(640, 200);
 	loadlevel->connect(Button::CLICKED, this, &StateNewGame::handleLoadLevel);
 	
-	makelevel = new Button(new Sprite("img/makelevel.png"));
+	makelevel = new Button(new Sprite("img/menus/button_make_level.png"));
 	makelevel->getShape()->position = r2vec(640, 300);
 	makelevel->connect(Button::CLICKED, this, &StateNewGame::handleMakeLevel);
 	
-	goback = new Button(new Sprite("img/goback.png"));
-	goback->getShape()->position = r2vec(640, 400);
-	goback->connect(Button::CLICKED, this, &StateNewGame::handleGoBack);
+	back = new Button(new Sprite("img/menus/button_back.png"));
+	back->getShape()->position = r2vec(640, 400);
+	back->connect(Button::CLICKED, this, &StateNewGame::handleGoBack);
 }
 
 StateNewGame::~StateNewGame() {
@@ -39,15 +39,15 @@ StateNewGame::~StateNewGame() {
 	delete makelevel->sprite;
 	delete makelevel;
 	
-	delete goback->sprite;
-	delete goback;
+	delete back->sprite;
+	delete back;
 }
 
 void StateNewGame::update() {
 	play->update();
 	loadlevel->update();
 	makelevel->update();
-	goback->update();
+	back->update();
 }
 
 void StateNewGame::render() {
@@ -56,7 +56,7 @@ void StateNewGame::render() {
 	play->render();
 	loadlevel->render();
 	makelevel->render();
-	goback->render();
+	back->render();
 }
 
 void StateNewGame::handlePlay(const observer::Event& event, bool& stop) {

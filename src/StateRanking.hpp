@@ -10,7 +10,7 @@ GAMESTATE
 private:
 	Sprite* bg;
 	
-	Button* goback;
+	Button* back;
 public:
 	StateRanking(ArgsBase* args);
 	~StateRanking();
