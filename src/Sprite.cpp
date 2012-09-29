@@ -82,12 +82,12 @@ int Sprite::srcH () const
 
 int Sprite::rectW () const
 {
-	return srcrect_.w;
+	return ((!rotozoomed) ? srcrect_.w : rotozoomed->w);
 }
 
 int Sprite::rectH () const
 {
-	return srcrect_.h;
+	return ((!rotozoomed) ? srcrect_.h : rotozoomed->h);
 }
 
 void Sprite::render (int x, int y, bool center, bool surface_manager) {

@@ -1,7 +1,9 @@
 #include "Avatar.hpp"
 
-#include <iostream>
 #include "SDLBase.hpp"
+#include "Circle.hpp"
+
+#include "common.hpp"
 
 using namespace lalge;
 
@@ -18,6 +20,14 @@ void Avatar::update() {
 	Scalar dt = Scalar(SDLBase::dt())/1000;
 	getShape()->position += ((speed*dt) + acceleration*(dt*dt/2));
 	speed = getShape()->range(*(blackhole->getShape()));
+	
+	// rotozoom
+	{
+		Scalar zoom = speed.size()/((Circle*)blackhole->getShape())->getRadius();
+		sprite->rotozoom(0, zoom, zoom);
+		((Circle*)getShape())->setRadius(sprite->rectW()/2);
+	}
+	
 	speed = speed + rotate(90, speed)*4;
 }
 

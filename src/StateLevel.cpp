@@ -489,6 +489,7 @@ void StateLevel::assembleAvatar() {
 	avatar->setCharge(conf.getReal("q"));
 	
 	// sprite
+	sprite_avatar->restore();
 	avatar->sprite = sprite_avatar;
 	((Circle*)avatar->getShape())->setRadius(avatar->sprite->rectW()/2);
 }
