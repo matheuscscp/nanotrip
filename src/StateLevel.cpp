@@ -94,6 +94,8 @@ charge_cursor_position(640)
 	// all sounds
 	sound_lose = new Audio("sfx/level/lose.wav");
 	sound_win = new Audio("sfx/level/win.wav");
+	Particle::sound_collision_elastic = new Audio("sfx/level/collision_elastic.wav");
+	Particle::sound_collision_inelastic = new Audio("sfx/level/collision_inelastic.wav");
 	
 	// configuration file
 	raw.readTxt(RootPath::get("level/" + ((Args*)args)->levelname + ".conf"));
@@ -174,6 +176,8 @@ StateLevel::~StateLevel() {
 	// all sounds
 	delete sound_lose;
 	delete sound_win;
+	delete Particle::sound_collision_elastic;
+	delete Particle::sound_collision_inelastic;
 	delete bgm;
 	
 	// borders

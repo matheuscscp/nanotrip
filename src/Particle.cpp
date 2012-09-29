@@ -6,6 +6,9 @@
 
 using namespace lalge;
 
+Audio* Particle::sound_collision_elastic = 0;
+Audio* Particle::sound_collision_inelastic = 0;
+
 Particle::Particle() : elasticity(0), mass(1), charge(0), pinned(false) { setShape(new Circle()); }
 Particle::~Particle() {}
 
@@ -86,31 +89,51 @@ void Particle::manageParticleCollision(GameObject* target, bool& enable) {
 }
 
 bool Particle::collides(const Particle& target) const {
+	bool ret_value = false;
+	
 	// obvious collision test
-	if (((Circle*)getShape())->collides(*((Circle*)target.getShape())))
-		return true;
+	if ((pinned) && (target.pinned))
+		ret_value = false;
+	else if (((Circle*)getShape())->collides(*((Circle*)target.getShape())))
+		ret_value = true;
+	else {
+		// collision test for the next position
+		Scalar dt = Scalar(SDLBase::dt())/1000;
+		Circle c1(*((Circle*)getShape()));
+		Circle c2(*((Circle*)target.getShape()));
+		R2Vector c1_dpos;
+		R2Vector c2_dpos;
+		if (!pinned)	// pinned particles don't move
+			c1_dpos = ((speed*dt) + acceleration*(dt*dt/2));
+		if (!target.pinned)	// pinned particles don't move
+			c2_dpos = ((target.speed*dt) + target.acceleration*(dt*dt/2));
+		if ((!c1_dpos.size()) && (!c2_dpos.size()))	// pinned particles don't collide
+			ret_value = false;
+		else {
+			c1.position += c1_dpos;
+			c2.position += c2_dpos;
+			if (c1.collides(c2))
+				ret_value = true;
+			else {
+				// collision test for crossing trajectories
+				// RESOLVER O SISTEMA LINEAR DOS VETORES DIFERENCA e tal
+				
+			}
+		}
+	}
 	
-	// collision test for the next position
-	Scalar dt = Scalar(SDLBase::dt())/1000;
-	Circle c1(*((Circle*)getShape()));
-	Circle c2(*((Circle*)target.getShape()));
-	R2Vector c1_dpos;
-	R2Vector c2_dpos;
-	if (!pinned)	// pinned particles don't move
-		c1_dpos = ((speed*dt) + acceleration*(dt*dt/2));
-	if (!target.pinned)	// pinned particles don't move
-		c2_dpos = ((target.speed*dt) + target.acceleration*(dt*dt/2));
-	if ((!c1_dpos.size()) && (!c2_dpos.size()))	// pinned particles don't collide
-		return false;
-	c1.position += c1_dpos;
-	c2.position += c2_dpos;
-	if (c1.collides(c2))
-		return true;
+	// play sound
+	if (ret_value) {
+		Scalar k = elasticity + target.elasticity;
+		if (k > 0.5) {
+			if (sound_collision_elastic)
+				sound_collision_elastic->play(1);
+		}
+		else if (sound_collision_inelastic)
+			sound_collision_inelastic->play(1);
+	}
 	
-	// collision test for crossing trajectories
-	// RESOLVER O SISTEMA LINEAR DOS VETORES DIFERENCA e tal
-	
-	return false;
+	return ret_value;
 }
 
 void Particle::addParticleFieldForces(GameObject* target, bool& enable) {

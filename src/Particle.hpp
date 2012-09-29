@@ -3,19 +3,21 @@
 #define PARTICLE_HPP
 
 #include "GameObject.hpp"
+#include "Audio.hpp"
 
 class Particle : public GameObject {
 private:
 	lalge::Scalar elasticity;
 	lalge::Scalar mass;
-
 protected: 
 	lalge::Scalar charge;
-
 public:
 	lalge::R2Vector speed;
 	lalge::R2Vector acceleration;
 	lalge::R2Vector force;
+	
+	static Audio* sound_collision_elastic;
+	static Audio* sound_collision_inelastic;
 	
 	bool pinned;
 	
