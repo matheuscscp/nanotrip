@@ -5,6 +5,7 @@
 #include "Circle.hpp"
 #include "InputManager.hpp"
 #include "SDLBase.hpp"
+#include "GameBGM.hpp"
 
 #define GRADIENT_CONST	15000
 
@@ -97,7 +98,6 @@ charge_cursor_position(640)
 	sound_win = new Audio("sfx/level/win.wav");
 	Particle::sound_collision_elastic = new Audio("sfx/level/collision_elastic.wav");
 	Particle::sound_collision_inelastic = new Audio("sfx/level/collision_inelastic.wav");
-	Audio::musicVolume(0.5);
 	
 	// configuration file
 	raw.readTxt(RootPath::get("level/" + ((Args*)args)->levelname + ".conf"));
@@ -142,6 +142,8 @@ charge_cursor_position(640)
 		if (general.getInt("border_left"))
 			border_left = new Sprite("img/level/border_left.png");
 		
+		GameBGM::stop();
+		Audio::musicVolume(0.5);
 		loadBGM(general);
 	}
 	
@@ -181,6 +183,7 @@ StateLevel::~StateLevel() {
 	delete Particle::sound_collision_elastic;
 	delete Particle::sound_collision_inelastic;
 	delete bgm;
+	GameBGM::play();
 	
 	// borders
 	if (border_top)

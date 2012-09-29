@@ -31,7 +31,7 @@ OBJ9 = $(OBJ8) $(OBJDIR)/StateMakeLevel.o $(OBJDIR)/StateMovie.o $(OBJDIR)/State
 OBJ10 = $(OBJ9) $(OBJDIR)/StateInstructions.o $(OBJDIR)/StateCredits.o $(OBJDIR)/StatePause.o
 OBJ11 = $(OBJ10) $(OBJDIR)/Stopwatch.o $(OBJDIR)/StateYouLose.o $(OBJDIR)/Avatar.o
 OBJ12 = $(OBJ11) $(OBJDIR)/StateYouWin.o $(OBJDIR)/Item.o $(OBJDIR)/DraggableObject.o
-OBJ13 = $(OBJ12) $(OBJDIR)/LevelMakerObject.o
+OBJ13 = $(OBJ12) $(OBJDIR)/LevelMakerObject.o $(OBJDIR)/GameBGM.o
 
 OBJ  = $(OBJ13)
 
