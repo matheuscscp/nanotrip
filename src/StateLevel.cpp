@@ -181,7 +181,9 @@ StateLevel::~StateLevel() {
 	delete sound_lose;
 	delete sound_win;
 	delete Particle::sound_collision_elastic;
+	Particle::sound_collision_elastic = 0;
 	delete Particle::sound_collision_inelastic;
+	Particle::sound_collision_inelastic = 0;
 	delete bgm;
 	GameBGM::play();
 	
