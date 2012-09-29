@@ -5,7 +5,10 @@
 
 using namespace lalge;
 
-Button::Button(Sprite* sprite) : clip_y(0), clicked(false) {
+Audio* Button::sound_hover = 0;
+Audio* Button::sound_clicked = 0;
+
+Button::Button(Sprite* sprite) : clip_y(0), clicked(false), hover(false) {
 	subject.init(LASTEVENT);
 	setShape(new Rectangle());
 	enable(true);
@@ -27,15 +30,29 @@ void Button::update() {
 	if (clicked) {
 		clicked = false;
 		clip_y = 2*sprite->srcH()/4;
+		hover = false;
 	}
-	else if (!getShape()->mouseInside())
+	else if (!getShape()->mouseInside()) {
 		clip_y = 0;
-	else if (!InputManager::instance()->mousePressed(SDL_BUTTON_LEFT))
+		hover = false;
+	}
+	else if (!InputManager::instance()->mousePressed(SDL_BUTTON_LEFT)) {
 		clip_y = sprite->srcH()/4;
-	else if (getShape()->mouseDownInside())
+		
+		// play sound
+		if ((sound_hover) && (!hover))
+			sound_hover->play(1);
+		
+		hover = true;
+	}
+	else if (getShape()->mouseDownInside()) {
 		clip_y = 2*sprite->srcH()/4;
-	else
+		hover = false;
+	}
+	else {
 		clip_y = 0;
+		hover = false;
+	}
 	
 	sprite->clip(0, clip_y, sprite->srcW(), sprite->srcH()/4);
 }
@@ -53,8 +70,13 @@ void Button::enable(bool enable) {
 }
 
 void Button::handleMouseDownLeft(const observer::Event& event, bool& stop) {
-	if ((getShape()->mouseDownInside()) && (enabled))
+	if ((getShape()->mouseDownInside()) && (enabled)) {
 		clicked = true;
+		
+		// play sound
+		if (sound_clicked)
+			sound_clicked->play(1);
+	}
 }
 
 void Button::handleMouseUpLeft(const observer::Event& event, bool& stop) {

@@ -4,6 +4,7 @@
 #include "observer.hpp"
 
 #include "GameObject.hpp"
+#include "Audio.hpp"
 
 class Button : public GameObject {
 SUBJECT
@@ -18,7 +19,11 @@ private:
 	int clip_y;
 	bool clicked;
 	bool enabled;
+	bool hover;
 public:
+	static Audio* sound_hover;
+	static Audio* sound_clicked;
+	
 	Button(Sprite* sprite);
 	~Button();
 	

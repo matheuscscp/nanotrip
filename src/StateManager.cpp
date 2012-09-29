@@ -4,6 +4,7 @@
 #include "InputManager.hpp"
 #include "SurfaceManager.hpp"
 #include "StateMovie.hpp"
+#include "Button.hpp"
 
 using namespace common;
 
@@ -37,6 +38,10 @@ void StateManager::initStuff() {
 	// initializes the fps
 	if ((MainArgs::find("-f")) || (MainArgs::find("--fps")))
 		fps = new Text("", "", 20, 0, SDLBase::getColor(255, 255, 255), Text::shaded, SDLBase::getColor(0, 0, 0));
+	
+	// button sounds
+	Button::sound_hover = new Audio("sfx/button_hover.wav");
+	Button::sound_clicked = new Audio("sfx/button_clicked.wav");
 }
 
 void StateManager::loadFirst() {
@@ -70,6 +75,10 @@ void StateManager::closeStuff() {
 	// closes the fps text
 	if (fps)
 		delete fps;
+	
+	// button sounds
+	delete Button::sound_hover;
+	delete Button::sound_clicked;
 }
 
 void StateManager::run() {
