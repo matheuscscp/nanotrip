@@ -24,6 +24,7 @@ void Avatar::update() {
 	// rotozoom
 	{
 		Scalar zoom = speed.size()/((Circle*)blackhole->getShape())->getRadius();
+		zoom = ((zoom > 1) ? 1 : ((zoom < 0.0000001) ? 0.0000001 : zoom));
 		sprite->rotozoom(0, zoom, zoom);
 		((Circle*)getShape())->setRadius(sprite->rectW()/2);
 	}
