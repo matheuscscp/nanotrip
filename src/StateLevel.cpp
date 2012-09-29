@@ -94,7 +94,6 @@ charge_cursor_position(640)
 	// all sounds
 	sound_lose = new Audio("sfx/level/lose.wav");
 	sound_win = new Audio("sfx/level/win.wav");
-	loadBGM();
 	
 	// configuration file
 	raw.readTxt(RootPath::get("level/" + ((Args*)args)->levelname + ".conf"));
@@ -138,6 +137,8 @@ charge_cursor_position(640)
 			border_bottom = new Sprite("img/level/border_bottom.png");
 		if (general.getInt("border_left"))
 			border_left = new Sprite("img/level/border_left.png");
+		
+		loadBGM(general);
 	}
 	
 	assemble();
@@ -361,11 +362,19 @@ void StateLevel::render() {
 		text_press_space->render(640, 355);
 }
 
-void StateLevel::loadBGM() {
+void StateLevel::loadBGM(const Configuration& general) {
 	stringstream ss;
-	ss << "sfx/level/song";
-	ss << rand()%3;
+	
+	ss << "sfx/level/";
+	try {
+		ss << general.getStr("bgm");
+	}
+	catch (Configuration::VarNotFound&) {
+		ss << "song";
+		ss << rand()%3;
+	}
 	ss << ".mp3";
+	
 	bgm = new Audio(ss.str());
 	bgm->play();
 }

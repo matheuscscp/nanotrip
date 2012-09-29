@@ -122,7 +122,7 @@ public:
 	void update();
 	void render();
 protected:
-	void loadBGM();
+	void loadBGM(const Configuration& general);
 	
 	void reload();
 	void assemble();

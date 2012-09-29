@@ -49,7 +49,7 @@ void Particle::addMass(lalge::Scalar plus) {
 
 void Particle::manageParticleCollision(GameObject* target, bool& enable) {
 	// check collision
-	if (!collides(*((Particle*)target)))
+	if ((hidden) || (!collides(*((Particle*)target))))
 		return;
 	
 	// respond to collision
@@ -114,6 +114,9 @@ bool Particle::collides(const Particle& target) const {
 }
 
 void Particle::addParticleFieldForces(GameObject* target, bool& enable) {
+	if (hidden)
+		return;
+	
 	force += gravitationalForce(*((Particle*)target));
 	force += electricalForce(*((Particle*)target));
 	// FIXME: someday
