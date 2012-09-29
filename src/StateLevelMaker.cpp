@@ -49,8 +49,8 @@ StateLevelMaker::StateLevelMaker(ArgsBase* args) {
 	sprite_blackhole_selection = new Sprite("img/levelmaker/blackhole_selection.png");
 	sprite_key_selection = new Sprite("img/levelmaker/item_key_selection.png");
 	sprite_particle_selection = new Sprite("img/levelmaker/particle_selection.png");
-	//sprite_item_time_selection = new Sprite("img/levelmaker/item_time_selection.png");
-	//sprite_item_point_selection = new Sprite("img/levelmaker/item_point_selection.png");
+	sprite_item_time_selection = new Sprite("img/levelmaker/item_time_selection.png");
+	sprite_item_point_selection = new Sprite("img/levelmaker/item_point_selection.png");
 	sprite_item_life_selection = new Sprite("img/levelmaker/item_life_selection.png");
 	sprite_item_mass_selection = new Sprite("img/levelmaker/item_mass_selection.png");
 	sprite_item_barrier_selection = new Sprite("img/levelmaker/item_bounce_star_selection.png");
@@ -83,8 +83,8 @@ StateLevelMaker::~StateLevelMaker() {
 	delete sprite_blackhole_selection;
 	delete sprite_key_selection;
 	delete sprite_particle_selection;
-	//delete sprite_item_time_selection;
-	//delete sprite_item_point_selection;
+	delete sprite_item_time_selection;
+	delete sprite_item_point_selection;
 	delete sprite_item_life_selection;
 	delete sprite_item_mass_selection;
 	delete sprite_item_barrier_selection;
@@ -384,12 +384,12 @@ void StateLevelMaker::assembleItem(const Configuration& conf) {
 		
 	case Item::TIME:
 		item_obj->sprite = sprite_item_time;
-		//selection = sprite_item_time_selection;
+		selection = sprite_item_time_selection;
 		break;
 		
 	case Item::POINT:
 		item_obj->sprite = sprite_item_point;
-		//selection = sprite_item_point_selection;
+		selection = sprite_item_point_selection;
 		break;
 		
 	case Item::LIFE:
