@@ -45,6 +45,16 @@ StateLevelMaker::StateLevelMaker(ArgsBase* args) {
 	sprite_item_mass = new Sprite("img/levelmaker/item_mass.png");
 	sprite_item_barrier = new Sprite("img/levelmaker/item_bounce_star.png");
 	sprite_item_lethal_barrier = new Sprite("img/levelmaker/item_death_star.png");
+	sprite_avatar_selection = new Sprite("img/levelmaker/avatar_selection.png");
+	sprite_blackhole_selection = new Sprite("img/levelmaker/blackhole_selection.png");
+	sprite_key_selection = new Sprite("img/levelmaker/item_key_selection.png");
+	sprite_particle_selection = new Sprite("img/levelmaker/particle_selection.png");
+	//sprite_item_time_selection = new Sprite("img/levelmaker/item_time_selection.png");
+	//sprite_item_point_selection = new Sprite("img/levelmaker/item_point_selection.png");
+	sprite_item_life_selection = new Sprite("img/levelmaker/item_life_selection.png");
+	sprite_item_mass_selection = new Sprite("img/levelmaker/item_mass_selection.png");
+	sprite_item_barrier_selection = new Sprite("img/levelmaker/item_bounce_star_selection.png");
+	sprite_item_lethal_barrier_selection = new Sprite("img/levelmaker/item_death_star_selection.png");
 	border_top = new Sprite("img/levelmaker/border_top.png");
 	border_right = new Sprite("img/levelmaker/border_right.png");
 	border_bottom = new Sprite("img/levelmaker/border_bottom.png");
@@ -69,6 +79,16 @@ StateLevelMaker::~StateLevelMaker() {
 	delete sprite_item_mass;
 	delete sprite_item_barrier;
 	delete sprite_item_lethal_barrier;
+	delete sprite_avatar_selection;
+	delete sprite_blackhole_selection;
+	delete sprite_key_selection;
+	delete sprite_particle_selection;
+	//delete sprite_item_time_selection;
+	//delete sprite_item_point_selection;
+	delete sprite_item_life_selection;
+	delete sprite_item_mass_selection;
+	delete sprite_item_barrier_selection;
+	delete sprite_item_lethal_barrier_selection;
 	delete border_top;
 	delete border_right;
 	delete border_bottom;
@@ -286,6 +306,7 @@ void StateLevelMaker::assembleAvatar(const Configuration& conf) {
 	((Circle*)avatar_obj->getShape())->setRadius(avatar_obj->sprite->rectW()/2);
 	
 	avatar = new LevelMakerObject(LevelMakerObject::AVATAR, avatar_obj);
+	avatar->selection = sprite_avatar_selection;
 }
 
 void StateLevelMaker::assembleBlackHole(const Configuration& conf) {
@@ -298,6 +319,7 @@ void StateLevelMaker::assembleBlackHole(const Configuration& conf) {
 	((Circle*)blackhole_obj->getShape())->setRadius(blackhole_obj->sprite->rectW()/2);
 	
 	blackhole = new LevelMakerObject(LevelMakerObject::BLACKHOLE, blackhole_obj);
+	blackhole->selection = sprite_blackhole_selection;
 }
 
 void StateLevelMaker::assembleKey(const Configuration& level) {
@@ -319,6 +341,7 @@ void StateLevelMaker::assembleKey(const Configuration& level) {
 	((Circle*)key_obj->getShape())->setRadius(key_obj->sprite->rectW()/2);
 	
 	key = new LevelMakerObject(LevelMakerObject::KEY, key_obj);
+	key->selection = sprite_key_selection;
 }
 
 void StateLevelMaker::assembleParticle(const Configuration& conf) {
@@ -338,9 +361,12 @@ void StateLevelMaker::assembleParticle(const Configuration& conf) {
 	((Circle*)particle_obj->getShape())->setRadius(particle_obj->sprite->rectW()/2);
 	
 	particles.push_back(new LevelMakerObject(LevelMakerObject::PARTICLE, particle_obj));
+	particles.back()->selection = sprite_particle_selection;
 }
 
 void StateLevelMaker::assembleItem(const Configuration& conf) {
+	Sprite* selection;
+	
 	Item* item_obj = new Item();
 	item_obj->getShape()->position = r2vec(conf.getReal("x"), conf.getReal("y"));
 	item_obj->operation = conf.getInt("operation");
@@ -352,27 +378,39 @@ void StateLevelMaker::assembleItem(const Configuration& conf) {
 	
 	// sprite
 	switch (item_obj->operation) {
+	case Item::KEY:
+		delete item_obj;
+		return;
+		
 	case Item::TIME:
 		item_obj->sprite = sprite_item_time;
+		//selection = sprite_item_time_selection;
 		break;
 		
 	case Item::POINT:
 		item_obj->sprite = sprite_item_point;
+		//selection = sprite_item_point_selection;
 		break;
 		
 	case Item::LIFE:
 		item_obj->sprite = sprite_item_life;
+		selection = sprite_item_life_selection;
 		break;
 		
 	case Item::MASS:
 		item_obj->sprite = sprite_item_mass;
+		selection = sprite_item_mass_selection;
 		break;
 		
 	case Item::BARRIER:
-		if (!item_obj->value)
+		if (!item_obj->value) {
 			item_obj->sprite = sprite_item_barrier;
-		else
+			selection = sprite_item_barrier_selection;
+		}
+		else {
 			item_obj->sprite = sprite_item_lethal_barrier;
+			selection = sprite_item_lethal_barrier_selection;
+		}
 		break;
 		
 	default:
@@ -381,6 +419,7 @@ void StateLevelMaker::assembleItem(const Configuration& conf) {
 	((Circle*)item_obj->getShape())->setRadius(item_obj->sprite->rectW()/2);
 	
 	items.push_back(new LevelMakerObject(LevelMakerObject::ITEM, item_obj));
+	items.back()->selection = selection;
 }
 
 void StateLevelMaker::fetchAvatar(Configuration& level) {

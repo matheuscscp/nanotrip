@@ -13,6 +13,7 @@
 
 #define TIME_POINTS		1
 #define LIFE_POINTS		1
+#define KEY_POINTS		1
 
 #define MAX_CURSOR_X	587
 
@@ -77,7 +78,7 @@ charge_cursor_position(640)
 	
 	// all sprites
 	sprite_avatar = new Animation("img/level/avatar_positive.png", 0, 7, 1, 16);
-	sprite_key = new Animation("img/level/item_key.png", 0, 8, 1, 4);
+	sprite_key = new Animation("img/level/item_key.png", 0, 8, 1, 6);
 	sprite_blackhole = new Animation("img/level/blackhole.png", 0, 30, 1, 20);
 	sprite_negative = new Sprite("img/level/particle_negative.png");
 	sprite_negative_anim = new Animation("img/level/particle_negative_ssheet.png", 0, 20, 1, 9);
@@ -454,23 +455,25 @@ void StateLevel::assemble() {
 	for (list<Configuration>::iterator it1 = conf_items.begin(); it1 != conf_items.end(); ++it1) {
 		Item* item = assembleItem(*it1);
 		
-		// avatar interactions
-		interactions.push_back(Interaction(item, avatar, (Interaction::callback)&Item::checkAvatarCollision));
-		interactions_avatar_item.push_back(&interactions.back());
-		
-		// mutual interactions
-		for (list<Item*>::iterator it2 = items.begin(); it2 != items.end(); ++it2) {
-			interactions.push_back(Interaction(item, *it2, (Interaction::callback)&Particle::manageParticleCollision));
-			interactions.push_back(Interaction(item, *it2, (Interaction::callback)&Particle::addParticleFieldForces, true));
+		if (item) {
+			// avatar interactions
+			interactions.push_back(Interaction(item, avatar, (Interaction::callback)&Item::checkAvatarCollision));
+			interactions_avatar_item.push_back(&interactions.back());
+			
+			// mutual interactions
+			for (list<Item*>::iterator it2 = items.begin(); it2 != items.end(); ++it2) {
+				interactions.push_back(Interaction(item, *it2, (Interaction::callback)&Particle::manageParticleCollision));
+				interactions.push_back(Interaction(item, *it2, (Interaction::callback)&Particle::addParticleFieldForces, true));
+			}
+			
+			// particles interactions
+			for (list<Particle*>::iterator it2 = particles.begin(); it2 != particles.end(); ++it2) {
+				interactions.push_back(Interaction(item, *it2, (Interaction::callback)&Particle::manageParticleCollision));
+				interactions.push_back(Interaction(item, *it2, (Interaction::callback)&Particle::addParticleFieldForces, true));
+			}
+			
+			items.push_back(item);
 		}
-		
-		// particles interactions
-		for (list<Particle*>::iterator it2 = particles.begin(); it2 != particles.end(); ++it2) {
-			interactions.push_back(Interaction(item, *it2, (Interaction::callback)&Particle::manageParticleCollision));
-			interactions.push_back(Interaction(item, *it2, (Interaction::callback)&Particle::addParticleFieldForces, true));
-		}
-		
-		items.push_back(item);
 	}
 }
 
@@ -565,6 +568,10 @@ Item* StateLevel::assembleItem(const Configuration& conf) {
 	
 	// sprite
 	switch (item->operation) {
+	case Item::KEY:
+		delete item;
+		return 0;
+		
 	case Item::TIME:
 		item->sprite = sprite_item_time;
 		break;
@@ -685,6 +692,7 @@ void StateLevel::handleItemCollision(const observer::Event& event, bool& stop) {
 		blackhole->hidden = false;
 		interaction_blackhole_force->enabled = true;
 		interaction_blackhole_collision->enabled = true;
+		addPoints(KEY_POINTS);
 		break;
 		
 	case Item::TIME:

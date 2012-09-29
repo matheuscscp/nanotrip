@@ -28,10 +28,9 @@ void LevelMakerObject::render() {
 	if (hidden)
 		return;
 	
+	object->render();
 	if ((selected) && (selection))
 		selection->render(getShape()->position.x(0), getShape()->position.x(1), true);
-	
-	object->render();
 }
 
 bool LevelMakerObject::isSelected() const { return selected; }

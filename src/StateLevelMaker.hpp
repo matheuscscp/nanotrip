@@ -36,6 +36,16 @@ private:
 	Sprite* sprite_item_mass;
 	Sprite* sprite_item_barrier;
 	Sprite* sprite_item_lethal_barrier;
+	Sprite* sprite_avatar_selection;
+	Sprite* sprite_blackhole_selection;
+	Sprite* sprite_key_selection;
+	Sprite* sprite_particle_selection;
+	Sprite* sprite_item_time_selection;
+	Sprite* sprite_item_point_selection;
+	Sprite* sprite_item_life_selection;
+	Sprite* sprite_item_mass_selection;
+	Sprite* sprite_item_barrier_selection;
+	Sprite* sprite_item_lethal_barrier_selection;
 	Sprite* border_top;
 	Sprite* border_right;
 	Sprite* border_bottom;
