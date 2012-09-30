@@ -63,6 +63,8 @@ public:
 	bool mousePressed(int i) const;
 	int mouseDownX() const;
 	int mouseDownY() const;
+	int mouseDiffX() const;
+	int mouseDiffY() const;
 };
 
 #endif

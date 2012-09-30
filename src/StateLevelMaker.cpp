@@ -6,6 +6,7 @@
 #include "InputManager.hpp"
 #include "StateLevel.hpp"
 #include "Circle.hpp"
+#include "PanelGeneral.hpp"
 
 using namespace common;
 using namespace lalge;
@@ -31,6 +32,9 @@ StateLevelMaker::StateLevelMaker(ArgsBase* args) {
 	bg_x = -(rand()%641);
 	bg_y = -(rand()%361);
 	bg = new Sprite("img/levelmaker/background.png");
+	
+	// hud
+	hud = new Sprite("img/levelmaker/hud.png");
 	
 	// all sprites
 	sprite_avatar = new Sprite("img/levelmaker/avatar.png");
@@ -59,12 +63,24 @@ StateLevelMaker::StateLevelMaker(ArgsBase* args) {
 	border_right = new Sprite("img/levelmaker/border_right.png");
 	border_bottom = new Sprite("img/levelmaker/border_bottom.png");
 	border_left = new Sprite("img/levelmaker/border_left.png");
+	LevelMakerObject::sprite_selection_box = new Sprite("img/levelmaker/selection_box.png");
+	LevelMakerObject::sprite_selection_horizontal = new Sprite("img/levelmaker/selection_horizontal.png");
+	LevelMakerObject::sprite_selection_vertical = new Sprite("img/levelmaker/selection_vertical.png");
 	
 	load();
+	
+	panels[LevelMakerObject::NONE] = new PanelGeneral();
+	panels[LevelMakerObject::AVATAR] = new PanelGeneral();
+	panels[LevelMakerObject::BLACKHOLE] = new PanelGeneral();
+	panels[LevelMakerObject::KEY] = new PanelGeneral();
+	panels[LevelMakerObject::PARTICLE] = new PanelGeneral();
+	panels[LevelMakerObject::ITEM] = new PanelGeneral();
+	current_panel = panels[LevelMakerObject::NONE];
 }
 
 StateLevelMaker::~StateLevelMaker() {
 	delete bg;
+	delete hud;
 	
 	// all sprites
 	delete sprite_avatar;
@@ -93,23 +109,26 @@ StateLevelMaker::~StateLevelMaker() {
 	delete border_right;
 	delete border_bottom;
 	delete border_left;
+	delete LevelMakerObject::sprite_selection_box;
+	LevelMakerObject::sprite_selection_box = 0;
+	delete LevelMakerObject::sprite_selection_horizontal;
+	LevelMakerObject::sprite_selection_horizontal = 0;
+	delete LevelMakerObject::sprite_selection_vertical;
+	LevelMakerObject::sprite_selection_vertical = 0;
 	
 	clear();
+	
+	// panels
+	for (int i = 0; i < LevelMakerObject::LASTTYPE; ++i)
+		delete panels[i];
 }
 
 void StateLevelMaker::update() {
-	avatar->update();
-	blackhole->update();
-	if (key)
-		key->update();
+	LevelMakerObject::updateSelected();
+	LevelMakerObject::updateSelection();
 	
-	// all particles
-	for (list<LevelMakerObject*>::iterator it = particles.begin(); it != particles.end(); ++it)
-		(*it)->update();
-	
-	// all items
-	for (list<LevelMakerObject*>::iterator it = items.begin(); it != items.end(); ++it)
-		(*it)->update();
+	current_panel = panels[LevelMakerObject::getSelectedType()];
+	current_panel->update();
 }
 
 void StateLevelMaker::render() {
@@ -129,6 +148,8 @@ void StateLevelMaker::render() {
 	
 	avatar->render();
 	
+	LevelMakerObject::renderSelection();
+	
 	// borders
 	if (has_top)
 		border_top->render(30, 0);
@@ -138,6 +159,9 @@ void StateLevelMaker::render() {
 		border_bottom->render(0, 666);
 	if (has_left)
 		border_left->render();
+	
+	// hud
+	hud->render();
 }
 
 void StateLevelMaker::load() {

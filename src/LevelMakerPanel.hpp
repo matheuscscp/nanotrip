@@ -1,18 +1,19 @@
 
-#ifndef DRAGGABLEOBJECT_HPP
-#define DRAGGABLEOBJECT_HPP
+#ifndef LEVELMAKERPANEL_HPP
+#define LEVELMAKERPANEL_HPP
 
 #include "observer.hpp"
 
 #include "GameObject.hpp"
 
-class DraggableObject : public GameObject {
+class LevelMakerPanel : public GameObject {
 private:
 	lalge::R2Vector diff_position;
+protected:
 	bool hooked;
 public:
-	DraggableObject(Shape* shape);
-	virtual ~DraggableObject();
+	LevelMakerPanel();
+	virtual ~LevelMakerPanel();
 	
 	virtual void update();
 	

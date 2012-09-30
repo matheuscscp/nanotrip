@@ -2,46 +2,55 @@
 #ifndef LEVELMAKEROBJECT_HPP
 #define LEVELMAKEROBJECT_HPP
 
-#include "DraggableObject.hpp"
+#include <set>
 
-#define levelmakerobject_event	(*((LevelMakerObject::Event*)&event))
+#include "observer.hpp"
 
-class LevelMakerObject : public DraggableObject {
-SUBJECT
+#include "GameObject.hpp"
+#include "Rectangle.hpp"
+
+class LevelMakerObject : public GameObject {
 public:
 	enum {
-		// events
-		SELECTED = 0,
-		
-		// don't change this
-		LASTEVENT
-	};
-	
-	enum {
+		NONE = 0,
 		AVATAR,
 		BLACKHOLE,
 		KEY,
 		PARTICLE,
-		ITEM
+		ITEM,
+		
+		// don't change this
+		LASTTYPE
 	};
 	
-	class Event : public observer::Event {
-	public:
-		int type;
-		GameObject* object;
-		Event(int type, GameObject* object);
-	};
+	static std::set<LevelMakerObject*> selected;
+	static Sprite* sprite_selection_box;
+	static Sprite* sprite_selection_horizontal;
+	static Sprite* sprite_selection_vertical;
 private:
+	static std::set<LevelMakerObject*> all;
+	static bool dragging;
+	static bool selecting;
+	static Rectangle selection_box;
+	
+	lalge::R2Vector mouse_down_position;
+	
 	int type;
 	GameObject* object;
-	bool selected;
 public:
 	Sprite* selection;
 	
 	LevelMakerObject(int type, GameObject* object);
 	~LevelMakerObject();
 	
+	static void updateSelected();
+	static void updateSelection();
+	static void renderSelection();
+	
+	static int getSelectedType();
+private:
 	void update();
+public:
 	void render();
 	
 	bool isSelected() const;
@@ -49,7 +58,10 @@ public:
 	int getType() const;
 	const GameObject* getObject() const;
 private:
+	static bool mouseDownInsideAny();
+	
 	void handleMouseDownLeft(const observer::Event& event, bool& stop);
+	void handleMouseUpLeft(const observer::Event& event, bool& stop);
 };
 
 #endif

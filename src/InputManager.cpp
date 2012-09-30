@@ -115,3 +115,5 @@ int InputManager::mouseY() const { return mouse_y; }
 bool InputManager::mousePressed(int i) const { return mouse_pressed[i]; }
 int InputManager::mouseDownX() const { return mousedown_x; }
 int InputManager::mouseDownY() const { return mousedown_y; }
+int InputManager::mouseDiffX() const { return mouse_x - mousedown_x; }
+int InputManager::mouseDiffY() const { return mouse_y - mousedown_y; }

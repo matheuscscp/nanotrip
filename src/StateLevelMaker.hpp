@@ -6,6 +6,7 @@
 
 #include "State.hpp"
 #include "LevelMakerObject.hpp"
+#include "LevelMakerPanel.hpp"
 
 class StateLevelMaker : public State {
 GAMESTATE
@@ -20,6 +21,8 @@ private:
 	
 	int bg_x, bg_y;
 	Sprite* bg;
+	
+	Sprite* hud;
 	
 	int level_time;
 	lalge::Scalar max_abs_charge;
@@ -61,6 +64,9 @@ private:
 	LevelMakerObject* key;
 	std::list<LevelMakerObject*> particles;
 	std::list<LevelMakerObject*> items;
+	
+	LevelMakerPanel* panels[LevelMakerObject::LASTTYPE];
+	LevelMakerPanel* current_panel;
 public:
 	StateLevelMaker(ArgsBase* args);
 	~StateLevelMaker();
