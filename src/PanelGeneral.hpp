@@ -9,6 +9,9 @@ public:
 	PanelGeneral();
 	~PanelGeneral();
 	
+	void show();
+	void hide();
+	
 	void update();
 private:
 	void handleMouseDownLeft(const observer::Event& event, bool& stop);

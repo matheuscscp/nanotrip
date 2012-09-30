@@ -8,6 +8,7 @@ using namespace lalge;
 using std::set;
 
 set<LevelMakerObject*> LevelMakerObject::selected;
+bool LevelMakerObject::deselection_requested = false;
 Sprite* LevelMakerObject::LevelMakerObject::sprite_selection_box = 0;
 Sprite* LevelMakerObject::sprite_selection_horizontal = 0;
 Sprite* LevelMakerObject::sprite_selection_vertical = 0;
@@ -117,6 +118,14 @@ int LevelMakerObject::getSelectedType() {
 	return type;
 }
 
+void LevelMakerObject::startSelection() {
+	deselection_requested = false;
+	selected.clear();
+	selecting = true;
+	selection_box.setWidth(1);
+	selection_box.setHeight(1);
+}
+
 void LevelMakerObject::update() {
 	getShape()->position = mouse_down_position + r2vec(InputManager::instance()->mouseDiffX(), InputManager::instance()->mouseDiffY());
 	object->getShape()->position = getShape()->position;
@@ -154,12 +163,8 @@ void LevelMakerObject::handleMouseDownLeft(const observer::Event& event, bool& s
 	
 	if (!getShape()->mouseDownInside()) {
 		// if clicked outside every object, deselect this object and begin multiple selection
-		if (!mouseDownInsideAny()) {
-			selected.clear();
-			selecting = true;
-			selection_box.setWidth(1);
-			selection_box.setHeight(1);
-		}
+		if (!mouseDownInsideAny())
+			deselection_requested = true;
 		return;
 	}
 	

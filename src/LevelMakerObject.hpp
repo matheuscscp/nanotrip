@@ -24,6 +24,7 @@ public:
 	};
 	
 	static std::set<LevelMakerObject*> selected;
+	static bool deselection_requested;
 	static Sprite* sprite_selection_box;
 	static Sprite* sprite_selection_horizontal;
 	static Sprite* sprite_selection_vertical;
@@ -48,6 +49,8 @@ public:
 	static void renderSelection();
 	
 	static int getSelectedType();
+	
+	static void startSelection();
 private:
 	void update();
 public:

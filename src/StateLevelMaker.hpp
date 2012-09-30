@@ -6,11 +6,24 @@
 
 #include "State.hpp"
 #include "LevelMakerObject.hpp"
-#include "LevelMakerPanel.hpp"
+#include "Button.hpp"
 
 class StateLevelMaker : public State {
 GAMESTATE
 public:
+	class UnstackArgs : public ArgsBase {
+	public:
+		enum {
+			SAVE_MENU,
+			SAVE_QUIT,
+			MENU,
+			QUIT
+		};
+		
+		int op;
+		UnstackArgs(int op);
+	};
+	
 	class Args : public ArgsBase {
 	public:
 		std::string levelname;
@@ -65,23 +78,23 @@ private:
 	std::list<LevelMakerObject*> particles;
 	std::list<LevelMakerObject*> items;
 	
-	LevelMakerPanel* panels[LevelMakerObject::LASTTYPE];
-	LevelMakerPanel* current_panel;
+	Button* button_save;
+	Button* button_revert;
+	Button* button_test;
+	Button* button_quit;
+	Button* button_delete;
 public:
 	StateLevelMaker(ArgsBase* args);
 	~StateLevelMaker();
+	
+	void handleUnstack(ArgsBase* args);
 	
 	void update();
 	void render();
 private:
 	void load();
 	void clear();
-	
 	void save();
-	void reload();
-	void test();
-	void quit();
-	void discard();
 	
 	void assembleEmptyLevel();
 	void assemble();
@@ -97,7 +110,15 @@ private:
 	void fetchParticle(int i, LevelMakerObject* particle, Configuration& level);
 	void fetchItem(int i, LevelMakerObject* item, Configuration& level);
 	
+	void handleSave(const observer::Event& event, bool& stop);
+	void handleRevert(const observer::Event& event, bool& stop);
+	void handleTest(const observer::Event& event, bool& stop);
+	void handleQuitButton(const observer::Event& event, bool& stop);
+	void handleDelete(const observer::Event& event, bool& stop);
+	
 	void handleKeyDown(const observer::Event& event, bool& stop);
+	
+	void handleQuit(const observer::Event& event, bool& stop);
 };
 
 #endif

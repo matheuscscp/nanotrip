@@ -6,7 +6,7 @@
 #include "InputManager.hpp"
 #include "StateLevel.hpp"
 #include "Circle.hpp"
-#include "PanelGeneral.hpp"
+#include "LevelMakerPanel.hpp"
 
 using namespace common;
 using namespace lalge;
@@ -15,6 +15,8 @@ using std::list;
 using std::stringstream;
 
 GAMESTATE_DEF(StateLevelMaker)
+
+StateLevelMaker::UnstackArgs::UnstackArgs(int op) : op(op) {}
 
 StateLevelMaker::Args::Args(const std::string& levelname) : levelname(levelname) {}
 
@@ -69,13 +71,29 @@ StateLevelMaker::StateLevelMaker(ArgsBase* args) {
 	
 	load();
 	
-	panels[LevelMakerObject::NONE] = new PanelGeneral();
-	panels[LevelMakerObject::AVATAR] = new PanelGeneral();
-	panels[LevelMakerObject::BLACKHOLE] = new PanelGeneral();
-	panels[LevelMakerObject::KEY] = new PanelGeneral();
-	panels[LevelMakerObject::PARTICLE] = new PanelGeneral();
-	panels[LevelMakerObject::ITEM] = new PanelGeneral();
-	current_panel = panels[LevelMakerObject::NONE];
+	LevelMakerPanel::init();
+	
+	// all buttons
+	
+	button_save = new Button(new Sprite("img/levelmaker/button_save.png"));
+	button_save->getShape()->position = r2vec(60, 50);
+	button_save->connect(Button::CLICKED, this, &StateLevelMaker::handleSave);
+	
+	button_revert = new Button(new Sprite("img/levelmaker/button_revert.png"));
+	button_revert->getShape()->position = r2vec(160, 50);
+	button_revert->connect(Button::CLICKED, this, &StateLevelMaker::handleRevert);
+	
+	button_test = new Button(new Sprite("img/levelmaker/button_test.png"));
+	button_test->getShape()->position = r2vec(60, 100);
+	button_test->connect(Button::CLICKED, this, &StateLevelMaker::handleTest);
+	
+	button_quit = new Button(new Sprite("img/levelmaker/button_quit.png"));
+	button_quit->getShape()->position = r2vec(160, 100);
+	button_quit->connect(Button::CLICKED, this, &StateLevelMaker::handleQuitButton);
+	
+	button_delete = new Button(new Sprite("img/levelmaker/button_delete.png"));
+	button_delete->getShape()->position = r2vec(60, 150);
+	button_delete->connect(Button::CLICKED, this, &StateLevelMaker::handleDelete);
 }
 
 StateLevelMaker::~StateLevelMaker() {
@@ -118,17 +136,68 @@ StateLevelMaker::~StateLevelMaker() {
 	
 	clear();
 	
-	// panels
-	for (int i = 0; i < LevelMakerObject::LASTTYPE; ++i)
-		delete panels[i];
+	LevelMakerPanel::close();
+	
+	// all buttons
+	
+	delete button_save->sprite;
+	delete button_save;
+	
+	delete button_revert->sprite;
+	delete button_revert;
+	
+	delete button_test->sprite;
+	delete button_test;
+	
+	delete button_quit->sprite;
+	delete button_quit;
+	
+	delete button_delete->sprite;
+	delete button_delete;
+}
+
+void StateLevelMaker::handleUnstack(ArgsBase* args) {
+	frozen_ = false;
+	
+	if (!args)
+		return;
+	
+	int op = ((UnstackArgs*)args)->op;
+	delete args;
+	
+	switch (op) {
+	case UnstackArgs::SAVE_MENU:
+		save();
+		throw new Change("StateMakeLevel");
+		
+	case UnstackArgs::SAVE_QUIT:
+		save();
+		throw Quit();
+		
+	case UnstackArgs::MENU:
+		throw new Change("StateMakeLevel");
+		
+	case UnstackArgs::QUIT:
+		throw Quit();
+		
+	default:
+		break;
+	}
 }
 
 void StateLevelMaker::update() {
-	LevelMakerObject::updateSelected();
-	LevelMakerObject::updateSelection();
+	LevelMakerPanel::checkDeselectionRequest();
 	
-	current_panel = panels[LevelMakerObject::getSelectedType()];
-	current_panel->update();
+	LevelMakerObject::updateSelection();
+	LevelMakerObject::updateSelected();
+	
+	LevelMakerPanel::updateCurrent();
+	
+	button_save->update();
+	button_revert->update();
+	button_test->update();
+	button_quit->update();
+	button_delete->update();
 }
 
 void StateLevelMaker::render() {
@@ -162,6 +231,11 @@ void StateLevelMaker::render() {
 	
 	// hud
 	hud->render();
+	button_save->render();
+	button_revert->render();
+	button_test->render();
+	button_quit->render();
+	button_delete->render();
 }
 
 void StateLevelMaker::load() {
@@ -233,25 +307,6 @@ void StateLevelMaker::save() {
 	}
 	
 	level.writeTxt(RootPath::get("level/" + levelname + ".conf"));
-}
-
-void StateLevelMaker::reload() {
-	clear();
-	load();
-}
-
-void StateLevelMaker::test() {
-	save();
-	throw new Change("StateLevel", new StateLevel::Args(levelname, "StateLevelMaker", new Args(levelname)));
-}
-
-void StateLevelMaker::quit() {
-	save();
-	throw new Change("StateMakeLevel");
-}
-
-void StateLevelMaker::discard() {
-	throw new Change("StateMakeLevel");
 }
 
 void StateLevelMaker::assembleEmptyLevel() {
@@ -517,13 +572,73 @@ void StateLevelMaker::fetchItem(int i, LevelMakerObject* item, Configuration& le
 	level.insertConfig(ss.str(), conf);
 }
 
-void StateLevelMaker::handleKeyDown(const observer::Event& event, bool& stop) {
-	switch (inputmanager_event.key.keysym.sym) {
-		case SDLK_s:	save();		break;
-		case SDLK_r:	reload();	break;
-		case SDLK_t:	test();		break;
-		case SDLK_q:	quit();		break;
-		case SDLK_d:	discard();	break;
-		default:					break;
+void StateLevelMaker::handleSave(const observer::Event& event, bool& stop) {
+	save();
+}
+
+void StateLevelMaker::handleRevert(const observer::Event& event, bool& stop) {
+	clear();
+	load();
+}
+
+void StateLevelMaker::handleTest(const observer::Event& event, bool& stop) {
+	save();
+	throw new Change("StateLevel", new StateLevel::Args(levelname, "StateLevelMaker", new Args(levelname)));
+}
+
+void StateLevelMaker::handleQuitButton(const observer::Event& event, bool& stop) {
+	frozen_ = true;
+	throw new StackUp("StateLevelMakerQuit");
+}
+
+void StateLevelMaker::handleDelete(const observer::Event& event, bool& stop) {
+	bool avatar_selected = false;
+	bool blackhole_selected = false;
+	
+	while (LevelMakerObject::selected.begin() != LevelMakerObject::selected.end()) {
+		switch ((*LevelMakerObject::selected.begin())->getType()) {
+		case LevelMakerObject::AVATAR:
+			LevelMakerObject::selected.erase(avatar);
+			avatar_selected = true;
+			break;
+			
+		case LevelMakerObject::BLACKHOLE:
+			LevelMakerObject::selected.erase(blackhole);
+			blackhole_selected = true;
+			break;
+			
+		case LevelMakerObject::KEY:
+			delete key;
+			key = 0;
+			break;
+			
+		case LevelMakerObject::PARTICLE:
+			particles.remove(*LevelMakerObject::selected.begin());
+			delete *LevelMakerObject::selected.begin();
+			break;
+			
+		case LevelMakerObject::ITEM:
+			items.remove(*LevelMakerObject::selected.begin());
+			delete *LevelMakerObject::selected.begin();
+			break;
+			
+		default:
+			break;
+		}
 	}
+	
+	if (avatar_selected)
+		LevelMakerObject::selected.insert(avatar);
+	if (blackhole_selected)
+		LevelMakerObject::selected.insert(blackhole);
+}
+
+void StateLevelMaker::handleKeyDown(const observer::Event& event, bool& stop) {
+	if (inputmanager_event.key.keysym.sym == SDLK_DELETE)
+		handleDelete(event, stop);
+}
+
+void StateLevelMaker::handleQuit(const observer::Event& event, bool& stop) {
+	frozen_ = true;
+	throw new StackUp("StateLevelMakerQuit", new ArgsBase());
 }

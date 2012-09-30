@@ -131,6 +131,8 @@ charge_cursor_position(640)
 		timer.connect(Timer::DONE, this, &StateLevel::handleTimerDone);
 		
 		max_abs_charge = general.getReal("max_abs_charge");
+		if (max_abs_charge <= 0)
+			max_abs_charge = ((max_abs_charge) ? -max_abs_charge : 1);
 		
 		// borders
 		if (general.getInt("border_top"))
