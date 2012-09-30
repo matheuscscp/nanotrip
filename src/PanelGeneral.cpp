@@ -12,5 +12,4 @@ void PanelGeneral::show() {}
 void PanelGeneral::hide() {}
 
 void PanelGeneral::update() {}
-
-void PanelGeneral::handleMouseDownLeft(const observer::Event& event, bool& stop) {}
+void PanelGeneral::render() {}

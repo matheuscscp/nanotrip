@@ -20,7 +20,7 @@ StateLevelMaker::UnstackArgs::UnstackArgs(int op) : op(op) {}
 
 StateLevelMaker::Args::Args(const std::string& levelname) : levelname(levelname) {}
 
-StateLevelMaker::StateLevelMaker(ArgsBase* args) {
+StateLevelMaker::StateLevelMaker(ArgsBase* args) : clicking_button(false) {
 	if (dynamic_cast<Args*>(args))
 		levelname = ((Args*)args)->levelname;
 	else if (dynamic_cast<StateLevel::FinalArgs*>(args))
@@ -28,6 +28,8 @@ StateLevelMaker::StateLevelMaker(ArgsBase* args) {
 	delete args;
 	
 	InputManager::instance()->connect(InputManager::KEYDOWN, this, &StateLevelMaker::handleKeyDown);
+	InputManager::instance()->connect(InputManager::MOUSEDOWN_LEFT, this, &StateLevelMaker::handleMouseLeft);
+	InputManager::instance()->connect(InputManager::MOUSEUP_LEFT, this, &StateLevelMaker::handleMouseLeft);
 	
 	// background
 	srand(time(0));
@@ -186,7 +188,9 @@ void StateLevelMaker::handleUnstack(ArgsBase* args) {
 }
 
 void StateLevelMaker::update() {
-	LevelMakerPanel::checkDeselectionRequest();
+	checkSelectionRequests();
+	
+	LevelMakerPanel::checkSelectionRequests();
 	
 	LevelMakerObject::updateSelection();
 	LevelMakerObject::updateSelected();
@@ -236,6 +240,9 @@ void StateLevelMaker::render() {
 	button_test->render();
 	button_quit->render();
 	button_delete->render();
+	
+	// panel
+	LevelMakerPanel::renderCurrent();
 }
 
 void StateLevelMaker::load() {
@@ -641,4 +648,22 @@ void StateLevelMaker::handleKeyDown(const observer::Event& event, bool& stop) {
 void StateLevelMaker::handleQuit(const observer::Event& event, bool& stop) {
 	frozen_ = true;
 	throw new StackUp("StateLevelMakerQuit", new ArgsBase());
+}
+
+void StateLevelMaker::checkSelectionRequests() {
+	if (clicking_button) {
+		LevelMakerObject::deselection_requested = false;
+		LevelMakerObject::selection_requested = false;
+	}
+}
+
+void StateLevelMaker::handleMouseLeft(const observer::Event& event, bool& stop) {
+	clicking_button = false;
+	if ((button_save->getShape()->mouseDownInside()) ||
+		(button_revert->getShape()->mouseDownInside()) ||
+		(button_test->getShape()->mouseDownInside()) ||
+		(button_quit->getShape()->mouseDownInside()) ||
+		(button_delete->getShape()->mouseDownInside())) {
+		clicking_button = true;
+	}
 }

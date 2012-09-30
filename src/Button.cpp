@@ -8,7 +8,13 @@ using namespace lalge;
 Audio* Button::sound_hover = 0;
 Audio* Button::sound_clicked = 0;
 
-Button::Button(Sprite* sprite) : clip_y(0), clicked(false), hover(false) {
+Button::Button(Sprite* sprite) :
+clip_y(0),
+clicked(false),
+hover(false),
+just_clicked(false),
+just_hit(false)
+{
 	subject.init(LASTEVENT);
 	setShape(new Rectangle());
 	enable(true);
@@ -35,15 +41,21 @@ void Button::update() {
 	else if (!getShape()->mouseInside()) {
 		clip_y = 0;
 		hover = false;
+		just_hit = false;
 	}
 	else if (!InputManager::instance()->mousePressed(SDL_BUTTON_LEFT)) {
 		clip_y = sprite->srcH()/4;
 		
 		// play sound
-		if ((sound_hover) && (!hover))
-			sound_hover->play(1);
+		if ((sound_hover) && (!hover)) {
+			if (!just_clicked)
+				sound_hover->play(1);
+			else
+				just_clicked = false;
+		}
 		
 		hover = true;
+		just_hit = false;
 	}
 	else if (getShape()->mouseDownInside()) {
 		clip_y = 2*sprite->srcH()/4;
@@ -52,6 +64,7 @@ void Button::update() {
 	else {
 		clip_y = 0;
 		hover = false;
+		just_hit = false;
 	}
 	
 	sprite->clip(0, clip_y, sprite->srcW(), sprite->srcH()/4);
@@ -74,8 +87,10 @@ void Button::handleMouseDownLeft(const observer::Event& event, bool& stop) {
 		clicked = true;
 		
 		// play sound
-		if (sound_clicked)
+		if (sound_clicked) {
 			sound_clicked->play(1);
+			just_hit = true;
+		}
 	}
 }
 
@@ -83,5 +98,10 @@ void Button::handleMouseUpLeft(const observer::Event& event, bool& stop) {
 	if ((getShape()->mouseDownInside()) && (getShape()->mouseInside()) && (enabled)) {
 		clicked = true;
 		subject.broadcast(observer::Event(CLICKED));
+		just_clicked = true;
+		
+		// play sound
+		if ((sound_clicked) && (!just_hit))
+			sound_clicked->play(1);
 	}
 }

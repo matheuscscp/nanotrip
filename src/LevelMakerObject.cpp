@@ -9,12 +9,14 @@ using std::set;
 
 set<LevelMakerObject*> LevelMakerObject::selected;
 bool LevelMakerObject::deselection_requested = false;
+bool LevelMakerObject::selection_requested = false;
 Sprite* LevelMakerObject::LevelMakerObject::sprite_selection_box = 0;
 Sprite* LevelMakerObject::sprite_selection_horizontal = 0;
 Sprite* LevelMakerObject::sprite_selection_vertical = 0;
 set<LevelMakerObject*> LevelMakerObject::all;
 bool LevelMakerObject::dragging = false;
 bool LevelMakerObject::selecting = false;
+bool LevelMakerObject::just_selected = false;
 Rectangle LevelMakerObject::selection_box;
 
 LevelMakerObject::LevelMakerObject(int type, GameObject* object) :
@@ -118,9 +120,13 @@ int LevelMakerObject::getSelectedType() {
 	return type;
 }
 
-void LevelMakerObject::startSelection() {
+void LevelMakerObject::deselect() {
 	deselection_requested = false;
 	selected.clear();
+}
+
+void LevelMakerObject::startSelection() {
+	selection_requested = false;
 	selecting = true;
 	selection_box.setWidth(1);
 	selection_box.setHeight(1);
@@ -147,6 +153,14 @@ bool LevelMakerObject::isSelected() const {
 int LevelMakerObject::getType() const { return type; }
 const GameObject* LevelMakerObject::getObject() const { return object; }
 
+bool LevelMakerObject::mouseInsideAny() {
+	for (set<LevelMakerObject*>::iterator it = all.begin(); it != all.end(); ++it) {
+		if ((*it)->getShape()->mouseInside())
+			return true;
+	}
+	return false;
+}
+
 bool LevelMakerObject::mouseDownInsideAny() {
 	for (set<LevelMakerObject*>::iterator it = all.begin(); it != all.end(); ++it) {
 		if ((*it)->getShape()->mouseDownInside())
@@ -154,7 +168,7 @@ bool LevelMakerObject::mouseDownInsideAny() {
 	}
 	return false;
 }
-
+#include "common.hpp"
 void LevelMakerObject::handleMouseDownLeft(const observer::Event& event, bool& stop) {
 	if (selecting)
 		return;
@@ -162,9 +176,11 @@ void LevelMakerObject::handleMouseDownLeft(const observer::Event& event, bool& s
 	mouse_down_position = getShape()->position;
 	
 	if (!getShape()->mouseDownInside()) {
-		// if clicked outside every object, deselect this object and begin multiple selection
-		if (!mouseDownInsideAny())
-			deselection_requested = true;
+		// if clicked outside every object, request for selection
+		if (!mouseDownInsideAny()) {
+			selection_requested = true;
+			just_selected = false;
+		}
 		return;
 	}
 	
@@ -178,6 +194,13 @@ void LevelMakerObject::handleMouseDownLeft(const observer::Event& event, bool& s
 }
 
 void LevelMakerObject::handleMouseUpLeft(const observer::Event& event, bool& stop) {
+	if (selecting)
+		just_selected = true;
+	
+	// if clicked outside every object, request for deselection
+	if ((!mouseInsideAny()) && (!mouseDownInsideAny()) && (!just_selected))
+		deselection_requested = true;
+	
 	dragging = false;
 	selecting = false;
 }

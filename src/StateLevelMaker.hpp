@@ -83,6 +83,8 @@ private:
 	Button* button_test;
 	Button* button_quit;
 	Button* button_delete;
+	
+	bool clicking_button;
 public:
 	StateLevelMaker(ArgsBase* args);
 	~StateLevelMaker();
@@ -119,6 +121,10 @@ private:
 	void handleKeyDown(const observer::Event& event, bool& stop);
 	
 	void handleQuit(const observer::Event& event, bool& stop);
+	
+	void checkSelectionRequests();
+	
+	void handleMouseLeft(const observer::Event& event, bool& stop);
 };
 
 #endif

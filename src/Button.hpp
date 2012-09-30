@@ -20,6 +20,8 @@ private:
 	bool clicked;
 	bool enabled;
 	bool hover;
+	bool just_clicked;
+	bool just_hit;
 public:
 	static Audio* sound_hover;
 	static Audio* sound_clicked;

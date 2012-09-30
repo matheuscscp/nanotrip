@@ -8,9 +8,8 @@ using namespace lalge;
 
 LevelMakerPanel* LevelMakerPanel::panels[LevelMakerObject::LASTTYPE];
 LevelMakerPanel* LevelMakerPanel::current_panel = 0;
-bool LevelMakerPanel::clicked_outside = false;
 bool LevelMakerPanel::hooked = false;
-R2Vector LevelMakerPanel::diff_position;
+R2Vector LevelMakerPanel::mouse_down_position;
 
 LevelMakerPanel::LevelMakerPanel() {
 	setShape(new Rectangle());
@@ -44,9 +43,19 @@ void LevelMakerPanel::close() {
 	current_panel = 0;
 }
 
-void LevelMakerPanel::checkDeselectionRequest() {
+void LevelMakerPanel::checkSelectionRequests() {
+	if (hooked) {
+		LevelMakerObject::deselection_requested = false;
+		LevelMakerObject::selection_requested = false;
+		return;
+	}
+	
 	if (LevelMakerObject::deselection_requested)
+		LevelMakerObject::deselect();
+	else if (LevelMakerObject::selection_requested) {
+		LevelMakerObject::deselect();
 		LevelMakerObject::startSelection();
+	}
 }
 
 void LevelMakerPanel::updateCurrent() {
@@ -59,18 +68,20 @@ void LevelMakerPanel::updateCurrent() {
 	old_size = r2vec(((Rectangle*)old_panel->getShape())->getWidth(), ((Rectangle*)old_panel->getShape())->getHeight());
 	current_panel->getShape()->position = old_panel->getShape()->position + (new_size - old_size)/2;
 	
+	if (hooked)
+		current_panel->getShape()->position = mouse_down_position + r2vec(InputManager::instance()->mouseDiffX(), InputManager::instance()->mouseDiffY());
+	
 	current_panel->update();
 }
 
-void LevelMakerPanel::update() {
-	if (hooked)
-		getShape()->position = diff_position + r2vec(InputManager::instance()->mouseX(), InputManager::instance()->mouseY());
+void LevelMakerPanel::renderCurrent() {
+	current_panel->render();
 }
 
 void LevelMakerPanel::handleMouseDownLeft(const observer::Event& event, bool& stop) {
 	if (getShape()->mouseDownInside()) {
 		hooked = true;
-		diff_position = getShape()->position - r2vec(InputManager::instance()->mouseDownX(), InputManager::instance()->mouseDownY());
+		mouse_down_position = getShape()->position;
 	}
 }
 

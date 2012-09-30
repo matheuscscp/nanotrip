@@ -25,6 +25,7 @@ public:
 	
 	static std::set<LevelMakerObject*> selected;
 	static bool deselection_requested;
+	static bool selection_requested;
 	static Sprite* sprite_selection_box;
 	static Sprite* sprite_selection_horizontal;
 	static Sprite* sprite_selection_vertical;
@@ -32,6 +33,7 @@ private:
 	static std::set<LevelMakerObject*> all;
 	static bool dragging;
 	static bool selecting;
+	static bool just_selected;
 	static Rectangle selection_box;
 	
 	lalge::R2Vector mouse_down_position;
@@ -50,6 +52,7 @@ public:
 	
 	static int getSelectedType();
 	
+	static void deselect();
 	static void startSelection();
 private:
 	void update();
@@ -61,6 +64,7 @@ public:
 	int getType() const;
 	const GameObject* getObject() const;
 private:
+	static bool mouseInsideAny();
 	static bool mouseDownInsideAny();
 	
 	void handleMouseDownLeft(const observer::Event& event, bool& stop);

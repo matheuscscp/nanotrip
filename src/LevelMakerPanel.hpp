@@ -11,9 +11,8 @@ class LevelMakerPanel : public GameObject {
 private:
 	static LevelMakerPanel* panels[LevelMakerObject::LASTTYPE];
 	static LevelMakerPanel* current_panel;
-	static bool clicked_outside;
 	static bool hooked;
-	static lalge::R2Vector diff_position;
+	static lalge::R2Vector mouse_down_position;
 protected:
 	LevelMakerPanel();
 	virtual ~LevelMakerPanel();
@@ -21,16 +20,18 @@ public:
 	static void init();
 	static void close();
 	
-	static void checkDeselectionRequest();
+	static void checkSelectionRequests();
 	static void updateCurrent();
+	static void renderCurrent();
 private:
 	virtual void show() = 0;
 	virtual void hide() = 0;
 	
-	virtual void update();
-protected:
-	virtual void handleMouseDownLeft(const observer::Event& event, bool& stop);
-	virtual void handleMouseUpLeft(const observer::Event& event, bool& stop);
+	virtual void update() = 0;
+	virtual void render() = 0;
+	
+	void handleMouseDownLeft(const observer::Event& event, bool& stop);
+	void handleMouseUpLeft(const observer::Event& event, bool& stop);
 };
 
 #endif

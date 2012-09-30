@@ -13,8 +13,7 @@ public:
 	void hide();
 	
 	void update();
-private:
-	void handleMouseDownLeft(const observer::Event& event, bool& stop);
+	void render();
 };
 
 #endif
