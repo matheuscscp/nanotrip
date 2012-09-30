@@ -30,6 +30,7 @@ private:
 	void handleCancel(const observer::Event& event, bool& stop);
 	
 	void handleQuit(const observer::Event& event, bool& stop);
+	void handleKeyDown(const observer::Event& event, bool& stop);
 };
 
 #endif

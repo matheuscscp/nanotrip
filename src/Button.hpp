@@ -5,6 +5,7 @@
 
 #include "GameObject.hpp"
 #include "Audio.hpp"
+#include "Timer.hpp"
 
 class Button : public GameObject {
 SUBJECT
@@ -22,7 +23,11 @@ private:
 	bool hover;
 	bool just_clicked;
 	bool just_hit;
+	Timer timer;
+	bool toggle;
 public:
+	bool selected;
+	
 	static Audio* sound_hover;
 	static Audio* sound_clicked;
 	
@@ -35,6 +40,8 @@ public:
 private:
 	void handleMouseDownLeft(const observer::Event& event, bool& stop);
 	void handleMouseUpLeft(const observer::Event& event, bool& stop);
+	void handleKeyDown(const observer::Event& event, bool& stop);
+	void handleTimerDone(const observer::Event& event, bool& stop);
 };
 
 #endif

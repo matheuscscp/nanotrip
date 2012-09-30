@@ -10,6 +10,7 @@ using std::set;
 set<LevelMakerObject*> LevelMakerObject::selected;
 bool LevelMakerObject::deselection_requested = false;
 bool LevelMakerObject::selection_requested = false;
+bool LevelMakerObject::toggle_requested = false;
 Sprite* LevelMakerObject::LevelMakerObject::sprite_selection_box = 0;
 Sprite* LevelMakerObject::sprite_selection_horizontal = 0;
 Sprite* LevelMakerObject::sprite_selection_vertical = 0;
@@ -17,6 +18,7 @@ set<LevelMakerObject*> LevelMakerObject::all;
 bool LevelMakerObject::dragging = false;
 bool LevelMakerObject::selecting = false;
 bool LevelMakerObject::just_selected = false;
+bool LevelMakerObject::selected_on_click = false;
 Rectangle LevelMakerObject::selection_box;
 
 LevelMakerObject::LevelMakerObject(int type, GameObject* object) :
@@ -132,6 +134,26 @@ void LevelMakerObject::startSelection() {
 	selection_box.setHeight(1);
 }
 
+void LevelMakerObject::toggle() {
+	toggle_requested = false;
+	
+	// deselect the only one selected object
+	if ((selected.size() == 1) && (selected_on_click))
+		selected.clear();
+	// select only one object (mouse inside)
+	else {
+		LevelMakerObject* target;
+		for (set<LevelMakerObject*>::iterator it = selected.begin(); it != selected.end(); ++it) {
+			if ((*it)->getShape()->mouseInside()) {
+				target = *it;
+				break;
+			}
+		}
+		selected.clear();
+		selected.insert(target);
+	}
+}
+
 void LevelMakerObject::update() {
 	getShape()->position = mouse_down_position + r2vec(InputManager::instance()->mouseDiffX(), InputManager::instance()->mouseDiffY());
 	object->getShape()->position = getShape()->position;
@@ -146,12 +168,19 @@ void LevelMakerObject::render() {
 		selection->render(getShape()->position.x(0), getShape()->position.x(1), true);
 }
 
+LevelMakerObject* LevelMakerObject::clone() {
+	GameObject* new_gameobject = object->clone();
+	LevelMakerObject* new_object = new LevelMakerObject(type, new_gameobject);
+	new_object->selection = selection;
+	return new_object;
+}
+
 bool LevelMakerObject::isSelected() const {
 	return (selected.find((LevelMakerObject*)this) != selected.end());
 }
 
 int LevelMakerObject::getType() const { return type; }
-const GameObject* LevelMakerObject::getObject() const { return object; }
+GameObject* LevelMakerObject::getGameObject() const { return object; }
 
 bool LevelMakerObject::mouseInsideAny() {
 	for (set<LevelMakerObject*>::iterator it = all.begin(); it != all.end(); ++it) {
@@ -168,9 +197,9 @@ bool LevelMakerObject::mouseDownInsideAny() {
 	}
 	return false;
 }
-#include "common.hpp"
+
 void LevelMakerObject::handleMouseDownLeft(const observer::Event& event, bool& stop) {
-	if (selecting)
+	if (selection_requested)
 		return;
 	
 	mouse_down_position = getShape()->position;
@@ -187,7 +216,8 @@ void LevelMakerObject::handleMouseDownLeft(const observer::Event& event, bool& s
 	dragging = true;
 	
 	// if this isn't selected, clear the selection and select only this object
-	if (!isSelected()) {
+	selected_on_click = isSelected();
+	if (!selected_on_click) {
 		selected.clear();
 		selected.insert(this);
 	}
@@ -200,6 +230,9 @@ void LevelMakerObject::handleMouseUpLeft(const observer::Event& event, bool& sto
 	// if clicked outside every object, request for deselection
 	if ((!mouseInsideAny()) && (!mouseDownInsideAny()) && (!just_selected))
 		deselection_requested = true;
+	// if no drag was done, request toggle
+	else if ((isSelected()) && (getShape()->mouseInside()) && (mouse_down_position == getShape()->position))
+		toggle_requested = true;
 	
 	dragging = false;
 	selecting = false;

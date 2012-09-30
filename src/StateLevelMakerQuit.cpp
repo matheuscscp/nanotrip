@@ -2,6 +2,9 @@
 
 #include "SDLBase.hpp"
 #include "StateLevelMaker.hpp"
+#include "InputManager.hpp"
+
+#define ENTER_DELAY	1
 
 using namespace lalge;
 
@@ -28,7 +31,12 @@ StateLevelMakerQuit::StateLevelMakerQuit(ArgsBase* args) : quit(false) {
 	cancel->getShape()->position = r2vec(680 + (cancel->sprite->srcW() + discard->sprite->srcW())/2, 395);
 	cancel->connect(Button::CLICKED, this, &StateLevelMakerQuit::handleCancel);
 	
+	save->selected = true;
+	
 	sound_error = new Audio("sfx/levelmaker/error.wav");
+	sound_error->play(1);
+	
+	InputManager::instance()->connect(InputManager::KEYDOWN, this, &StateLevelMakerQuit::handleKeyDown);
 }
 
 StateLevelMakerQuit::~StateLevelMakerQuit() {
@@ -80,4 +88,28 @@ void StateLevelMakerQuit::handleCancel(const observer::Event& event, bool& stop)
 
 void StateLevelMakerQuit::handleQuit(const observer::Event& event, bool& stop) {
 	sound_error->play(1);
+}
+
+void StateLevelMakerQuit::handleKeyDown(const observer::Event& event, bool& stop) {
+	switch (inputmanager_event.key.keysym.sym) {
+	case SDLK_ESCAPE:
+		throw new Unstack();
+		
+	case SDLK_UP:
+	case SDLK_LEFT:
+		save->selected = ((save->selected) ? true : discard->selected);
+		discard->selected = cancel->selected;
+		cancel->selected = false;
+		break;
+		
+	case SDLK_DOWN:
+	case SDLK_RIGHT:
+		cancel->selected = ((cancel->selected) ? true : discard->selected);
+		discard->selected = save->selected;
+		save->selected = false;
+		break;
+		
+	default:
+		break;
+	}
 }

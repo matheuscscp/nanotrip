@@ -27,7 +27,6 @@ Animation::Animation (
 	this->fps = ((fps >= 1) ? fps : 1);
 	
 	Uint8 r,g,b,a;
-	std::cout<<filename<<std::endl;
 	for (int i=0; i < src->w; i++){
 		for (int j=0; j < src->h; j++){
 			SDL_GetRGBA(getPixel(i, j), src->format, &r, &g, &b, &a);

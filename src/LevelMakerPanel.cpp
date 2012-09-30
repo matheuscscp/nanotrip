@@ -47,6 +47,7 @@ void LevelMakerPanel::checkSelectionRequests() {
 	if (hooked) {
 		LevelMakerObject::deselection_requested = false;
 		LevelMakerObject::selection_requested = false;
+		LevelMakerObject::toggle_requested = false;
 		return;
 	}
 	
@@ -55,6 +56,9 @@ void LevelMakerPanel::checkSelectionRequests() {
 	else if (LevelMakerObject::selection_requested) {
 		LevelMakerObject::deselect();
 		LevelMakerObject::startSelection();
+	}
+	else if (LevelMakerObject::toggle_requested) {
+		LevelMakerObject::toggle();
 	}
 }
 

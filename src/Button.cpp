@@ -3,6 +3,8 @@
 #include "Rectangle.hpp"
 #include "InputManager.hpp"
 
+#define ENTER_DELAY	200
+
 using namespace lalge;
 
 Audio* Button::sound_hover = 0;
@@ -13,7 +15,9 @@ clip_y(0),
 clicked(false),
 hover(false),
 just_clicked(false),
-just_hit(false)
+just_hit(false),
+selected(false),
+toggle(false)
 {
 	subject.init(LASTEVENT);
 	setShape(new Rectangle());
@@ -23,16 +27,22 @@ just_hit(false)
 	this->sprite = sprite;
 	((Rectangle*)getShape())->setWidth(sprite->srcW());
 	((Rectangle*)getShape())->setHeight(sprite->srcH()/4);
+	
+	timer.connect(Timer::DONE, this, &Button::handleTimerDone);
 }
 
 Button::~Button() {
 	InputManager::instance()->disconnect(this);
+	timer.disconnect(this);
 }
 
 void Button::update() {
 	if (!enabled)
 		return;
 	
+	timer.update();
+	
+	// update
 	if (clicked) {
 		clicked = false;
 		clip_y = 2*sprite->srcH()/4;
@@ -67,6 +77,19 @@ void Button::update() {
 		just_hit = false;
 	}
 	
+	// if selected and mouse not inside, clip hover
+	if (selected) {
+		if (timer.time()) {
+			toggle = (!toggle);
+			if (toggle)
+				clip_y = sprite->srcH()/4;
+			else
+				clip_y = 2*sprite->srcH()/4;
+		}
+		else if (!getShape()->mouseInside())
+			clip_y = sprite->srcH()/4;
+	}
+	
 	sprite->clip(0, clip_y, sprite->srcW(), sprite->srcH()/4);
 }
 
@@ -79,6 +102,7 @@ void Button::enable(bool enable) {
 	else {
 		InputManager::instance()->connect(InputManager::MOUSEDOWN_LEFT, this, &Button::handleMouseDownLeft);
 		InputManager::instance()->connect(InputManager::MOUSEUP_LEFT, this, &Button::handleMouseUpLeft);
+		InputManager::instance()->connect(InputManager::KEYDOWN, this, &Button::handleKeyDown);
 	}
 }
 
@@ -97,11 +121,30 @@ void Button::handleMouseDownLeft(const observer::Event& event, bool& stop) {
 void Button::handleMouseUpLeft(const observer::Event& event, bool& stop) {
 	if ((getShape()->mouseDownInside()) && (getShape()->mouseInside()) && (enabled)) {
 		clicked = true;
-		subject.broadcast(observer::Event(CLICKED));
 		just_clicked = true;
 		
 		// play sound
 		if ((sound_clicked) && (!just_hit))
 			sound_clicked->play(1);
+		
+		subject.broadcast(observer::Event(CLICKED));
 	}
+}
+
+void Button::handleKeyDown(const observer::Event& event, bool& stop) {
+	if ((inputmanager_event.key.keysym.sym == SDLK_RETURN) ||
+		(inputmanager_event.key.keysym.sym == SDLK_KP_ENTER)) {
+		if ((selected) && (enabled)) {
+			timer.start(ENTER_DELAY);
+			
+			// play sound
+			if (sound_clicked)
+				sound_clicked->play(1);
+			
+		}
+	}
+}
+
+void Button::handleTimerDone(const observer::Event& event, bool& stop) {
+	subject.broadcast(observer::Event(CLICKED));
 }

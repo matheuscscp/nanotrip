@@ -25,6 +25,17 @@ void Particle::update() {
 	force = 0;
 }
 
+GameObject* Particle::clone() {
+	Circle* my_shape = new Circle(*((Circle*)getShape()));
+	Circle* new_shape = new Circle(*((Circle*)getShape()));
+	setShape(0);
+	GameObject* new_particle = new Particle(*this);
+	setShape(my_shape);
+	new_particle->setShape(new_shape);
+	
+	return new_particle;
+}
+
 Scalar Particle::getElasticity() const { return elasticity; }
 
 void Particle::setElasticity(Scalar elasticity) {

@@ -19,3 +19,5 @@ void GameObject::render() {
 	if ((sprite) && (!hidden))
 		sprite->render(shape->position.x(0), shape->position.x(1), true);
 }
+
+GameObject* GameObject::clone() { return 0; }

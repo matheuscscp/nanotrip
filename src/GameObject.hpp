@@ -20,6 +20,8 @@ public:
 	
 	virtual void update() = 0;
 	virtual void render();
+	
+	virtual GameObject* clone();
 };
 
 #endif
