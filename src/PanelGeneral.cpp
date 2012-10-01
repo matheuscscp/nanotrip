@@ -1,3 +1,7 @@
+#include <sstream>
+
+#include "common.hpp"
+
 #include "PanelGeneral.hpp"
 
 #include "Rectangle.hpp"
@@ -6,7 +10,10 @@
 #include "Circle.hpp"
 #include "SDLBase.hpp"
 
+using namespace common;
 using namespace lalge;
+
+using std::stringstream;
 
 PanelGeneral::PanelGeneral() {
 	sprite = new Sprite("img/levelmaker/panel_general.png");
@@ -64,31 +71,40 @@ PanelGeneral::PanelGeneral() {
 	// inputs
 	
 	sprite_input_time = new Sprite("img/levelmaker/input_general_time.png");
+	sprite_input_time->clip(0, 0, sprite_input_time->srcW(), sprite_input_time->srcH()/2);
 	button_input_time = new Button(new Sprite("img/levelmaker/input_general_time_button.png"));
 	button_input_time->connect(Button::CLICKED, this, &PanelGeneral::handleInputTimeButton);
-	input_time_position = r2vec(0, 0);
+	input_time_position = r2vec(110 + button_input_time->sprite->rectW()/2, 64);
 	invalid_input_time = false;
+	input_time.setMaxSize(3);
+	input_time.set(eval(data->level_time));
 	input_time.connect(InputString::UPDATE, this, &PanelGeneral::handleInputTime);
-	input_time.setMaxSize(10);
-	text_input_time = new Text("ttf/Swiss721BlackRoundedBT.ttf", "", 20, 0, SDLBase::getColor(0, 0, 0), Text::blended);
+	text_input_time = new Text("ttf/Swiss721BlackRoundedBT.ttf", "", 20, 0, SDLBase::getColor(51, 51, 51), Text::blended);
+	text_input_time->setText(input_time.get());
 	
 	sprite_input_charge = new Sprite("img/levelmaker/input_general_charge.png");
+	sprite_input_charge->clip(0, 0, sprite_input_charge->srcW(), sprite_input_charge->srcH()/2);
 	button_input_charge = new Button(new Sprite("img/levelmaker/input_general_charge_button.png"));
 	button_input_charge->connect(Button::CLICKED, this, &PanelGeneral::handleInputChargeButton);
-	input_charge_position = r2vec(0, 0);
+	input_charge_position = r2vec(200 + button_input_charge->sprite->rectW()/2, 64 + 29);
 	invalid_input_charge = false;
+	input_charge.setMaxSize(12);
+	input_charge.set(eval(data->max_abs_charge));
 	input_charge.connect(InputString::UPDATE, this, &PanelGeneral::handleInputCharge);
-	input_charge.setMaxSize(10);
-	text_input_charge = new Text("ttf/Swiss721BlackRoundedBT.ttf", "", 20, 0, SDLBase::getColor(0, 0, 0), Text::blended);
+	text_input_charge = new Text("ttf/Swiss721BlackRoundedBT.ttf", "", 12, 0, SDLBase::getColor(51, 51, 51), Text::blended);
+	text_input_charge->setText(input_charge.get());
 	
 	sprite_input_bgm = new Sprite("img/levelmaker/input_general_bgm.png");
+	sprite_input_bgm->clip(0, 0, sprite_input_bgm->srcW(), sprite_input_bgm->srcH()/2);
 	button_input_bgm = new Button(new Sprite("img/levelmaker/input_general_bgm_button.png"));
 	button_input_bgm->connect(Button::CLICKED, this, &PanelGeneral::handleInputBGMButton);
-	input_bgm_position = r2vec(0, 0);
+	input_bgm_position = r2vec(105 + button_input_bgm->sprite->rectW()/2, 64 + 29 + 29);
 	invalid_input_bgm = false;
+	input_bgm.setMaxSize(20);
+	input_bgm.set(data->bgm);
 	input_bgm.connect(InputString::UPDATE, this, &PanelGeneral::handleInputBGM);
-	input_bgm.setMaxSize(10);
-	text_input_bgm = new Text("ttf/Swiss721BlackRoundedBT.ttf", "", 20, 0, SDLBase::getColor(0, 0, 0), Text::blended);
+	text_input_bgm = new Text("ttf/Swiss721BlackRoundedBT.ttf", "", 13, 0, SDLBase::getColor(51, 51, 51), Text::blended);
+	text_input_bgm->setText(input_bgm.get());
 	
 	updatePositions();
 }
@@ -200,7 +216,15 @@ void PanelGeneral::update() {
 }
 
 void PanelGeneral::render() {
-	
+	if ((invalid_input_time) || (input_time.enabled))
+		sprite_input_time->render(button_input_time->getShape()->position.x(0), button_input_time->getShape()->position.x(1), true);
+	text_input_time->render(button_input_time->getShape()->position.x(0), button_input_time->getShape()->position.x(1));
+	if ((invalid_input_charge) || (input_charge.enabled))
+		sprite_input_charge->render(button_input_charge->getShape()->position.x(0), button_input_charge->getShape()->position.x(1), true);
+	text_input_charge->render(button_input_charge->getShape()->position.x(0), button_input_charge->getShape()->position.x(1));
+	if ((invalid_input_bgm) || (input_bgm.enabled))
+		sprite_input_bgm->render(button_input_bgm->getShape()->position.x(0), button_input_bgm->getShape()->position.x(1), true);
+	text_input_bgm->render(button_input_bgm->getShape()->position.x(0), button_input_bgm->getShape()->position.x(1));
 }
 
 void PanelGeneral::updatePositions() {
@@ -301,25 +325,83 @@ void PanelGeneral::handleItem(const observer::Event& event, bool& stop) {
 }
 
 void PanelGeneral::handleInputTime(const observer::Event& event, bool& stop) {
+	text_input_time->setText(input_time.get());
 	
+	// check invalid input
+	if (eval(input_time.get(), data->level_time)) {
+		data->level_time = ((data->level_time > 599) ? 599 : data->level_time);
+		data->level_time = ((data->level_time < 5) ? 5 : data->level_time);
+		
+		invalid_input_time = false;
+		sprite_input_time->clip(0, 0, sprite_input_time->srcW(), sprite_input_time->srcH()/2);
+	}
+	else {
+		data->level_time = LevelMakerData::default_level_time;
+		invalid_input_time = true;
+		sprite_input_time->clip(0, sprite_input_time->srcH()/2, sprite_input_time->srcW(), sprite_input_time->srcH()/2);
+	}
 }
 
 void PanelGeneral::handleInputTimeButton(const observer::Event& event, bool& stop) {
-	
+	input_time.enabled = true;
+	input_charge.enabled = false;
+	input_bgm.enabled = false;
+	handleInputTime(event, stop);
 }
 
 void PanelGeneral::handleInputCharge(const observer::Event& event, bool& stop) {
+	text_input_charge->setText(input_charge.get());
 	
+	// check invalid input
+	if (eval(input_charge.get(), data->max_abs_charge)) {
+		data->max_abs_charge = ((data->max_abs_charge) ? data->max_abs_charge : LevelMakerData::default_max_abs_charge);
+		data->max_abs_charge = ((data->max_abs_charge < 0) ? -data->max_abs_charge : data->max_abs_charge);
+		
+		invalid_input_charge = false;
+		sprite_input_charge->clip(0, 0, sprite_input_charge->srcW(), sprite_input_charge->srcH()/2);
+	}
+	else {
+		data->max_abs_charge = LevelMakerData::default_max_abs_charge;
+		invalid_input_charge = true;
+		sprite_input_charge->clip(0, sprite_input_charge->srcH()/2, sprite_input_charge->srcW(), sprite_input_charge->srcH()/2);
+	}
 }
 
 void PanelGeneral::handleInputChargeButton(const observer::Event& event, bool& stop) {
-	
+	input_time.enabled = false;
+	input_charge.enabled = true;
+	input_bgm.enabled = false;
+	handleInputCharge(event, stop);
 }
 
 void PanelGeneral::handleInputBGM(const observer::Event& event, bool& stop) {
+	text_input_bgm->setText(input_bgm.get());
 	
+	// empty bgm
+	if (!input_bgm.get().size()) {
+		data->bgm = "";
+		sprite_input_bgm->clip(0, 0, sprite_input_bgm->srcW(), sprite_input_bgm->srcH()/2);
+		invalid_input_bgm = false;
+		return;
+	}
+	
+	// check whether file exists
+	try {
+		Audio audio_test("sfx/level/" + input_bgm.get() + ".mp3");
+		data->bgm = input_bgm.get();
+		sprite_input_bgm->clip(0, 0, sprite_input_bgm->srcW(), sprite_input_bgm->srcH()/2);
+		invalid_input_bgm = false;
+	}
+	catch (mexception&) {
+		data->bgm = input_bgm.get();
+		sprite_input_bgm->clip(0, sprite_input_bgm->srcH()/2, sprite_input_bgm->srcW(), sprite_input_bgm->srcH()/2);
+		invalid_input_bgm = true;
+	}
 }
 
 void PanelGeneral::handleInputBGMButton(const observer::Event& event, bool& stop) {
-	
+	input_time.enabled = false;
+	input_charge.enabled = false;
+	input_bgm.enabled = true;
+	handleInputBGM(event, stop);
 }

@@ -98,20 +98,25 @@ void LevelMakerPanel::checkSelectionRequests() {
 }
 
 void LevelMakerPanel::updateCurrent() {
-	R2Vector new_size;
-	R2Vector old_size;
-	LevelMakerPanel* old_panel = current_panel;
-	current_panel = panels[LevelMakerObject::getSelectedType()];
+	int selected_type = LevelMakerObject::getSelectedType();
+	bool must_change = (panels[selected_type] != current_panel);
 	
-	new_size = r2vec(((Rectangle*)current_panel->getShape())->getWidth(), ((Rectangle*)current_panel->getShape())->getHeight());
-	old_size = r2vec(((Rectangle*)old_panel->getShape())->getWidth(), ((Rectangle*)old_panel->getShape())->getHeight());
-	current_panel->getShape()->position = old_panel->getShape()->position + (new_size - old_size)/2;
+	if (must_change) {
+		R2Vector new_size;
+		R2Vector old_size;
+		LevelMakerPanel* old_panel = current_panel;
+		current_panel = panels[LevelMakerObject::getSelectedType()];
+		
+		new_size = r2vec(((Rectangle*)current_panel->getShape())->getWidth(), ((Rectangle*)current_panel->getShape())->getHeight());
+		old_size = r2vec(((Rectangle*)old_panel->getShape())->getWidth(), ((Rectangle*)old_panel->getShape())->getHeight());
+		current_panel->getShape()->position = old_panel->getShape()->position + (new_size - old_size)/2;
+		
+		old_panel->hide();
+		current_panel->show();
+	}
 	
 	if (hooked)
 		current_panel->getShape()->position = mouse_down_position + r2vec(InputManager::instance()->mouseDiffX(), InputManager::instance()->mouseDiffY());
-	
-	old_panel->hide();
-	current_panel->show();
 	
 	current_panel->update();
 	

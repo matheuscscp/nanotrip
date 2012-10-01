@@ -335,7 +335,15 @@ void LevelMakerData::assemble() {
 		Configuration general = level.getConfig("general");
 		
 		level_time = general.getInt("level_time");
+		if (level_time > 599)
+			level_time = 599;
+		else if (level_time < 5)
+			level_time = 5;
+		
 		max_abs_charge = general.getReal("max_abs_charge");
+		if (max_abs_charge <= 0)
+			max_abs_charge = ((max_abs_charge) ? -max_abs_charge : default_max_abs_charge);
+		
 		try {
 			bgm = general.getStr("bgm");
 		}

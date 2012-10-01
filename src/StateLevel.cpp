@@ -6,6 +6,7 @@
 #include "InputManager.hpp"
 #include "SDLBase.hpp"
 #include "GameBGM.hpp"
+#include "LevelMakerData.hpp"
 
 #define GRADIENT_CONST	15000
 
@@ -132,7 +133,7 @@ charge_cursor_position(640)
 		
 		max_abs_charge = general.getReal("max_abs_charge");
 		if (max_abs_charge <= 0)
-			max_abs_charge = ((max_abs_charge) ? -max_abs_charge : 1);
+			max_abs_charge = ((max_abs_charge) ? -max_abs_charge : LevelMakerData::default_max_abs_charge);
 		
 		// borders
 		if (general.getInt("border_top"))

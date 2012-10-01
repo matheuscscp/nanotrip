@@ -23,7 +23,11 @@ namespace common {
 
 /// Evaluate function for strings.
 template <typename T>
-T eval(const std::string& raw);
+bool eval(const std::string& raw, T& buf);
+
+/// Evaluate function to strings.
+template <typename T>
+std::string eval(T buf);
 
 /// Class to manage the main function arguments.
 class MainArgs {
@@ -96,19 +100,27 @@ public:
 }	// namespace common end
 
 // =============================================================================
-// eval function
+// eval functions
 // =============================================================================
 
 template <typename T>
-T common::eval(const std::string& raw) {
-	if (!raw.size())
-		return T();
+bool common::eval(const std::string& raw, T& buf) {
+	if (!raw.size()) {
+		buf = T();
+		return false;
+	}
 	
-	T ret;
 	std::stringstream ss;
 	ss << raw;
-	ss >> ret;
-	return ret;
+	ss >> buf;
+	return ((!ss.fail()) && (ss.eof()));
+}
+
+template <typename T>
+std::string common::eval(T buf) {
+	std::stringstream ss;
+	ss << buf;
+	return ss.str();
 }
 
 // =============================================================================
