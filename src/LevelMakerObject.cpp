@@ -173,7 +173,8 @@ void LevelMakerObject::handleMouseDown() {
 }
 
 void LevelMakerObject::update() {
-	if (InputManager::instance()->keyPressed(SDLK_LCTRL))
+	if ((InputManager::instance()->keyPressed(SDLK_LCTRL)) ||
+		(InputManager::instance()->keyPressed(SDLK_RCTRL)))
 		getShape()->position = mouse_down_position + r2vec(InputManager::instance()->mouseX(), InputManager::instance()->mouseY()) - mouse_ctrl_position;
 	else
 		getShape()->position = mouse_down_position + r2vec(InputManager::instance()->mouseDiffX(), InputManager::instance()->mouseDiffY());
@@ -256,7 +257,8 @@ void LevelMakerObject::handleMouseUpLeft(const observer::Event& event, bool& sto
 }
 
 void LevelMakerObject::handleKeyDown(const observer::Event& event, bool& stop) {
-	if (inputmanager_event.key.keysym.sym == SDLK_LCTRL) {
+	if ((inputmanager_event.key.keysym.sym == SDLK_LCTRL) ||
+		(inputmanager_event.key.keysym.sym == SDLK_RCTRL)) {
 		mouse_ctrl_position = r2vec(InputManager::instance()->mouseX(), InputManager::instance()->mouseY());
 		mouse_down_position = getShape()->position;
 		dragging = true;
@@ -264,6 +266,7 @@ void LevelMakerObject::handleKeyDown(const observer::Event& event, bool& stop) {
 }
 
 void LevelMakerObject::handleKeyUp(const observer::Event& event, bool& stop) {
-	if (inputmanager_event.key.keysym.sym == SDLK_LCTRL)
+	if ((inputmanager_event.key.keysym.sym == SDLK_LCTRL) ||
+		(inputmanager_event.key.keysym.sym == SDLK_RCTRL))
 		dragging = false;
 }
