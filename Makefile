@@ -5,6 +5,7 @@ DOCDIR = doc
 
 ERRLOG = ErrorLog.txt
 
+RELEASE = -D'RELEASE="StateMainMenu"'
 CXXFLAGS = -ansi -pedantic -Wall -Wextra -Wunused-parameter -g -std=c++0x
 INCLUDE = -I /usr/include/SDL -I /usr/local/include/SDL
 
@@ -54,6 +55,11 @@ gdb: build
 	gdb $(EXE)
 #r -f -p /home/matheus/Documents/C_C++/C++/IDJ/nanotrip/ -s StateMakeLevel
 
+release: clean $(OBJ)
+	rm obj/StateManager.o
+	g++ $(RELEASE) $(CXXFLAGS) $(INCLUDE) -c src/StateManager.cpp -o obj/StateManager.o
+	g++ $(CXXFLAGS) $(OBJ) -o $(EXE) $(LIB)
+
 clean:
 	rm -rf $(EXE) $(OBJDIR)/* $(ERRLOG)
 
@@ -63,4 +69,4 @@ dox:
 doxclean:
 	rm -rf $(DOCDIR)/html $(DOCDIR)/latex
 
-.PHONY: all build run test gdb clean dox doxclean
+.PHONY: all build run test gdb release clean dox doxclean

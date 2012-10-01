@@ -7,6 +7,10 @@
 #include "Button.hpp"
 #include "GameBGM.hpp"
 
+#ifndef RELEASE
+	#define RELEASE	""
+#endif
+
 using namespace common;
 
 using std::string;
@@ -37,7 +41,7 @@ void StateManager::initStuff() {
 	RootPath::init(path);
 	
 	// initializes the fps
-	if ((MainArgs::find("-f")) || (MainArgs::find("--fps")))
+	if (((MainArgs::find("-f")) || (MainArgs::find("--fps"))) && (!string(RELEASE).size()))
 		fps = new Text("", "", 20, 0, SDLBase::getColor(255, 255, 255), Text::shaded, SDLBase::getColor(0, 0, 0));
 	
 	// game BGM
@@ -49,6 +53,13 @@ void StateManager::initStuff() {
 }
 
 void StateManager::loadFirst() {
+	// release version
+	SHOW(RELEASE);
+	if (string(RELEASE).size()) {
+		State::states.push_back(State::build(RELEASE));
+		return;
+	}
+	
 	// searches for the game state to be loaded
 	string state = MainArgs::get<string>("-s");
 	if (!state.size())
