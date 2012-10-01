@@ -6,14 +6,14 @@
 #include "InputManager.hpp"
 
 #define AVAILABLE_INPUT	\
-"1234567890 abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+"._-1234567890 abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 using std::vector;
 using std::string;
 
 vector< bool > InputString::available_input;
 
-InputString::InputString(const string& str) : buf(str), max_size(0) {
+InputString::InputString(const string& str) : buf(str), max_size(0), enabled(false) {
 	if (!available_input.size())
 		initAvailableInput();
 	subject.init(LASTEVENT);
@@ -43,6 +43,9 @@ void InputString::set(const std::string& input) {
 }
 
 void InputString::update() {
+	if (!enabled)
+		return;
+	
 	if ((InputManager::instance()->keyPressed(SDLK_BACKSPACE)) &&
 		(!stopwatch.ispaused()) && (stopwatch.time() >= 500) && (buf.size())) {
 		buf.erase(buf.size() - 1);
@@ -75,6 +78,9 @@ void InputString::initAvailableInput()
 }
 
 void InputString::handleKeyDown(const observer::Event& event, bool& stop) {
+	if (!enabled)
+		return;
+	
 	int tmp = inputmanager_event.key.keysym.sym;
 	bool broadcast = true;
 	
@@ -114,6 +120,9 @@ void InputString::handleKeyDown(const observer::Event& event, bool& stop) {
 }
 
 void InputString::handleKeyUp(const observer::Event& event, bool& stop) {
+	if (!enabled)
+		return;
+	
 	if (inputmanager_event.key.keysym.sym == SDLK_BACKSPACE)
 		stopwatch.pause();
 }

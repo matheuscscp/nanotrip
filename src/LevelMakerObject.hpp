@@ -46,6 +46,7 @@ private:
 	GameObject* object;
 public:
 	Sprite* selection;
+	bool just_created;
 	
 	LevelMakerObject(int type, GameObject* object);
 	~LevelMakerObject();

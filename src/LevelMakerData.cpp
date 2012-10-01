@@ -16,6 +16,9 @@ using std::fstream;
 using std::list;
 using std::stringstream;
 
+const int LevelMakerData::default_level_time = 60;
+const Scalar LevelMakerData::default_max_abs_charge = 0.03;
+const string LevelMakerData::default_bgm = "";
 Sprite* LevelMakerData::sprite_avatar;
 Sprite* LevelMakerData::sprite_blackhole;
 Sprite* LevelMakerData::sprite_key;
@@ -109,8 +112,12 @@ bool LevelMakerData::modified() {
 		return true;
 	if (blackHoleModified(temp_data->blackhole))
 		return true;
-	if (keyModified(temp_data->key))
+	if (((!key) && (temp_data->key)) || ((key) && (!temp_data->key)))
 		return true;
+	if ((key) && (temp_data->key)) {
+		if (keyModified(temp_data->key))
+			return true;
+	}
 	
 	// particles
 	if (particlesModified(temp_data->particles))
@@ -292,9 +299,9 @@ void LevelMakerData::assembleEmptyLevel() {
 	((Circle*)key_obj->getShape())->setRadius(key_obj->sprite->rectW()/2);
 	
 	// general config
-	level_time = 60;
-	max_abs_charge = 0.03;
-	bgm = "";
+	level_time = default_level_time;
+	max_abs_charge = default_max_abs_charge;
+	bgm = default_bgm;
 	has_top = false;
 	has_right = false;
 	has_bottom = false;

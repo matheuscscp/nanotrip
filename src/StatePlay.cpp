@@ -22,6 +22,7 @@ StatePlay::StatePlay(ArgsBase* args) : warning_hidden(true) {
 	inputstring.connect(InputString::UPDATE, this, &StatePlay::handleInput);
 	inputstring.connect(InputString::ENTER, this, &StatePlay::handleEnter);
 	inputstring.setMaxSize(25);
+	inputstring.enabled = true;
 	
 	warning = new Text("", "Empty name!", 15, 0, SDLBase::getColor(255, 0, 0), Text::blended);
 	

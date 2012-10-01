@@ -25,6 +25,8 @@ private:
 	int max_size;
 	Stopwatch stopwatch;
 public:
+	bool enabled;
+	
 	InputString(const std::string& str = "");
 	~InputString();
 	

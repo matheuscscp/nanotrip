@@ -26,7 +26,8 @@ R2Vector LevelMakerObject::mouse_ctrl_position;
 LevelMakerObject::LevelMakerObject(int type, GameObject* object) :
 type(type),
 object(object),
-selection(0)
+selection(0),
+just_created(false)
 {
 	all.insert(this);
 	setShape(new Circle(*((Circle*)object->getShape())));
@@ -243,6 +244,9 @@ void LevelMakerObject::handleMouseUpLeft(const observer::Event& event, bool& sto
 	// if clicked outside every object, request for deselection
 	if ((!mouseInsideAny()) && (!mouseDownInsideAny()) && (!just_selected))
 		deselection_requested = true;
+	// if this object just was created by a panel
+	else if (just_created)
+		just_created = false;
 	// if no drag was done, request toggle
 	else if ((isSelected()) && (getShape()->mouseInside()) && (mouse_down_position == getShape()->position))
 		toggle_requested = true;

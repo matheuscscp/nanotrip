@@ -177,14 +177,14 @@ void StateLevelMaker::handleUnstack(ArgsBase* args) {
 	switch (op) {
 	case UnstackArgs::SAVE_MENU:
 		data->save();
-		throw new Change("StateMakeLevel");
+		throw new Change("StateMakeLevel", new Args(data->levelname));
 		
 	case UnstackArgs::SAVE_QUIT:
 		data->save();
 		throw Quit();
 		
 	case UnstackArgs::MENU:
-		throw new Change("StateMakeLevel");
+		throw new Change("StateMakeLevel", new Args(data->levelname));
 		
 	case UnstackArgs::QUIT:
 		throw Quit();
@@ -204,7 +204,7 @@ void StateLevelMaker::update() {
 	
 	LevelMakerPanel::updateCurrent();
 	
-	if (LevelMakerPanel::mouseInside()) {
+	if ((LevelMakerPanel::mouseInside()) || (LevelMakerPanel::creating)) {
 		disableButtons();
 		return;
 	}
@@ -302,7 +302,7 @@ void StateLevelMaker::handleTest(const observer::Event& event, bool& stop) {
 
 void StateLevelMaker::handleQuitButton(const observer::Event& event, bool& stop) {
 	if (!data->modified())
-		throw new Change("StateMakeLevel");
+		throw new Change("StateMakeLevel", new Args(data->levelname));
 	
 	frozen_ = true;
 	throw new StackUp("StateLevelMakerQuit");

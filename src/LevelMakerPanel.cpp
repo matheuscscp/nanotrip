@@ -13,6 +13,7 @@ LevelMakerPanel* LevelMakerPanel::current_panel = 0;
 bool LevelMakerPanel::hooked = false;
 bool LevelMakerPanel::just_unhooked = false;
 R2Vector LevelMakerPanel::mouse_down_position;
+LevelMakerObject* LevelMakerPanel::creating = 0;
 
 LevelMakerPanel::LevelMakerPanel() {
 	setShape(new Rectangle());
@@ -71,7 +72,7 @@ void LevelMakerPanel::close() {
 bool LevelMakerPanel::mouseInside() { return current_panel->getShape()->mouseInside(); }
 
 void LevelMakerPanel::checkSelectionRequests() {
-	if ((hooked) || (just_unhooked)) {
+	if ((hooked) || (just_unhooked) || (creating)) {
 		if (just_unhooked)
 			just_unhooked = false;
 		LevelMakerObject::deselection_requested = false;
@@ -113,14 +114,50 @@ void LevelMakerPanel::updateCurrent() {
 	current_panel->show();
 	
 	current_panel->update();
+	
+	if (creating) {
+		creating->getShape()->position = r2vec(InputManager::instance()->mouseX(), InputManager::instance()->mouseY());
+		creating->getGameObject()->getShape()->position = creating->getShape()->position;
+	}
 }
 
 void LevelMakerPanel::renderCurrent() {
 	current_panel->sprite->render(current_panel->getShape()->position.x(0), current_panel->getShape()->position.x(1), true);
 	current_panel->render();
+	
+	if (creating)
+		creating->render();
+}
+
+void LevelMakerPanel::create() {
+	switch (creating->getType()) {
+	case LevelMakerObject::KEY:
+		data->key = creating;
+		break;
+		
+	case LevelMakerObject::PARTICLE:
+		data->particles.push_back(creating);
+		break;
+		
+	case LevelMakerObject::ITEM:
+		data->items.push_back(creating);
+		break;
+		
+	default:
+		break;
+	}
+	
+	LevelMakerObject::selected.clear();
+	LevelMakerObject::selected.insert(creating);
+	creating->just_created = true;
+	
+	creating = 0;
 }
 
 void LevelMakerPanel::handleMouseDownLeft(const observer::Event& event, bool& stop) {
+	if (creating)
+		create();
+	
 	if ((getShape()->mouseDownInside()) && (this == current_panel)) {
 		hooked = true;
 		mouse_down_position = getShape()->position;

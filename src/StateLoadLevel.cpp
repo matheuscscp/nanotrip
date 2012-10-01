@@ -13,12 +13,6 @@ using namespace common;
 GAMESTATE_DEF(StateLoadLevel)
 
 StateLoadLevel::StateLoadLevel(ArgsBase* args) : warning_hidden(true) {
-	if (args) {
-		if (((StateLevel::FinalArgs*)args)->nextargs)
-			delete ((StateLevel::FinalArgs*)args)->nextargs;
-		delete args;
-	}
-	
 	bg = new Sprite("img/level/background.png");
 	
 	inputbox = new Sprite("img/menus/input_level_name.png");
@@ -28,6 +22,12 @@ StateLoadLevel::StateLoadLevel(ArgsBase* args) : warning_hidden(true) {
 	inputstring.connect(InputString::UPDATE, this, &StateLoadLevel::handleInput);
 	inputstring.connect(InputString::ENTER, this, &StateLoadLevel::handleEnter);
 	inputstring.setMaxSize(25);
+	inputstring.enabled = true;
+	if (args) {
+		inputstring.set(((StateLevel::Args*)((StateLevel::FinalArgs*)args)->nextargs)->levelname);
+		delete ((StateLevel::FinalArgs*)args)->nextargs;
+		delete args;
+	}
 	
 	warning = new Text("", "File not found!", 15, 0, SDLBase::getColor(255, 0, 0), Text::blended);
 	
@@ -84,7 +84,7 @@ void StateLoadLevel::handleEnter(const observer::Event& event, bool& stop) {
 		warning_hidden = false;
 	else {
 		f.close();
-		throw new Change("StateLevel", new StateLevel::Args(inputstring.get(), "StateLoadLevel"));
+		throw new Change("StateLevel", new StateLevel::Args(inputstring.get(), "StateLoadLevel", new StateLevel::Args(inputstring.get(), "")));
 	}
 }
 
