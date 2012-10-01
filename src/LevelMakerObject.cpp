@@ -11,6 +11,7 @@ set<LevelMakerObject*> LevelMakerObject::selected;
 bool LevelMakerObject::deselection_requested = false;
 bool LevelMakerObject::selection_requested = false;
 bool LevelMakerObject::toggle_requested = false;
+LevelMakerObject* LevelMakerObject::mousedown_requested = 0;
 Sprite* LevelMakerObject::LevelMakerObject::sprite_selection_box = 0;
 Sprite* LevelMakerObject::sprite_selection_horizontal = 0;
 Sprite* LevelMakerObject::sprite_selection_vertical = 0;
@@ -20,6 +21,7 @@ bool LevelMakerObject::selecting = false;
 bool LevelMakerObject::just_selected = false;
 bool LevelMakerObject::selected_on_click = false;
 Rectangle LevelMakerObject::selection_box;
+R2Vector LevelMakerObject::mouse_ctrl_position;
 
 LevelMakerObject::LevelMakerObject(int type, GameObject* object) :
 type(type),
@@ -30,6 +32,8 @@ selection(0)
 	setShape(new Circle(*((Circle*)object->getShape())));
 	InputManager::instance()->connect(InputManager::MOUSEDOWN_LEFT, this, &LevelMakerObject::handleMouseDownLeft);
 	InputManager::instance()->connect(InputManager::MOUSEUP_LEFT, this, &LevelMakerObject::handleMouseUpLeft);
+	InputManager::instance()->connect(InputManager::KEYDOWN, this, &LevelMakerObject::handleKeyDown);
+	InputManager::instance()->connect(InputManager::KEYUP, this, &LevelMakerObject::handleKeyUp);
 }
 
 LevelMakerObject::~LevelMakerObject() {
@@ -154,8 +158,24 @@ void LevelMakerObject::toggle() {
 	}
 }
 
+void LevelMakerObject::handleMouseDown() {
+	dragging = true;
+	
+	// if this isn't selected, clear the selection and select only this object
+	selected_on_click = mousedown_requested->isSelected();
+	if (!selected_on_click) {
+		selected.clear();
+		selected.insert(mousedown_requested);
+	}
+	
+	mousedown_requested = 0;
+}
+
 void LevelMakerObject::update() {
-	getShape()->position = mouse_down_position + r2vec(InputManager::instance()->mouseDiffX(), InputManager::instance()->mouseDiffY());
+	if (InputManager::instance()->keyPressed(SDLK_LCTRL))
+		getShape()->position = mouse_down_position + r2vec(InputManager::instance()->mouseX(), InputManager::instance()->mouseY()) - mouse_ctrl_position;
+	else
+		getShape()->position = mouse_down_position + r2vec(InputManager::instance()->mouseDiffX(), InputManager::instance()->mouseDiffY());
 	object->getShape()->position = getShape()->position;
 }
 
@@ -213,14 +233,7 @@ void LevelMakerObject::handleMouseDownLeft(const observer::Event& event, bool& s
 		return;
 	}
 	
-	dragging = true;
-	
-	// if this isn't selected, clear the selection and select only this object
-	selected_on_click = isSelected();
-	if (!selected_on_click) {
-		selected.clear();
-		selected.insert(this);
-	}
+	mousedown_requested = this;
 }
 
 void LevelMakerObject::handleMouseUpLeft(const observer::Event& event, bool& stop) {
@@ -236,4 +249,17 @@ void LevelMakerObject::handleMouseUpLeft(const observer::Event& event, bool& sto
 	
 	dragging = false;
 	selecting = false;
+}
+
+void LevelMakerObject::handleKeyDown(const observer::Event& event, bool& stop) {
+	if (inputmanager_event.key.keysym.sym == SDLK_LCTRL) {
+		mouse_ctrl_position = r2vec(InputManager::instance()->mouseX(), InputManager::instance()->mouseY());
+		mouse_down_position = getShape()->position;
+		dragging = true;
+	}
+}
+
+void LevelMakerObject::handleKeyUp(const observer::Event& event, bool& stop) {
+	if (inputmanager_event.key.keysym.sym == SDLK_LCTRL)
+		dragging = false;
 }

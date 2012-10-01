@@ -16,8 +16,9 @@ clicked(false),
 hover(false),
 just_clicked(false),
 just_hit(false),
+toggle(false),
 selected(false),
-toggle(false)
+play_sounds(true)
 {
 	subject.init(LASTEVENT);
 	setShape(new Rectangle());
@@ -58,8 +59,10 @@ void Button::update() {
 		
 		// play sound
 		if ((sound_hover) && (!hover)) {
-			if (!just_clicked)
-				sound_hover->play(1);
+			if (!just_clicked) {
+				if (play_sounds)
+					sound_hover->play(1);
+			}
 			else
 				just_clicked = false;
 		}
@@ -112,7 +115,8 @@ void Button::handleMouseDownLeft(const observer::Event& event, bool& stop) {
 		
 		// play sound
 		if (sound_clicked) {
-			sound_clicked->play(1);
+			if (play_sounds)
+				sound_clicked->play(1);
 			just_hit = true;
 		}
 	}
@@ -124,7 +128,7 @@ void Button::handleMouseUpLeft(const observer::Event& event, bool& stop) {
 		just_clicked = true;
 		
 		// play sound
-		if ((sound_clicked) && (!just_hit))
+		if ((sound_clicked) && (!just_hit) && (play_sounds))
 			sound_clicked->play(1);
 		
 		subject.broadcast(observer::Event(CLICKED));
@@ -138,7 +142,7 @@ void Button::handleKeyDown(const observer::Event& event, bool& stop) {
 			timer.start(ENTER_DELAY);
 			
 			// play sound
-			if (sound_clicked)
+			if ((sound_clicked) && (play_sounds))
 				sound_clicked->play(1);
 			
 		}

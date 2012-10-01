@@ -65,26 +65,32 @@ StateLevelMaker::StateLevelMaker(ArgsBase* args) : clicking_button(false) {
 	button_quit = new Button(new Sprite("img/levelmaker/button_quit.png"));
 	button_quit->getShape()->position = r2vec(60, 50);
 	button_quit->connect(Button::CLICKED, this, &StateLevelMaker::handleQuitButton);
+	button_quit->update();
 	
 	button_save = new Button(new Sprite("img/levelmaker/button_save.png"));
 	button_save->getShape()->position = r2vec(160, 50);
 	button_save->connect(Button::CLICKED, this, &StateLevelMaker::handleSave);
+	button_save->update();
 	
 	button_revert = new Button(new Sprite("img/levelmaker/button_revert.png"));
 	button_revert->getShape()->position = r2vec(60, 100);
 	button_revert->connect(Button::CLICKED, this, &StateLevelMaker::handleRevert);
+	button_revert->update();
 	
 	button_test = new Button(new Sprite("img/levelmaker/button_test.png"));
 	button_test->getShape()->position = r2vec(160, 100);
 	button_test->connect(Button::CLICKED, this, &StateLevelMaker::handleTest);
+	button_test->update();
 	
 	button_delete = new Button(new Sprite("img/levelmaker/button_delete.png"));
 	button_delete->getShape()->position = r2vec(60, 150);
 	button_delete->connect(Button::CLICKED, this, &StateLevelMaker::handleDelete);
+	button_delete->update();
 	
 	button_clone = new Button(new Sprite("img/levelmaker/button_clone.png"));
 	button_clone->getShape()->position = r2vec(160, 150);
 	button_clone->connect(Button::CLICKED, this, &StateLevelMaker::handleClone);
+	button_clone->update();
 	
 	// data
 	if (dynamic_cast<Args*>(args))
@@ -93,7 +99,7 @@ StateLevelMaker::StateLevelMaker(ArgsBase* args) : clicking_button(false) {
 		data = new LevelMakerData(((Args*)((StateLevel::FinalArgs*)args)->nextargs)->levelname);
 	delete args;
 	
-	LevelMakerPanel::init();
+	LevelMakerPanel::init(data);
 }
 
 StateLevelMaker::~StateLevelMaker() {
@@ -198,6 +204,13 @@ void StateLevelMaker::update() {
 	
 	LevelMakerPanel::updateCurrent();
 	
+	if (LevelMakerPanel::mouseInside()) {
+		disableButtons();
+		return;
+	}
+	else
+		enableButtons();
+	
 	button_save->update();
 	button_revert->update();
 	button_test->update();
@@ -208,24 +221,6 @@ void StateLevelMaker::update() {
 
 void StateLevelMaker::render() {
 	bg->render(bg_x, bg_y);
-	
-	data->blackhole->render();
-	
-	// all particles
-	for (list<LevelMakerObject*>::iterator it = data->particles.begin(); it != data->particles.end(); ++it)
-		(*it)->render();
-	
-	// key
-	if (data->key)
-		data->key->render();
-	
-	// all items
-	for (list<LevelMakerObject*>::iterator it = data->items.begin(); it != data->items.end(); ++it)
-		(*it)->render();
-	
-	data->avatar->render();
-	
-	LevelMakerObject::renderSelection();
 	
 	// borders
 	if (data->has_top)
@@ -246,8 +241,50 @@ void StateLevelMaker::render() {
 	button_delete->render();
 	button_clone->render();
 	
+	data->blackhole->render();
+	
+	// all particles
+	for (list<LevelMakerObject*>::iterator it = data->particles.begin(); it != data->particles.end(); ++it)
+		(*it)->render();
+	
+	// key
+	if (data->key)
+		data->key->render();
+	
+	// all items
+	for (list<LevelMakerObject*>::iterator it = data->items.begin(); it != data->items.end(); ++it)
+		(*it)->render();
+	
+	data->avatar->render();
+	
+	LevelMakerObject::renderSelection();
+	
 	// panel
 	LevelMakerPanel::renderCurrent();
+}
+
+void StateLevelMaker::disableButtons() {
+	button_save->enable(false);
+	button_save->sprite->clip(0, 0, button_save->sprite->srcW(), button_save->sprite->srcH()/4);
+	button_revert->enable(false);
+	button_revert->sprite->clip(0, 0, button_revert->sprite->srcW(), button_revert->sprite->srcH()/4);
+	button_test->enable(false);
+	button_test->sprite->clip(0, 0, button_test->sprite->srcW(), button_test->sprite->srcH()/4);
+	button_quit->enable(false);
+	button_quit->sprite->clip(0, 0, button_quit->sprite->srcW(), button_quit->sprite->srcH()/4);
+	button_delete->enable(false);
+	button_delete->sprite->clip(0, 0, button_delete->sprite->srcW(), button_delete->sprite->srcH()/4);
+	button_clone->enable(false);
+	button_clone->sprite->clip(0, 0, button_clone->sprite->srcW(), button_clone->sprite->srcH()/4);
+}
+
+void StateLevelMaker::enableButtons() {
+	button_save->enable(true);
+	button_revert->enable(true);
+	button_test->enable(true);
+	button_quit->enable(true);
+	button_delete->enable(true);
+	button_clone->enable(true);
 }
 
 void StateLevelMaker::handleSave(const observer::Event& event, bool& stop) {
@@ -339,6 +376,8 @@ void StateLevelMaker::checkSelectionRequests() {
 		LevelMakerObject::deselection_requested = false;
 		LevelMakerObject::selection_requested = false;
 		LevelMakerObject::toggle_requested = false;
+		// don't cancel mousedown request.
+		// you'll can't move things that are inside the hud
 	}
 }
 

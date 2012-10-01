@@ -27,6 +27,7 @@ public:
 	static bool deselection_requested;
 	static bool selection_requested;
 	static bool toggle_requested;
+	static LevelMakerObject* mousedown_requested;
 	static Sprite* sprite_selection_box;
 	static Sprite* sprite_selection_horizontal;
 	static Sprite* sprite_selection_vertical;
@@ -37,6 +38,7 @@ private:
 	static bool just_selected;
 	static bool selected_on_click;
 	static Rectangle selection_box;
+	static lalge::R2Vector mouse_ctrl_position;
 	
 	lalge::R2Vector mouse_down_position;
 	
@@ -57,6 +59,7 @@ public:
 	static void deselect();
 	static void startSelection();
 	static void toggle();
+	static void handleMouseDown();
 private:
 	void update();
 public:
@@ -74,6 +77,8 @@ private:
 	
 	void handleMouseDownLeft(const observer::Event& event, bool& stop);
 	void handleMouseUpLeft(const observer::Event& event, bool& stop);
+	void handleKeyDown(const observer::Event& event, bool& stop);
+	void handleKeyUp(const observer::Event& event, bool& stop);
 };
 
 #endif

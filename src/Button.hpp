@@ -27,6 +27,7 @@ private:
 	bool toggle;
 public:
 	bool selected;
+	bool play_sounds;
 	
 	static Audio* sound_hover;
 	static Audio* sound_clicked;

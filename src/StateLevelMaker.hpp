@@ -57,6 +57,9 @@ public:
 	void update();
 	void render();
 private:
+	void disableButtons();
+	void enableButtons();
+	
 	void handleSave(const observer::Event& event, bool& stop);
 	void handleRevert(const observer::Event& event, bool& stop);
 	void handleTest(const observer::Event& event, bool& stop);
