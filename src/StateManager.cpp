@@ -54,7 +54,6 @@ void StateManager::initStuff() {
 
 void StateManager::loadFirst() {
 	// release version
-	SHOW(RELEASE);
 	if (string(RELEASE).size()) {
 		State::states.push_back(State::build(RELEASE));
 		return;

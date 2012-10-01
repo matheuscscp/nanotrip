@@ -5,14 +5,14 @@ DOCDIR = doc
 
 ERRLOG = ErrorLog.txt
 
-RELEASE = -D'RELEASE="StateMainMenu"'
+STATE = StateMainMenu
+RELEASE = -D'RELEASE="$(STATE)"'
 CXXFLAGS = -ansi -pedantic -Wall -Wextra -Wunused-parameter -g -std=c++0x
 INCLUDE = -I /usr/include/SDL -I /usr/local/include/SDL
 
 EXE = game
 
 FPS = 
-STATE = StateMainMenu
 RUNFLAGS = $(FPS) -p $(CURDIR)/ -s $(STATE)
 
 LIB = -lSDL -lSDL_image -lSDL_gfx -lSDL_ttf -lSDL_mixer
@@ -55,10 +55,12 @@ gdb: build
 	gdb $(EXE)
 #r -f -p /home/matheus/Documents/C_C++/C++/IDJ/nanotrip/ -s StateMakeLevel
 
-release: clean $(OBJ)
-	rm obj/StateManager.o
+release: $(OBJ) smclean
 	g++ $(RELEASE) $(CXXFLAGS) $(INCLUDE) -c src/StateManager.cpp -o obj/StateManager.o
 	g++ $(CXXFLAGS) $(OBJ) -o $(EXE) $(LIB)
+
+smclean:
+	rm obj/StateManager.o
 
 clean:
 	rm -rf $(EXE) $(OBJDIR)/* $(ERRLOG)
@@ -69,4 +71,4 @@ dox:
 doxclean:
 	rm -rf $(DOCDIR)/html $(DOCDIR)/latex
 
-.PHONY: all build run test gdb release clean dox doxclean
+.PHONY: all build run test gdb release smclean clean dox doxclean
