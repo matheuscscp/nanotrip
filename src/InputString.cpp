@@ -6,7 +6,7 @@
 #include "InputManager.hpp"
 
 #define AVAILABLE_INPUT	\
-"._-1234567890 abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+"._-+1234567890 abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 using std::vector;
 using std::string;
@@ -96,12 +96,21 @@ void InputString::handleKeyDown(const observer::Event& event, bool& stop) {
 		broadcast = false;
 	else
 	{
-		if(	(	( inputmanager_event.key.keysym.sym >= SDLK_a ) &&
-				( inputmanager_event.key.keysym.sym <= SDLK_z )	) &&
-			(	( InputManager::instance()->keyPressed( SDLK_RSHIFT ) ) ||
-				( InputManager::instance()->keyPressed( SDLK_LSHIFT ) )	)	)
+		if ((tmp == SDLK_COMMA) || (tmp == SDLK_KP_PERIOD))
+			tmp = SDLK_PERIOD;
+		else if (tmp == SDLK_KP_PLUS)
+			tmp = SDLK_PLUS;
+		else if (tmp == SDLK_KP_MINUS)
+			tmp = SDLK_MINUS;
+		else if(	( InputManager::instance()->keyPressed( SDLK_RSHIFT ) ) ||
+					( InputManager::instance()->keyPressed( SDLK_LSHIFT ) )	)
 		{
-			tmp -= 32;
+			if ((tmp >= SDLK_a) && (tmp <= SDLK_z))
+				tmp -= 32;
+			else if (tmp == SDLK_MINUS)
+				tmp = SDLK_UNDERSCORE;
+			else if (tmp == SDLK_EQUALS)
+				tmp = SDLK_PLUS;
 		}
 		else if(	( inputmanager_event.key.keysym.sym >= SDLK_KP0 ) &&
 					( inputmanager_event.key.keysym.sym <= SDLK_KP9 )	)
