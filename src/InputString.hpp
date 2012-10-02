@@ -36,6 +36,8 @@ public:
 	const std::string& get() const;
 	void set(const std::string& input);
 	
+	void clear();
+	
 	void update();
 private:
 	void initAvailableInput();

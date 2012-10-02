@@ -6,6 +6,7 @@
 #include "PanelAvatar.hpp"
 #include "PanelBlackHole.hpp"
 #include "PanelKey.hpp"
+#include "PanelParticle.hpp"
 
 using namespace lalge;
 
@@ -16,6 +17,7 @@ LevelMakerPanel* LevelMakerPanel::current_panel = 0;
 bool LevelMakerPanel::hooked = false;
 bool LevelMakerPanel::just_unhooked = false;
 R2Vector LevelMakerPanel::mouse_down_position;
+std::set<LevelMakerObject*> LevelMakerPanel::last_selection;
 
 LevelMakerPanel::LevelMakerPanel() {
 	setShape(new Rectangle());
@@ -51,7 +53,7 @@ void LevelMakerPanel::init(LevelMakerData* data) {
 	panels[LevelMakerObject::AVATAR] = new PanelAvatar();
 	panels[LevelMakerObject::BLACKHOLE] = new PanelBlackHole();
 	panels[LevelMakerObject::KEY] = new PanelKey();
-	panels[LevelMakerObject::PARTICLE] = new PanelGeneral();
+	panels[LevelMakerObject::PARTICLE] = new PanelParticle();
 	panels[LevelMakerObject::ITEM] = new PanelGeneral();
 	current_panel = panels[LevelMakerObject::NONE];
 	current_panel->getShape()->position = r2vec(640, 360);
@@ -103,7 +105,7 @@ void LevelMakerPanel::updateCurrent(bool force) {
 	int selected_type = LevelMakerObject::getSelectedType();
 	bool must_change = (panels[selected_type] != current_panel);
 	
-	if ((must_change) || (force)) {
+	if ((must_change) || (force) || (last_selection != LevelMakerObject::selected)) {
 		R2Vector new_size;
 		R2Vector old_size;
 		LevelMakerPanel* old_panel = current_panel;
@@ -126,6 +128,8 @@ void LevelMakerPanel::updateCurrent(bool force) {
 		LevelMakerObject::creating->getShape()->position = r2vec(InputManager::instance()->mouseX(), InputManager::instance()->mouseY());
 		LevelMakerObject::creating->getGameObject()->getShape()->position = LevelMakerObject::creating->getShape()->position;
 	}
+	
+	last_selection = LevelMakerObject::selected;
 }
 
 void LevelMakerPanel::renderCurrent() {

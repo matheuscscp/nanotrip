@@ -39,7 +39,13 @@ const string& InputString::get() const { return buf; }
 
 void InputString::set(const std::string& input) {
 	buf = input;
+	if ((max_size) && (buf.size() > max_size))
+		buf.erase(max_size);
 	subject.broadcast(observer::Event(UPDATE));
+}
+
+void InputString::clear() {
+	buf = "";
 }
 
 void InputString::update() {

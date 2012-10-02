@@ -18,6 +18,7 @@ private:
 	static bool hooked;
 	static bool just_unhooked;
 	static lalge::R2Vector mouse_down_position;
+	static std::set<LevelMakerObject*> last_selection;
 protected:
 	LevelMakerPanel();
 	virtual ~LevelMakerPanel();

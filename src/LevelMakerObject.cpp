@@ -225,7 +225,7 @@ bool LevelMakerObject::mouseDownInsideAny() {
 }
 
 void LevelMakerObject::handleMouseDownLeft(const observer::Event& event, bool& stop) {
-	if ((selection_requested) || (just_created) || (setting_speed))
+	if ((selection_requested) || (just_created) || (setting_speed) || (just_set_speed))
 		return;
 	
 	mouse_down_position = getShape()->position;
