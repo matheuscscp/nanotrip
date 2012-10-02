@@ -1,5 +1,3 @@
-#include <sstream>
-
 #include "common.hpp"
 
 #include "PanelKey.hpp"
@@ -9,8 +7,6 @@
 
 using namespace common;
 using namespace lalge;
-
-using std::stringstream;
 
 PanelKey::PanelKey() {
 	sprite = new Sprite("img/levelmaker/panel_key.png");
@@ -24,7 +20,7 @@ PanelKey::PanelKey() {
 	button_input_mass->connect(Button::CLICKED, this, &PanelKey::handleInputMassButton);
 	input_mass_position = r2vec(105 + button_input_mass->sprite->rectW()/2, 156 - 29);
 	invalid_input_mass = false;
-	input_mass.setMaxSize(20);
+	input_mass.setMaxSize(21);
 	input_mass.set(eval(((Particle*)data->key->getGameObject())->getMass()));
 	input_mass.connect(InputString::UPDATE, this, &PanelKey::handleInputMass);
 	text_input_mass = new Text("ttf/Swiss721BlackRoundedBT.ttf", "", 13, 0, SDLBase::getColor(51, 51, 51), Text::blended);

@@ -7,6 +7,7 @@
 #include "PanelBlackHole.hpp"
 #include "PanelKey.hpp"
 #include "PanelParticle.hpp"
+#include "PanelItem.hpp"
 
 using namespace lalge;
 
@@ -48,7 +49,7 @@ void LevelMakerPanel::init(LevelMakerData* data) {
 	panels[LevelMakerObject::BLACKHOLE] = new PanelBlackHole();
 	panels[LevelMakerObject::KEY] = new PanelKey();
 	panels[LevelMakerObject::PARTICLE] = new PanelParticle();
-	panels[LevelMakerObject::ITEM] = new PanelGeneral();
+	panels[LevelMakerObject::ITEM] = new PanelItem();
 	
 	current_panel = panels[LevelMakerObject::NONE];
 	current_panel->getShape()->position = r2vec(640, 360);

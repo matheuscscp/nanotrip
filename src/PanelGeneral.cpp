@@ -1,5 +1,3 @@
-#include <sstream>
-
 #include "common.hpp"
 
 #include "PanelGeneral.hpp"
@@ -11,8 +9,6 @@
 
 using namespace common;
 using namespace lalge;
-
-using std::stringstream;
 
 PanelGeneral::PanelGeneral() {
 	sprite = new Sprite("img/levelmaker/panel_general.png");
@@ -99,7 +95,7 @@ PanelGeneral::PanelGeneral() {
 	button_input_bgm->connect(Button::CLICKED, this, &PanelGeneral::handleInputBGMButton);
 	input_bgm_position = r2vec(105 + button_input_bgm->sprite->rectW()/2, 64 + 29 + 29);
 	invalid_input_bgm = false;
-	input_bgm.setMaxSize(20);
+	input_bgm.setMaxSize(21);
 	input_bgm.set(data->bgm);
 	input_bgm.connect(InputString::UPDATE, this, &PanelGeneral::handleInputBGM);
 	text_input_bgm = new Text("ttf/Swiss721BlackRoundedBT.ttf", "", 13, 0, SDLBase::getColor(51, 51, 51), Text::blended);

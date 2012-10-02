@@ -1,5 +1,3 @@
-#include <sstream>
-
 #include "common.hpp"
 
 #include "PanelAvatar.hpp"
@@ -11,8 +9,6 @@
 using namespace common;
 using namespace lalge;
 
-using std::stringstream;
-
 PanelAvatar::PanelAvatar() {
 	sprite = new Sprite("img/levelmaker/panel_avatar.png");
 	setupRectangle();
@@ -23,9 +19,9 @@ PanelAvatar::PanelAvatar() {
 	sprite_input_mass->clip(0, 0, sprite_input_mass->srcW(), sprite_input_mass->srcH()/2);
 	button_input_mass = new Button(new Sprite("img/levelmaker/input_avatar_mass_button.png"));
 	button_input_mass->connect(Button::CLICKED, this, &PanelAvatar::handleInputMassButton);
-	input_mass_position = r2vec(105 + button_input_mass->sprite->rectW()/2, 172 - 29);
+	input_mass_position = r2vec(105 + button_input_mass->sprite->rectW()/2, 156 - 29);
 	invalid_input_mass = false;
-	input_mass.setMaxSize(20);
+	input_mass.setMaxSize(21);
 	input_mass.set(eval(((Particle*)data->avatar->getGameObject())->getMass()));
 	input_mass.connect(InputString::UPDATE, this, &PanelAvatar::handleInputMass);
 	text_input_mass = new Text("ttf/Swiss721BlackRoundedBT.ttf", "", 13, 0, SDLBase::getColor(51, 51, 51), Text::blended);
@@ -35,7 +31,7 @@ PanelAvatar::PanelAvatar() {
 	sprite_input_elasticity->clip(0, 0, sprite_input_elasticity->srcW(), sprite_input_elasticity->srcH()/2);
 	button_input_elasticity = new Button(new Sprite("img/levelmaker/input_avatar_elasticity_button.png"));
 	button_input_elasticity->connect(Button::CLICKED, this, &PanelAvatar::handleInputElasticityButton);
-	input_elasticity_position = r2vec(159 + button_input_elasticity->sprite->rectW()/2, 172);
+	input_elasticity_position = r2vec(159 + button_input_elasticity->sprite->rectW()/2, 156);
 	invalid_input_elasticity = false;
 	input_elasticity.setMaxSize(15);
 	input_elasticity.set(eval(((Particle*)data->avatar->getGameObject())->getElasticity()));
@@ -46,7 +42,7 @@ PanelAvatar::PanelAvatar() {
 	// set speed button
 	set_speed = new Button(new Sprite("img/levelmaker/button_set_speed.png"));
 	set_speed->connect(Button::CLICKED, this, &PanelAvatar::handleSetSpeed);
-	set_speed_position = r2vec(sprite->rectW()/2, 240);
+	set_speed_position = r2vec(sprite->rectW()/2, 205);
 	
 	updatePositions();
 	hide();

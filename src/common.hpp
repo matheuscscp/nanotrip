@@ -15,8 +15,8 @@ Some structures that can be easily needed everywhere.
 #include <sstream>
 
 #define CALLBACK(ref,mfunc)	((ref).*(mfunc))
-#define SHOW(X)				std::cout << #X << ": (" << (X) << ")" << std::endl
 
+#define SHOW(X)	std::cout << #X << ": (" << (X) << ")" << std::endl
 
 /// Namespace for some common classes and functions.
 namespace common {
