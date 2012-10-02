@@ -194,6 +194,7 @@ LevelMakerObject* LevelMakerObject::clone() {
 	GameObject* new_gameobject = object->clone();
 	LevelMakerObject* new_object = new LevelMakerObject(type, new_gameobject);
 	new_object->selection = selection;
+	new_object->mouse_down_position = mouse_down_position;
 	return new_object;
 }
 
@@ -228,7 +229,9 @@ void LevelMakerObject::handleMouseDownLeft(const observer::Event& event, bool& s
 	
 	if (!getShape()->mouseDownInside()) {
 		// if clicked outside every object, request for selection
-		if (!mouseDownInsideAny()) {
+		if ((!mouseDownInsideAny()) &&
+			(!InputManager::instance()->keyPressed(SDLK_LCTRL)) &&
+			(!InputManager::instance()->keyPressed(SDLK_RCTRL))) {
 			selection_requested = true;
 			just_selected = false;
 		}
@@ -257,8 +260,9 @@ void LevelMakerObject::handleMouseUpLeft(const observer::Event& event, bool& sto
 }
 
 void LevelMakerObject::handleKeyDown(const observer::Event& event, bool& stop) {
-	if ((inputmanager_event.key.keysym.sym == SDLK_LCTRL) ||
-		(inputmanager_event.key.keysym.sym == SDLK_RCTRL)) {
+	if (((inputmanager_event.key.keysym.sym == SDLK_LCTRL) ||
+		(inputmanager_event.key.keysym.sym == SDLK_RCTRL)) &&
+		(!selecting)) {
 		mouse_ctrl_position = r2vec(InputManager::instance()->mouseX(), InputManager::instance()->mouseY());
 		mouse_down_position = getShape()->position;
 		dragging = true;

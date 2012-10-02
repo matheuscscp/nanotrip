@@ -94,6 +94,9 @@ void InputString::handleKeyDown(const observer::Event& event, bool& stop) {
 	}
 	else if ((max_size) && (buf.size() == max_size))
 		broadcast = false;
+	else if ((InputManager::instance()->keyPressed(SDLK_LCTRL)) ||
+			(InputManager::instance()->keyPressed(SDLK_LCTRL)))
+		broadcast = false;
 	else
 	{
 		if ((tmp == SDLK_COMMA) || (tmp == SDLK_KP_PERIOD))
@@ -112,8 +115,8 @@ void InputString::handleKeyDown(const observer::Event& event, bool& stop) {
 			else if (tmp == SDLK_EQUALS)
 				tmp = SDLK_PLUS;
 		}
-		else if(	( inputmanager_event.key.keysym.sym >= SDLK_KP0 ) &&
-					( inputmanager_event.key.keysym.sym <= SDLK_KP9 )	)
+		else if(	( tmp >= SDLK_KP0 ) &&
+					( tmp <= SDLK_KP9 )	)
 		{
 			tmp += ( '0' - SDLK_KP0 );
 		}
