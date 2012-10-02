@@ -343,3 +343,38 @@ void SDLBase::renderStackScreen()
 {
 	SDL_BlitSurface( stack_screen, 0, screen_, 0 );
 }
+
+void SDLBase::drawLine(const R2Vector& beg, const R2Vector& end, int rgb, int spacing, int size) {
+	try {
+		R2Vector lineseg( end - beg );
+		R2Vector delta( lineseg.unitvec() );
+		R2Vector tmp( beg );
+		
+		SDL_Rect pixel;
+		pixel.w = size;
+		pixel.h = size;
+		
+		int i = 0;
+		while( i < lineseg.length() )
+		{
+			unsigned int j = 0;
+			while( ( i < lineseg.length() ) && ( ( j < spacing ) || ( !spacing ) ) )
+			{
+				pixel.x = tmp.x( 0 );
+				pixel.y = tmp.x( 1 );
+				
+				SDL_FillRect( screen_, &pixel, rgb );
+				
+				tmp += delta;
+				i++;
+				
+				j++;
+			}
+			
+			tmp += ( delta * spacing );
+			i += spacing;
+		}
+		
+	} catch(DirectionNotDefined& e) {
+	}
+}

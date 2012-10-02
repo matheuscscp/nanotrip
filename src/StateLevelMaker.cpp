@@ -3,6 +3,7 @@
 #include "InputManager.hpp"
 #include "StateLevel.hpp"
 #include "LevelMakerPanel.hpp"
+#include "SDLBase.hpp"
 
 using namespace common;
 using namespace lalge;
@@ -258,11 +259,25 @@ void StateLevelMaker::render() {
 		(*it)->render();
 	
 	data->avatar->render();
+	renderAvatarSpeed();
 	
 	LevelMakerObject::renderSelection();
 	
 	// panel
 	LevelMakerPanel::renderCurrent();
+}
+
+void StateLevelMaker::renderAvatarSpeed() {
+	R2Vector speed = ((Particle*)data->avatar->getGameObject())->speed;
+	if (!speed.size())
+		return;
+	
+	R2Vector beg = data->avatar->getShape()->position;
+	R2Vector end = beg + speed;
+	
+	SDLBase::drawLine(beg, end, 0xFFFFFF, 0, 2);
+	SDLBase::drawLine(end, end + rotate(150, speed.unitvec()*speed.size()/4.8), 0xFFFFFF, 0, 2);
+	SDLBase::drawLine(end, end + rotate(-150, speed.unitvec()*speed.size()/4.8), 0xFFFFFF, 0, 2);
 }
 
 void StateLevelMaker::disableButtons() {

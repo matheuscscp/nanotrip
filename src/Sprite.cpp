@@ -153,7 +153,7 @@ void Sprite::rotozoom ()
 			( srcrect_.w == src->w ) &&
 			( srcrect_.h == src->h )	)
 	{
-		rotozoomed = SDLBase::rotozoom ( src, angle_, zoomx, zoomy );
+		rotozoomed = SurfaceManager::instance()->rotozoom(src, angle_, zoomx, zoomy);
 	}
 	else
 	{

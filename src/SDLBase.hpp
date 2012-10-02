@@ -106,6 +106,8 @@ public:
 	static void setFadeOpacity(float opacity);
 	
 	static void renderStackScreen();
+	
+	static void drawLine(const lalge::R2Vector& beg, const lalge::R2Vector& end, int rgb, int spacing, int size);
 };
 
 #endif

@@ -57,6 +57,8 @@ public:
 	void update();
 	void render();
 private:
+	void renderAvatarSpeed();
+	
 	void disableButtons();
 	void enableButtons();
 	
