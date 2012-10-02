@@ -25,6 +25,7 @@ private:
 	bool just_hit;
 	Timer timer;
 	bool toggle;
+	bool was_enabled;
 public:
 	bool selected;
 	bool play_sounds;

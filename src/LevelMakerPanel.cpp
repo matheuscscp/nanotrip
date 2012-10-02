@@ -4,6 +4,7 @@
 #include "InputManager.hpp"
 #include "PanelGeneral.hpp"
 #include "PanelBlackHole.hpp"
+#include "PanelKey.hpp"
 
 using namespace lalge;
 
@@ -49,7 +50,7 @@ void LevelMakerPanel::init(LevelMakerData* data) {
 	panels[LevelMakerObject::NONE] = new PanelGeneral();
 	panels[LevelMakerObject::AVATAR] = new PanelGeneral();
 	panels[LevelMakerObject::BLACKHOLE] = new PanelBlackHole();
-	panels[LevelMakerObject::KEY] = new PanelGeneral();
+	panels[LevelMakerObject::KEY] = new PanelKey();
 	panels[LevelMakerObject::PARTICLE] = new PanelGeneral();
 	panels[LevelMakerObject::ITEM] = new PanelGeneral();
 	current_panel = panels[LevelMakerObject::NONE];

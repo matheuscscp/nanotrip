@@ -219,9 +219,11 @@ void PanelGeneral::render() {
 	if ((invalid_input_time) || (input_time.enabled))
 		sprite_input_time->render(button_input_time->getShape()->position.x(0), button_input_time->getShape()->position.x(1), true);
 	text_input_time->render(button_input_time->getShape()->position.x(0), button_input_time->getShape()->position.x(1));
+	
 	if ((invalid_input_charge) || (input_charge.enabled))
 		sprite_input_charge->render(button_input_charge->getShape()->position.x(0), button_input_charge->getShape()->position.x(1), true);
 	text_input_charge->render(button_input_charge->getShape()->position.x(0), button_input_charge->getShape()->position.x(1));
+	
 	if ((invalid_input_bgm) || (input_bgm.enabled))
 		sprite_input_bgm->render(button_input_bgm->getShape()->position.x(0), button_input_bgm->getShape()->position.x(1), true);
 	text_input_bgm->render(button_input_bgm->getShape()->position.x(0), button_input_bgm->getShape()->position.x(1));

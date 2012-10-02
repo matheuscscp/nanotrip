@@ -17,6 +17,7 @@ hover(false),
 just_clicked(false),
 just_hit(false),
 toggle(false),
+was_enabled(true),
 selected(false),
 play_sounds(true)
 {
@@ -28,6 +29,10 @@ play_sounds(true)
 	this->sprite = sprite;
 	((Rectangle*)getShape())->setWidth(sprite->srcW());
 	((Rectangle*)getShape())->setHeight(sprite->srcH()/4);
+	
+	InputManager::instance()->connect(InputManager::MOUSEDOWN_LEFT, this, &Button::handleMouseDownLeft);
+	InputManager::instance()->connect(InputManager::MOUSEUP_LEFT, this, &Button::handleMouseUpLeft);
+	InputManager::instance()->connect(InputManager::KEYDOWN, this, &Button::handleKeyDown);
 	
 	timer.connect(Timer::DONE, this, &Button::handleTimerDone);
 }
@@ -98,32 +103,33 @@ void Button::update() {
 
 void Button::enable(bool enable) {
 	enabled = enable;
-	if (!enable) {
+	if (!enable)
 		sprite->clip(0, 3*sprite->srcH()/4, sprite->srcW(), sprite->srcH()/4);
-		InputManager::instance()->disconnect(this);
-	}
-	else {
-		InputManager::instance()->connect(InputManager::MOUSEDOWN_LEFT, this, &Button::handleMouseDownLeft);
-		InputManager::instance()->connect(InputManager::MOUSEUP_LEFT, this, &Button::handleMouseUpLeft);
-		InputManager::instance()->connect(InputManager::KEYDOWN, this, &Button::handleKeyDown);
-	}
 }
 
 void Button::handleMouseDownLeft(const observer::Event& event, bool& stop) {
-	if ((getShape()->mouseDownInside()) && (enabled)) {
-		clicked = true;
-		
-		// play sound
-		if (sound_clicked) {
-			if (play_sounds)
-				sound_clicked->play(1);
-			just_hit = true;
-		}
+	if (!(getShape()->mouseDownInside()))
+		return;
+	
+	was_enabled = true;
+	
+	if (!enabled) {
+		was_enabled = false;
+		return;
+	}
+	
+	clicked = true;
+	
+	// play sound
+	if (sound_clicked) {
+		if (play_sounds)
+			sound_clicked->play(1);
+		just_hit = true;
 	}
 }
 
 void Button::handleMouseUpLeft(const observer::Event& event, bool& stop) {
-	if ((getShape()->mouseDownInside()) && (getShape()->mouseInside()) && (enabled)) {
+	if ((getShape()->mouseDownInside()) && (getShape()->mouseInside()) && (enabled) && (was_enabled)) {
 		clicked = true;
 		just_clicked = true;
 		
