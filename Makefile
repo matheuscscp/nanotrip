@@ -7,7 +7,7 @@ ERRLOG = ErrorLog.txt
 
 STATE = StateMainMenu
 RELEASE = -D'RELEASE="$(STATE)"'
-CXXFLAGS = -ansi -pedantic -Wall -Wextra -Wunused-parameter -g -std=c++0x
+CXXFLAGS = -ansi -pedantic -Wall -Wextra -g -std=c++0x
 INCLUDE = -I /usr/include/SDL -I /usr/local/include/SDL
 
 EXE = game
