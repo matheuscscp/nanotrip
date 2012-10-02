@@ -31,6 +31,7 @@ PanelBlackHole::PanelBlackHole() {
 	text_input_mass->setText(input_mass.get());
 	
 	updatePositions();
+	hide();
 }
 
 PanelBlackHole::~PanelBlackHole() {

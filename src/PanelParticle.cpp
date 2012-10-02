@@ -53,6 +53,7 @@ PanelParticle::PanelParticle() {
 	text_input_charge->setText(input_charge.get());
 	
 	updatePositions();
+	hide();
 }
 
 PanelParticle::~PanelParticle() {

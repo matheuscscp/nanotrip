@@ -49,6 +49,7 @@ PanelAvatar::PanelAvatar() {
 	set_speed_position = r2vec(sprite->rectW()/2, 240);
 	
 	updatePositions();
+	hide();
 }
 
 PanelAvatar::~PanelAvatar() {

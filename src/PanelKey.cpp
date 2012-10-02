@@ -43,6 +43,7 @@ PanelKey::PanelKey() {
 	text_input_elasticity->setText(input_elasticity.get());
 	
 	updatePositions();
+	hide();
 }
 
 PanelKey::~PanelKey() {

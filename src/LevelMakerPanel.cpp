@@ -10,7 +10,6 @@
 
 using namespace lalge;
 
-Sprite* LevelMakerPanel::bg = 0;
 LevelMakerData* LevelMakerPanel::data = 0;
 LevelMakerPanel* LevelMakerPanel::panels[LevelMakerObject::LASTTYPE];
 LevelMakerPanel* LevelMakerPanel::current_panel = 0;
@@ -21,9 +20,6 @@ std::set<LevelMakerObject*> LevelMakerPanel::last_selection;
 
 LevelMakerPanel::LevelMakerPanel() {
 	setShape(new Rectangle());
-	sprite = bg;
-	setupRectangle();
-	
 	InputManager::instance()->connect(InputManager::MOUSEDOWN_LEFT, this, &LevelMakerPanel::handleMouseDownLeft);
 	InputManager::instance()->connect(InputManager::MOUSEUP_LEFT, this, &LevelMakerPanel::handleMouseUpLeft);
 }
@@ -45,8 +41,6 @@ void LevelMakerPanel::init(LevelMakerData* data) {
 	if ((LevelMakerPanel::data) || (!data))
 		return;
 	
-	bg = new Sprite("img/levelmaker/panel.png");
-	
 	LevelMakerPanel::data = data;
 	
 	panels[LevelMakerObject::NONE] = new PanelGeneral();
@@ -55,6 +49,7 @@ void LevelMakerPanel::init(LevelMakerData* data) {
 	panels[LevelMakerObject::KEY] = new PanelKey();
 	panels[LevelMakerObject::PARTICLE] = new PanelParticle();
 	panels[LevelMakerObject::ITEM] = new PanelGeneral();
+	
 	current_panel = panels[LevelMakerObject::NONE];
 	current_panel->getShape()->position = r2vec(640, 360);
 }
@@ -64,9 +59,6 @@ void LevelMakerPanel::close() {
 		return;
 	
 	data = 0;
-	
-	delete bg;
-	bg = 0;
 	
 	for (int i = 0; i < LevelMakerObject::LASTTYPE; ++i)
 		delete panels[i];

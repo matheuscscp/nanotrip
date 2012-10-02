@@ -8,8 +8,6 @@
 #include "LevelMakerData.hpp"
 
 class LevelMakerPanel : public GameObject {
-private:
-	static Sprite* bg;
 protected:
 	static LevelMakerData* data;
 private:
