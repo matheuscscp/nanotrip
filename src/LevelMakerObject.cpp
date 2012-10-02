@@ -15,6 +15,10 @@ LevelMakerObject* LevelMakerObject::mousedown_requested = 0;
 Sprite* LevelMakerObject::LevelMakerObject::sprite_selection_box = 0;
 Sprite* LevelMakerObject::sprite_selection_horizontal = 0;
 Sprite* LevelMakerObject::sprite_selection_vertical = 0;
+LevelMakerObject* LevelMakerObject::creating = 0;
+bool LevelMakerObject::just_created = false;
+bool LevelMakerObject::setting_speed = false;
+bool LevelMakerObject::just_set_speed = false;
 set<LevelMakerObject*> LevelMakerObject::all;
 bool LevelMakerObject::dragging = false;
 bool LevelMakerObject::selecting = false;
@@ -26,8 +30,7 @@ R2Vector LevelMakerObject::mouse_ctrl_position;
 LevelMakerObject::LevelMakerObject(int type, GameObject* object) :
 type(type),
 object(object),
-selection(0),
-just_created(false)
+selection(0)
 {
 	all.insert(this);
 	setShape(new Circle(*((Circle*)object->getShape())));
@@ -222,7 +225,7 @@ bool LevelMakerObject::mouseDownInsideAny() {
 }
 
 void LevelMakerObject::handleMouseDownLeft(const observer::Event& event, bool& stop) {
-	if (selection_requested)
+	if ((selection_requested) || (just_created) || (setting_speed))
 		return;
 	
 	mouse_down_position = getShape()->position;
@@ -245,10 +248,15 @@ void LevelMakerObject::handleMouseUpLeft(const observer::Event& event, bool& sto
 	if (selecting)
 		just_selected = true;
 	
+	// if avatar speed was just set, nothing to do
+	if (just_set_speed) {
+		just_set_speed = false;
+		stop = true;
+	}
 	// if clicked outside every object, request for deselection
-	if ((!mouseInsideAny()) && (!mouseDownInsideAny()) && (!just_selected))
+	else if ((!mouseInsideAny()) && (!mouseDownInsideAny()) && (!just_selected))
 		deselection_requested = true;
-	// if this object just was created by a panel
+	// if this object just was created by a panel, nothing to do
 	else if (just_created)
 		just_created = false;
 	// if no drag was done, request toggle

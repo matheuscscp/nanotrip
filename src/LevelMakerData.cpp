@@ -365,7 +365,6 @@ void LevelMakerData::assembleAvatar(const Configuration& conf) {
 	avatar_obj->speed = r2vec(conf.getReal("speedX"), conf.getReal("speedY"));
 	avatar_obj->setElasticity(conf.getReal("k"));
 	avatar_obj->setMass(conf.getReal("m"));
-	avatar_obj->setCharge(conf.getReal("q"));
 	
 	// sprite
 	avatar_obj->sprite = sprite_avatar;
@@ -497,7 +496,6 @@ void LevelMakerData::fetchAvatar(Configuration& level) const {
 	conf.insertReal("speedY", ((Particle*)avatar->getGameObject())->speed.x(1));
 	conf.insertReal("k", ((Particle*)avatar->getGameObject())->getElasticity());
 	conf.insertReal("m", ((Particle*)avatar->getGameObject())->getMass());
-	conf.insertReal("q", ((Particle*)avatar->getGameObject())->getCharge());
 	
 	level.insertConfig("avatar", conf);
 }
@@ -566,8 +564,6 @@ bool LevelMakerData::avatarModified(LevelMakerObject* temp_avatar) {
 	if (my->getElasticity() != its->getElasticity())
 		return true;
 	if (my->getMass() != its->getMass())
-		return true;
-	if (my->getCharge() != its->getCharge())
 		return true;
 	if (my->getShape()->position != its->getShape()->position)
 		return true;

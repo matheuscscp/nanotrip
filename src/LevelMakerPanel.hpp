@@ -18,8 +18,6 @@ private:
 	static bool hooked;
 	static bool just_unhooked;
 	static lalge::R2Vector mouse_down_position;
-public:
-	static LevelMakerObject* creating;
 protected:
 	LevelMakerPanel();
 	virtual ~LevelMakerPanel();
@@ -34,10 +32,11 @@ public:
 	static bool mouseInside();
 	
 	static void checkSelectionRequests();
-	static void updateCurrent();
+	static void updateCurrent(bool force = false);
 	static void renderCurrent();
 private:
 	static void create();
+	static void setSpeed();
 	
 	virtual void show() = 0;
 	virtual void hide() = 0;

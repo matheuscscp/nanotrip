@@ -3,6 +3,7 @@
 #include "Rectangle.hpp"
 #include "InputManager.hpp"
 #include "PanelGeneral.hpp"
+#include "PanelAvatar.hpp"
 #include "PanelBlackHole.hpp"
 #include "PanelKey.hpp"
 
@@ -15,7 +16,6 @@ LevelMakerPanel* LevelMakerPanel::current_panel = 0;
 bool LevelMakerPanel::hooked = false;
 bool LevelMakerPanel::just_unhooked = false;
 R2Vector LevelMakerPanel::mouse_down_position;
-LevelMakerObject* LevelMakerPanel::creating = 0;
 
 LevelMakerPanel::LevelMakerPanel() {
 	setShape(new Rectangle());
@@ -48,7 +48,7 @@ void LevelMakerPanel::init(LevelMakerData* data) {
 	LevelMakerPanel::data = data;
 	
 	panels[LevelMakerObject::NONE] = new PanelGeneral();
-	panels[LevelMakerObject::AVATAR] = new PanelGeneral();
+	panels[LevelMakerObject::AVATAR] = new PanelAvatar();
 	panels[LevelMakerObject::BLACKHOLE] = new PanelBlackHole();
 	panels[LevelMakerObject::KEY] = new PanelKey();
 	panels[LevelMakerObject::PARTICLE] = new PanelGeneral();
@@ -74,7 +74,7 @@ void LevelMakerPanel::close() {
 bool LevelMakerPanel::mouseInside() { return current_panel->getShape()->mouseInside(); }
 
 void LevelMakerPanel::checkSelectionRequests() {
-	if ((hooked) || (just_unhooked) || (creating)) {
+	if ((hooked) || (just_unhooked) || (LevelMakerObject::creating) || (LevelMakerObject::setting_speed)) {
 		if (just_unhooked)
 			just_unhooked = false;
 		LevelMakerObject::deselection_requested = false;
@@ -99,11 +99,11 @@ void LevelMakerPanel::checkSelectionRequests() {
 	}
 }
 
-void LevelMakerPanel::updateCurrent() {
+void LevelMakerPanel::updateCurrent(bool force) {
 	int selected_type = LevelMakerObject::getSelectedType();
 	bool must_change = (panels[selected_type] != current_panel);
 	
-	if (must_change) {
+	if ((must_change) || (force)) {
 		R2Vector new_size;
 		R2Vector old_size;
 		LevelMakerPanel* old_panel = current_panel;
@@ -122,9 +122,9 @@ void LevelMakerPanel::updateCurrent() {
 	
 	current_panel->update();
 	
-	if (creating) {
-		creating->getShape()->position = r2vec(InputManager::instance()->mouseX(), InputManager::instance()->mouseY());
-		creating->getGameObject()->getShape()->position = creating->getShape()->position;
+	if (LevelMakerObject::creating) {
+		LevelMakerObject::creating->getShape()->position = r2vec(InputManager::instance()->mouseX(), InputManager::instance()->mouseY());
+		LevelMakerObject::creating->getGameObject()->getShape()->position = LevelMakerObject::creating->getShape()->position;
 	}
 }
 
@@ -132,22 +132,22 @@ void LevelMakerPanel::renderCurrent() {
 	current_panel->sprite->render(current_panel->getShape()->position.x(0), current_panel->getShape()->position.x(1), true);
 	current_panel->render();
 	
-	if (creating)
-		creating->render();
+	if (LevelMakerObject::creating)
+		LevelMakerObject::creating->render();
 }
 
 void LevelMakerPanel::create() {
-	switch (creating->getType()) {
+	switch (LevelMakerObject::creating->getType()) {
 	case LevelMakerObject::KEY:
-		data->key = creating;
+		data->key = LevelMakerObject::creating;
 		break;
 		
 	case LevelMakerObject::PARTICLE:
-		data->particles.push_back(creating);
+		data->particles.push_back(LevelMakerObject::creating);
 		break;
 		
 	case LevelMakerObject::ITEM:
-		data->items.push_back(creating);
+		data->items.push_back(LevelMakerObject::creating);
 		break;
 		
 	default:
@@ -155,15 +155,27 @@ void LevelMakerPanel::create() {
 	}
 	
 	LevelMakerObject::selected.clear();
-	LevelMakerObject::selected.insert(creating);
-	creating->just_created = true;
+	LevelMakerObject::selected.insert(LevelMakerObject::creating);
 	
-	creating = 0;
+	LevelMakerObject::creating = 0;
+	LevelMakerObject::just_created = true;
+}
+
+void LevelMakerPanel::setSpeed() {
+	LevelMakerObject::setting_speed = false;
+	LevelMakerObject::just_set_speed = true;
 }
 
 void LevelMakerPanel::handleMouseDownLeft(const observer::Event& event, bool& stop) {
-	if (creating)
+	if (LevelMakerObject::creating) {
 		create();
+		return;
+	}
+	
+	if (LevelMakerObject::setting_speed) {
+		setSpeed();
+		return;
+	}
 	
 	if ((getShape()->mouseDownInside()) && (this == current_panel)) {
 		hooked = true;

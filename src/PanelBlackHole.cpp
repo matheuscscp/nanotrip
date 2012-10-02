@@ -4,10 +4,7 @@
 
 #include "PanelBlackHole.hpp"
 
-#include "Rectangle.hpp"
-#include "InputManager.hpp"
-#include "Item.hpp"
-#include "Circle.hpp"
+#include "Particle.hpp"
 #include "SDLBase.hpp"
 
 using namespace common;
@@ -50,6 +47,7 @@ PanelBlackHole::~PanelBlackHole() {
 void PanelBlackHole::show() {
 	// inputs
 	button_input_mass->enable(true);
+	input_mass.set(eval(((Particle*)data->blackhole->getGameObject())->getMass()));
 	
 	updatePositions();
 }

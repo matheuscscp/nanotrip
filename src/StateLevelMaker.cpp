@@ -204,7 +204,9 @@ void StateLevelMaker::update() {
 	
 	LevelMakerPanel::updateCurrent();
 	
-	if ((LevelMakerPanel::mouseInside()) || (LevelMakerPanel::creating)) {
+	if ((LevelMakerPanel::mouseInside()) ||
+		(LevelMakerObject::creating) ||
+		(LevelMakerObject::setting_speed)) {
 		disableButtons();
 		return;
 	}
@@ -293,6 +295,7 @@ void StateLevelMaker::handleSave(const observer::Event& event, bool& stop) {
 
 void StateLevelMaker::handleRevert(const observer::Event& event, bool& stop) {
 	data->revert();
+	LevelMakerPanel::updateCurrent(true);
 }
 
 void StateLevelMaker::handleTest(const observer::Event& event, bool& stop) {

@@ -34,7 +34,7 @@ OBJ11 = $(OBJ10) $(OBJDIR)/Stopwatch.o $(OBJDIR)/StateYouLose.o $(OBJDIR)/Avatar
 OBJ12 = $(OBJ11) $(OBJDIR)/StateYouWin.o $(OBJDIR)/Item.o $(OBJDIR)/LevelMakerPanel.o
 OBJ13 = $(OBJ12) $(OBJDIR)/LevelMakerObject.o $(OBJDIR)/GameBGM.o $(OBJDIR)/PanelGeneral.o
 OBJ14 = $(OBJ13) $(OBJDIR)/StateLevelMakerQuit.o $(OBJDIR)/LevelMakerData.o $(OBJDIR)/PanelBlackHole.o
-OBJ15 = $(OBJ14) $(OBJDIR)/PanelKey.o
+OBJ15 = $(OBJ14) $(OBJDIR)/PanelKey.o $(OBJDIR)/PanelAvatar.o
 
 OBJ  = $(OBJ15)
 

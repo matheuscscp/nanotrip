@@ -31,6 +31,10 @@ public:
 	static Sprite* sprite_selection_box;
 	static Sprite* sprite_selection_horizontal;
 	static Sprite* sprite_selection_vertical;
+	static LevelMakerObject* creating;
+	static bool just_created;
+	static bool setting_speed;
+	static bool just_set_speed;
 private:
 	static std::set<LevelMakerObject*> all;
 	static bool dragging;
@@ -46,7 +50,6 @@ private:
 	GameObject* object;
 public:
 	Sprite* selection;
-	bool just_created;
 	
 	LevelMakerObject(int type, GameObject* object);
 	~LevelMakerObject();

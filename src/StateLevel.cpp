@@ -494,7 +494,6 @@ void StateLevel::assembleAvatar() {
 	avatar->speed = r2vec(conf.getReal("speedX"), conf.getReal("speedY"));
 	avatar->setElasticity(conf.getReal("k"));
 	avatar->setMass(conf.getReal("m"));
-	avatar->setCharge(conf.getReal("q"));
 	
 	// sprite
 	sprite_avatar->restore();

@@ -4,7 +4,6 @@
 
 #include "PanelGeneral.hpp"
 
-#include "Rectangle.hpp"
 #include "InputManager.hpp"
 #include "Item.hpp"
 #include "Circle.hpp"
@@ -177,8 +176,11 @@ void PanelGeneral::show() {
 	
 	// inputs
 	button_input_time->enable(true);
+	input_time.set(eval(data->level_time));
 	button_input_charge->enable(true);
+	input_charge.set(eval(data->max_abs_charge));
 	button_input_bgm->enable(true);
+	input_bgm.set(data->bgm);
 	
 	updatePositions();
 }
@@ -294,8 +296,8 @@ void PanelGeneral::handleKey(const observer::Event& event, bool& stop) {
 		key_obj->sprite = LevelMakerData::sprite_key;
 		((Circle*)key_obj->getShape())->setRadius(key_obj->sprite->rectW()/2);
 		
-		creating = new LevelMakerObject(LevelMakerObject::KEY, key_obj);
-		creating->selection = LevelMakerData::sprite_key_selection;
+		LevelMakerObject::creating = new LevelMakerObject(LevelMakerObject::KEY, key_obj);
+		LevelMakerObject::creating->selection = LevelMakerData::sprite_key_selection;
 	}
 }
 
@@ -308,8 +310,8 @@ void PanelGeneral::handleParticle(const observer::Event& event, bool& stop) {
 	particle_obj->sprite = LevelMakerData::sprite_neutral;
 	((Circle*)particle_obj->getShape())->setRadius(particle_obj->sprite->rectW()/2);
 	
-	creating = new LevelMakerObject(LevelMakerObject::PARTICLE, particle_obj);
-	creating->selection = LevelMakerData::sprite_particle_selection;
+	LevelMakerObject::creating = new LevelMakerObject(LevelMakerObject::PARTICLE, particle_obj);
+	LevelMakerObject::creating->selection = LevelMakerData::sprite_particle_selection;
 }
 
 void PanelGeneral::handleItem(const observer::Event& event, bool& stop) {
@@ -322,8 +324,8 @@ void PanelGeneral::handleItem(const observer::Event& event, bool& stop) {
 	item_obj->sprite = LevelMakerData::sprite_item_time;
 	((Circle*)item_obj->getShape())->setRadius(item_obj->sprite->rectW()/2);
 	
-	creating = new LevelMakerObject(LevelMakerObject::ITEM, item_obj);
-	creating->selection = LevelMakerData::sprite_item_time_selection;
+	LevelMakerObject::creating = new LevelMakerObject(LevelMakerObject::ITEM, item_obj);
+	LevelMakerObject::creating->selection = LevelMakerData::sprite_item_time_selection;
 }
 
 void PanelGeneral::handleInputTime(const observer::Event& event, bool& stop) {
