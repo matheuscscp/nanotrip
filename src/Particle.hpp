@@ -26,7 +26,7 @@ public:
 	
 	virtual void update();
 	
-	GameObject* clone();
+	virtual GameObject* clone();
 	
 	lalge::Scalar getElasticity() const;
 	void setElasticity(lalge::Scalar elasticity);

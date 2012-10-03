@@ -35,8 +35,36 @@ Subject::Observer::~Observer() {}
 
 Subject::Subject() : n_events(0), observers(0), broadcasting(0) {}
 
+Subject::Subject(const Subject& rv) : n_events(0), observers(0), broadcasting(0) {
+	copy(rv);
+}
+
 Subject::~Subject() {
-	if (!observers)
+	clear();
+}
+
+Subject& Subject::operator=(const Subject& rv) {
+	clear();
+	copy(rv);
+	return *this;
+}
+
+void Subject::copy(const Subject& rv) {
+	if (!rv.n_events)
+		return;
+	
+	init(rv.n_events);
+	
+	// copy all observers of all events
+	for (int i = 0; i < n_events; ++i) {
+		// copy all observers
+		for (list<Observer*>::iterator it = rv.observers[i].begin(); it != rv.observers[i].end(); ++it)
+			observers[i].push_back((*it)->clone());
+	}
+}
+
+void Subject::clear() {
+	if (!n_events)
 		return;
 	
 	for (int i = 0; i < n_events; ++i) {
@@ -48,10 +76,13 @@ Subject::~Subject() {
 	}
 	delete[] observers;
 	delete[] broadcasting;
+	n_events = 0;
+	observers = 0;
+	broadcasting = 0;
 }
 
 void Subject::init(int n_events) {
-	if (observers)
+	if ((this->n_events) || (!n_events))
 		return;
 	
 	this->n_events = n_events;

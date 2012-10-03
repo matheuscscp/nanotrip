@@ -300,7 +300,9 @@ void LevelMakerData::assembleEmptyLevel() {
 	has_left = false;
 	
 	avatar = new LevelMakerObject(LevelMakerObject::AVATAR, avatar_obj);
+	avatar->selection = sprite_avatar_selection;
 	blackhole = new LevelMakerObject(LevelMakerObject::BLACKHOLE, blackhole_obj);
+	blackhole->selection = sprite_blackhole_selection;
 	key = 0;
 }
 

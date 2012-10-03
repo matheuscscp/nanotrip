@@ -31,12 +31,22 @@ public:
 		float value;
 		Event(char operation, float value);
 	};
+	
+	static Audio* sound_key;
+	static Audio* sound_time;
+	static Audio* sound_point;
+	static Audio* sound_life;
+	static Audio* sound_mass;
+	static Audio* sound_barrier;
+	static Audio* sound_lethal_barrier;
 private:
 	float value;
 public:
 	char operation;
 	
 	Item();
+	
+	GameObject* clone();
 	
 	float getValue() const;
 	void setValue(float value);

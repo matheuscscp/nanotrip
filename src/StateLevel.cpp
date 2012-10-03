@@ -99,6 +99,13 @@ charge_cursor_position(640)
 	sound_win = new Audio("sfx/level/win.wav");
 	Particle::sound_collision_elastic = new Audio("sfx/level/collision_elastic.wav");
 	Particle::sound_collision_inelastic = new Audio("sfx/level/collision_inelastic.wav");
+	Item::sound_key = new Audio("sfx/level/item_key.wav");
+	Item::sound_time = new Audio("sfx/level/item_time.wav");
+	Item::sound_point = new Audio("sfx/level/item_point.wav");
+	Item::sound_life = new Audio("sfx/level/item_life.wav");
+	Item::sound_mass = new Audio("sfx/level/item_mass.wav");
+	Item::sound_barrier = new Audio("sfx/level/item_bounce_star.wav");
+	Item::sound_lethal_barrier = new Audio("sfx/level/item_death_star.wav");
 	
 	// configuration file
 	raw.readTxt(RootPath::get("level/" + ((Args*)args)->levelname + ".conf"));
@@ -183,11 +190,29 @@ StateLevel::~StateLevel() {
 	// all sounds
 	delete sound_lose;
 	delete sound_win;
+	
 	delete Particle::sound_collision_elastic;
 	Particle::sound_collision_elastic = 0;
 	delete Particle::sound_collision_inelastic;
 	Particle::sound_collision_inelastic = 0;
+	
+	delete Item::sound_key;
+	Item::sound_key = 0;
+	delete Item::sound_time;
+	Item::sound_time = 0;
+	delete Item::sound_point;
+	Item::sound_point = 0;
+	delete Item::sound_life;
+	Item::sound_life = 0;
+	delete Item::sound_mass;
+	Item::sound_mass = 0;
+	delete Item::sound_barrier;
+	Item::sound_barrier = 0;
+	delete Item::sound_lethal_barrier;
+	Item::sound_lethal_barrier = 0;
+	
 	delete bgm;
+	Audio::musicVolume(1);
 	GameBGM::play();
 	
 	// borders

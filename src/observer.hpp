@@ -77,6 +77,8 @@ private:
 		virtual ~Observer();
 		
 		virtual void callHandler(const Event& event, bool& stop) = 0;
+		
+		virtual Observer* clone() = 0;
 	};
 	
 	template <class obs_type>
@@ -88,6 +90,8 @@ private:
 		~ObserverDerived() {}
 		
 		void callHandler(const Event& event, bool& stop) { ((*observer).*(handlerfp))(event, stop); }
+		
+		Observer* clone() { return new ObserverDerived<obs_type>(*this); }
 	};
 	
 	int n_events;
@@ -97,9 +101,18 @@ public:
 	/// Empty constructor. You'll probably never call it explicitly.
 	Subject();
 	
+	/// Copy constructor. You'll probably never call it explicitly.
+	Subject(const Subject& rv);
+	
 	/// Empty destructor. You'll probably never call it explicitly.
 	~Subject();
 	
+	/// Copy assignment operator. You'll probably never call it explicitly.
+	Subject& operator=(const Subject& rv);
+private:
+	void copy(const Subject& rv);
+	void clear();
+public:
 	/// Initializes the subject with the number of event types it is going to have. Needs to be called once and before doing anything else.
 	void init(int n_events);
 	
@@ -159,7 +172,7 @@ public:
 
 template <class obs_type>
 void observer::Subject::connect(int event_type, obs_type* observer, typename handler<obs_type>::type handlerfp) {
-	if (!observers)
+	if (!n_events)
 		return;
 	
 	// searches the observer to replace the callback and set the flag value to true
@@ -178,7 +191,7 @@ void observer::Subject::connect(int event_type, obs_type* observer, typename han
 
 template <class obs_type>
 void observer::Subject::disconnect(obs_type* observer) {
-	if (!observers)
+	if (!n_events)
 		return;
 	
 	for (int i = 0; i < n_events; ++i) {
@@ -196,7 +209,7 @@ void observer::Subject::disconnect(obs_type* observer) {
 
 template <class obs_type>
 void observer::Subject::disconnect(int event_type, obs_type* observer) {
-	if (!observers)
+	if (!n_events)
 		return;
 	
 	// searches the observer in the specified event type
