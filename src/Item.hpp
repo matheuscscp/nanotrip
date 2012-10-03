@@ -31,11 +31,15 @@ public:
 		float value;
 		Event(char operation, float value);
 	};
-	
-	char operation;
+private:
 	float value;
+public:
+	char operation;
 	
 	Item();
+	
+	float getValue() const;
+	void setValue(float value);
 	
 	void checkAvatarCollision(GameObject* avatar, bool& enable);
 };

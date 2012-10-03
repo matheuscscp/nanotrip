@@ -60,7 +60,7 @@ test: build
 
 gdb: build
 	gdb $(EXE)
-#r -f -p /home/matheus/Documents/C_C++/C++/IDJ/nanotrip/ -s StateMakeLevel
+#r -f -p /home/matheus/Documents/C_C++/C++/IDJ/nanotrip/ -s StateNewGame
 
 release: $(OBJ) smclean
 	g++ $(RELEASE) $(CXXFLAGS) $(INCLUDE) -c src/StateManager.cpp -o obj/StateManager.o

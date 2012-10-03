@@ -125,7 +125,7 @@ void PanelItem::show() {
 	if (LevelMakerObject::selected.size() == 1) {
 		input_mass.set(eval(((Particle*)(*LevelMakerObject::selected.begin())->getGameObject())->getMass()));
 		input_elasticity.set(eval(((Particle*)(*LevelMakerObject::selected.begin())->getGameObject())->getElasticity()));
-		input_value.set(eval(((Item*)(*LevelMakerObject::selected.begin())->getGameObject())->value));
+		input_value.set(eval(((Item*)(*LevelMakerObject::selected.begin())->getGameObject())->getValue()));
 	}
 	else {
 		text_input_mass->setText("");
@@ -209,21 +209,22 @@ void PanelItem::handleInputMass(const observer::Event& event, bool& stop) {
 	
 	// check invalid input
 	if (eval(input_mass.get(), mass)) {
-		mass = ((mass <= 0) ? 1 : mass);
+		if (mass <= 0) {
+			invalid_input_mass = true;
+			sprite_input_mass->clip(0, sprite_input_mass->srcH()/2, sprite_input_mass->srcW(), sprite_input_mass->srcH()/2);
+			return;
+		}
+		// updating data
+		for (set<LevelMakerObject*>::iterator it = LevelMakerObject::selected.begin(); it != LevelMakerObject::selected.end(); ++it)
+			((Particle*)(*it)->getGameObject())->setMass(mass);
 		
 		invalid_input_mass = false;
 		sprite_input_mass->clip(0, 0, sprite_input_mass->srcW(), sprite_input_mass->srcH()/2);
 	}
 	else {
-		mass = 1;
-		
 		invalid_input_mass = true;
 		sprite_input_mass->clip(0, sprite_input_mass->srcH()/2, sprite_input_mass->srcW(), sprite_input_mass->srcH()/2);
 	}
-	
-	// updating data
-	for (set<LevelMakerObject*>::iterator it = LevelMakerObject::selected.begin(); it != LevelMakerObject::selected.end(); ++it)
-		((Particle*)(*it)->getGameObject())->setMass(mass);
 }
 
 void PanelItem::handleInputMassButton(const observer::Event& event, bool& stop) {
@@ -239,22 +240,22 @@ void PanelItem::handleInputElasticity(const observer::Event& event, bool& stop) 
 	
 	// check invalid input
 	if (eval(input_elasticity.get(), elasticity)) {
-		elasticity = ((elasticity > 0.5) ? 0.5 : elasticity);
-		elasticity = ((elasticity < 0) ? 0 : elasticity);
+		if ((elasticity < 0) || (elasticity > 0.5)) {
+			invalid_input_elasticity = true;
+			sprite_input_elasticity->clip(0, sprite_input_elasticity->srcH()/2, sprite_input_elasticity->srcW(), sprite_input_elasticity->srcH()/2);
+			return;
+		}
+		// updating data
+		for (set<LevelMakerObject*>::iterator it = LevelMakerObject::selected.begin(); it != LevelMakerObject::selected.end(); ++it)
+			((Particle*)(*it)->getGameObject())->setElasticity(elasticity);
 		
 		invalid_input_elasticity = false;
 		sprite_input_elasticity->clip(0, 0, sprite_input_elasticity->srcW(), sprite_input_elasticity->srcH()/2);
 	}
 	else {
-		elasticity = 0;
-		
 		invalid_input_elasticity = true;
 		sprite_input_elasticity->clip(0, sprite_input_elasticity->srcH()/2, sprite_input_elasticity->srcW(), sprite_input_elasticity->srcH()/2);
 	}
-	
-	// updating data
-	for (set<LevelMakerObject*>::iterator it = LevelMakerObject::selected.begin(); it != LevelMakerObject::selected.end(); ++it)
-		((Particle*)(*it)->getGameObject())->setElasticity(elasticity);
 }
 
 void PanelItem::handleInputElasticityButton(const observer::Event& event, bool& stop) {
@@ -270,21 +271,23 @@ void PanelItem::handleInputValue(const observer::Event& event, bool& stop) {
 	
 	// check invalid input
 	if (eval(input_value.get(), value)) {
-		value = ((value < 0) ? -value : value);
-		
+		if (value < 0) {
+			invalid_input_value = true;
+			sprite_input_value->clip(0, sprite_input_value->srcH()/2, sprite_input_value->srcW(), sprite_input_value->srcH()/2);
+			return;
+		}
 		invalid_input_value = false;
 		sprite_input_value->clip(0, 0, sprite_input_value->srcW(), sprite_input_value->srcH()/2);
 	}
 	else {
-		value = 0;
-		
 		invalid_input_value = true;
 		sprite_input_value->clip(0, sprite_input_value->srcH()/2, sprite_input_value->srcW(), sprite_input_value->srcH()/2);
+		return;
 	}
 	
 	// updating data
 	for (set<LevelMakerObject*>::iterator it = LevelMakerObject::selected.begin(); it != LevelMakerObject::selected.end(); ++it) {
-		((Item*)(*it)->getGameObject())->value = value;
+		((Item*)(*it)->getGameObject())->setValue(value);
 		
 		// sprite for barriers
 		if (((Item*)(*it)->getGameObject())->operation == Item::BARRIER) {

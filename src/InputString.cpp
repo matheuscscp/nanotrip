@@ -37,11 +37,12 @@ void InputString::setMaxSize(int max_size) {
 
 const string& InputString::get() const { return buf; }
 
-void InputString::set(const std::string& input) {
+void InputString::set(const std::string& input, bool broadcast) {
 	buf = input;
 	if ((max_size) && (buf.size() > max_size))
 		buf.erase(max_size);
-	subject.broadcast(observer::Event(UPDATE));
+	if (broadcast)
+		subject.broadcast(observer::Event(UPDATE));
 }
 
 void InputString::clear() {

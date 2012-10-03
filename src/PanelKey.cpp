@@ -21,7 +21,6 @@ PanelKey::PanelKey() {
 	input_mass_position = r2vec(105 + button_input_mass->sprite->rectW()/2, 156 - 29);
 	invalid_input_mass = false;
 	input_mass.setMaxSize(21);
-	input_mass.set(eval(((Particle*)data->key->getGameObject())->getMass()));
 	input_mass.connect(InputString::UPDATE, this, &PanelKey::handleInputMass);
 	text_input_mass = new Text("ttf/Swiss721BlackRoundedBT.ttf", "", 13, 0, SDLBase::getColor(51, 51, 51), Text::blended);
 	text_input_mass->setText(input_mass.get());
@@ -33,7 +32,6 @@ PanelKey::PanelKey() {
 	input_elasticity_position = r2vec(159 + button_input_elasticity->sprite->rectW()/2, 156);
 	invalid_input_elasticity = false;
 	input_elasticity.setMaxSize(15);
-	input_elasticity.set(eval(((Particle*)data->key->getGameObject())->getElasticity()));
 	input_elasticity.connect(InputString::UPDATE, this, &PanelKey::handleInputElasticity);
 	text_input_elasticity = new Text("ttf/Swiss721BlackRoundedBT.ttf", "", 13, 0, SDLBase::getColor(51, 51, 51), Text::blended);
 	text_input_elasticity->setText(input_elasticity.get());
@@ -109,19 +107,20 @@ void PanelKey::handleInputMass(const observer::Event& event, bool& stop) {
 	
 	// check invalid input
 	if (eval(input_mass.get(), mass)) {
-		mass = ((mass <= 0) ? 1 : mass);
+		if (mass <= 0) {
+			invalid_input_mass = true;
+			sprite_input_mass->clip(0, sprite_input_mass->srcH()/2, sprite_input_mass->srcW(), sprite_input_mass->srcH()/2);
+			return;
+		}
+		((Particle*)data->key->getGameObject())->setMass(mass);
 		
 		invalid_input_mass = false;
 		sprite_input_mass->clip(0, 0, sprite_input_mass->srcW(), sprite_input_mass->srcH()/2);
 	}
 	else {
-		mass = 1;
-		
 		invalid_input_mass = true;
 		sprite_input_mass->clip(0, sprite_input_mass->srcH()/2, sprite_input_mass->srcW(), sprite_input_mass->srcH()/2);
 	}
-	
-	((Particle*)data->key->getGameObject())->setMass(mass);
 }
 
 void PanelKey::handleInputMassButton(const observer::Event& event, bool& stop) {
@@ -137,20 +136,20 @@ void PanelKey::handleInputElasticity(const observer::Event& event, bool& stop) {
 	
 	// check invalid input
 	if (eval(input_elasticity.get(), elasticity)) {
-		elasticity = ((elasticity > 0.5) ? 0.5 : elasticity);
-		elasticity = ((elasticity < 0) ? 0 : elasticity);
+		if ((elasticity < 0) || (elasticity > 0.5)) {
+			invalid_input_elasticity = true;
+			sprite_input_elasticity->clip(0, sprite_input_elasticity->srcH()/2, sprite_input_elasticity->srcW(), sprite_input_elasticity->srcH()/2);
+			return;
+		}
+		((Particle*)data->key->getGameObject())->setElasticity(elasticity);
 		
 		invalid_input_elasticity = false;
 		sprite_input_elasticity->clip(0, 0, sprite_input_elasticity->srcW(), sprite_input_elasticity->srcH()/2);
 	}
 	else {
-		elasticity = 0;
-		
 		invalid_input_elasticity = true;
 		sprite_input_elasticity->clip(0, sprite_input_elasticity->srcH()/2, sprite_input_elasticity->srcW(), sprite_input_elasticity->srcH()/2);
 	}
-	
-	((Particle*)data->key->getGameObject())->setElasticity(elasticity);
 }
 
 void PanelKey::handleInputElasticityButton(const observer::Event& event, bool& stop) {

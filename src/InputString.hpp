@@ -34,7 +34,7 @@ public:
 	void setMaxSize(int max_size);
 	
 	const std::string& get() const;
-	void set(const std::string& input);
+	void set(const std::string& input, bool broadcast = true);
 	
 	void clear();
 	

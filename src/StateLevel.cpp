@@ -378,12 +378,12 @@ void StateLevel::render() {
 
 void StateLevel::loadBGM(const Configuration& general) {
 	stringstream ss;
+	string bgm_name = general.getStr("bgm");
 	
 	ss << "sfx/level/";
-	try {
-		ss << general.getStr("bgm");
-	}
-	catch (Configuration::VarNotFound&) {
+	if (bgm_name.size())
+		ss << bgm_name;
+	else {
 		ss << "song";
 		ss << rand()%3;
 	}
@@ -568,18 +568,12 @@ Item* StateLevel::assembleItem(const Configuration& conf) {
 	item->pinned = true;
 	item->getShape()->position = r2vec(conf.getReal("x"), conf.getReal("y"));
 	item->operation = conf.getInt("operation");
-	item->value = conf.getReal("value");
-	if (item->value < 0)
-		item->value *= -1;
+	item->setValue(conf.getReal("value"));
 	item->setElasticity(conf.getReal("k"));
 	item->setMass(conf.getReal("m"));
 	
 	// sprite
 	switch (item->operation) {
-	case Item::KEY:
-		delete item;
-		return 0;
-		
 	case Item::TIME:
 		item->sprite = sprite_item_time;
 		break;
@@ -597,14 +591,16 @@ Item* StateLevel::assembleItem(const Configuration& conf) {
 		break;
 		
 	case Item::BARRIER:
-		if (!item->value)
+		if (!item->getValue())
 			item->sprite = sprite_item_barrier;
 		else
 			item->sprite = sprite_item_lethal_barrier;
 		break;
 		
+	case Item::KEY:
 	default:
-		break;
+		delete item;
+		return 0;
 	}
 	((Circle*)item->getShape())->setRadius(item->sprite->rectW()/2);
 	

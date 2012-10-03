@@ -10,7 +10,6 @@ class LevelMakerData {
 public:
 	static const int default_level_time;
 	static const lalge::Scalar default_max_abs_charge;
-	static const std::string default_bgm;
 	
 	static Sprite* sprite_avatar;
 	static Sprite* sprite_blackhole;

@@ -138,19 +138,20 @@ void PanelAvatar::handleInputMass(const observer::Event& event, bool& stop) {
 	
 	// check invalid input
 	if (eval(input_mass.get(), mass)) {
-		mass = ((mass <= 0) ? 1 : mass);
+		if (mass <= 0) {
+			invalid_input_mass = true;
+			sprite_input_mass->clip(0, sprite_input_mass->srcH()/2, sprite_input_mass->srcW(), sprite_input_mass->srcH()/2);
+			return;
+		}
+		((Particle*)data->avatar->getGameObject())->setMass(mass);
 		
 		invalid_input_mass = false;
 		sprite_input_mass->clip(0, 0, sprite_input_mass->srcW(), sprite_input_mass->srcH()/2);
 	}
 	else {
-		mass = 1;
-		
 		invalid_input_mass = true;
 		sprite_input_mass->clip(0, sprite_input_mass->srcH()/2, sprite_input_mass->srcW(), sprite_input_mass->srcH()/2);
 	}
-	
-	((Particle*)data->avatar->getGameObject())->setMass(mass);
 }
 
 void PanelAvatar::handleInputMassButton(const observer::Event& event, bool& stop) {
@@ -166,20 +167,20 @@ void PanelAvatar::handleInputElasticity(const observer::Event& event, bool& stop
 	
 	// check invalid input
 	if (eval(input_elasticity.get(), elasticity)) {
-		elasticity = ((elasticity > 0.5) ? 0.5 : elasticity);
-		elasticity = ((elasticity < 0) ? 0 : elasticity);
+		if ((elasticity < 0) || (elasticity > 0.5)) {
+			invalid_input_elasticity = true;
+			sprite_input_elasticity->clip(0, sprite_input_elasticity->srcH()/2, sprite_input_elasticity->srcW(), sprite_input_elasticity->srcH()/2);
+			return;
+		}
+		((Particle*)data->avatar->getGameObject())->setElasticity(elasticity);
 		
 		invalid_input_elasticity = false;
 		sprite_input_elasticity->clip(0, 0, sprite_input_elasticity->srcW(), sprite_input_elasticity->srcH()/2);
 	}
 	else {
-		elasticity = 0;
-		
 		invalid_input_elasticity = true;
 		sprite_input_elasticity->clip(0, sprite_input_elasticity->srcH()/2, sprite_input_elasticity->srcW(), sprite_input_elasticity->srcH()/2);
 	}
-	
-	((Particle*)data->avatar->getGameObject())->setElasticity(elasticity);
 }
 
 void PanelAvatar::handleInputElasticityButton(const observer::Event& event, bool& stop) {

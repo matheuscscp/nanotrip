@@ -5,6 +5,12 @@ observer::Event(COLLISION), operation(operation), value(value) {}
 
 Item::Item() : operation(0), value(0) { subject.init(LASTEVENT); }
 
+float Item::getValue() const { return value; }
+
+void Item::setValue(float value) {
+	this->value = ((value < 0) ? -value : value);
+}
+
 void Item::checkAvatarCollision(GameObject* avatar, bool& enable) {
 	if (!collides(*((Particle*)avatar)))
 		return;

@@ -82,19 +82,20 @@ void PanelBlackHole::handleInputMass(const observer::Event& event, bool& stop) {
 	
 	// check invalid input
 	if (eval(input_mass.get(), mass)) {
-		mass = ((mass <= 0) ? 1 : mass);
+		if (mass <= 0) {
+			invalid_input_mass = true;
+			sprite_input_mass->clip(0, sprite_input_mass->srcH()/2, sprite_input_mass->srcW(), sprite_input_mass->srcH()/2);
+			return;
+		}
+		((Particle*)data->blackhole->getGameObject())->setMass(mass);
 		
 		invalid_input_mass = false;
 		sprite_input_mass->clip(0, 0, sprite_input_mass->srcW(), sprite_input_mass->srcH()/2);
 	}
 	else {
-		mass = 1;
-		
 		invalid_input_mass = true;
 		sprite_input_mass->clip(0, sprite_input_mass->srcH()/2, sprite_input_mass->srcW(), sprite_input_mass->srcH()/2);
 	}
-	
-	((Particle*)data->blackhole->getGameObject())->setMass(mass);
 }
 
 void PanelBlackHole::handleInputMassButton(const observer::Event& event, bool& stop) {

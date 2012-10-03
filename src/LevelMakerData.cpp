@@ -18,7 +18,6 @@ using std::stringstream;
 
 const int LevelMakerData::default_level_time = 60;
 const Scalar LevelMakerData::default_max_abs_charge = 0.03;
-const string LevelMakerData::default_bgm = "";
 Sprite* LevelMakerData::sprite_avatar;
 Sprite* LevelMakerData::sprite_blackhole;
 Sprite* LevelMakerData::sprite_key;
@@ -141,8 +140,7 @@ void LevelMakerData::save() {
 		general.insertInt("history", 0);
 		general.insertInt("level_time", level_time);
 		general.insertReal("max_abs_charge", max_abs_charge);
-		if (bgm.size())
-			general.insertStr("bgm", bgm);
+		general.insertStr("bgm", bgm);
 		general.insertInt("border_top", has_top);
 		general.insertInt("border_right", has_right);
 		general.insertInt("border_bottom", has_bottom);
@@ -283,25 +281,19 @@ void LevelMakerData::cloneSelection() {
 void LevelMakerData::assembleEmptyLevel() {
 	Particle* avatar_obj = new Particle();
 	Particle* blackhole_obj = new Particle();
-	Item* key_obj = new Item();
 	
 	avatar_obj->sprite = sprite_avatar;
 	avatar_obj->getShape()->position = r2vec(320, 360);
-	avatar_obj->speed = r2vec(50, 0);
 	((Circle*)avatar_obj->getShape())->setRadius(avatar_obj->sprite->rectW()/2);
 	
 	blackhole_obj->sprite = sprite_blackhole;
 	blackhole_obj->getShape()->position = r2vec(960, 360);
 	((Circle*)blackhole_obj->getShape())->setRadius(blackhole_obj->sprite->rectW()/2);
 	
-	key_obj->sprite = sprite_key;
-	key_obj->getShape()->position = r2vec(640, 360);
-	((Circle*)key_obj->getShape())->setRadius(key_obj->sprite->rectW()/2);
-	
 	// general config
 	level_time = default_level_time;
 	max_abs_charge = default_max_abs_charge;
-	bgm = default_bgm;
+	bgm = "";
 	has_top = false;
 	has_right = false;
 	has_bottom = false;
@@ -309,7 +301,7 @@ void LevelMakerData::assembleEmptyLevel() {
 	
 	avatar = new LevelMakerObject(LevelMakerObject::AVATAR, avatar_obj);
 	blackhole = new LevelMakerObject(LevelMakerObject::BLACKHOLE, blackhole_obj);
-	key = new LevelMakerObject(LevelMakerObject::KEY, key_obj);
+	key = 0;
 }
 
 void LevelMakerData::assemble() {
@@ -435,18 +427,12 @@ void LevelMakerData::assembleItem(const Configuration& conf) {
 	Item* item_obj = new Item();
 	item_obj->getShape()->position = r2vec(conf.getReal("x"), conf.getReal("y"));
 	item_obj->operation = conf.getInt("operation");
-	item_obj->value = conf.getReal("value");
-	if (item_obj->value < 0)
-		item_obj->value *= -1;
+	item_obj->setValue(conf.getReal("value"));
 	item_obj->setElasticity(conf.getReal("k"));
 	item_obj->setMass(conf.getReal("m"));
 	
 	// sprite
 	switch (item_obj->operation) {
-	case Item::KEY:
-		delete item_obj;
-		return;
-		
 	case Item::TIME:
 		item_obj->sprite = sprite_item_time;
 		selection = sprite_item_time_selection;
@@ -468,7 +454,7 @@ void LevelMakerData::assembleItem(const Configuration& conf) {
 		break;
 		
 	case Item::BARRIER:
-		if (!item_obj->value) {
+		if (!item_obj->getValue()) {
 			item_obj->sprite = sprite_item_barrier;
 			selection = sprite_item_barrier_selection;
 		}
@@ -478,8 +464,10 @@ void LevelMakerData::assembleItem(const Configuration& conf) {
 		}
 		break;
 		
+	case Item::KEY:
 	default:
-		break;
+		delete item_obj;
+		return;
 	}
 	((Circle*)item_obj->getShape())->setRadius(item_obj->sprite->rectW()/2);
 	
@@ -548,7 +536,7 @@ void LevelMakerData::fetchItem(int i, LevelMakerObject* item, Configuration& lev
 	conf.insertReal("y", item->getGameObject()->getShape()->position.x(1));
 	conf.insertReal("k", ((Item*)item->getGameObject())->getElasticity());
 	conf.insertReal("m", ((Item*)item->getGameObject())->getMass());
-	conf.insertReal("value", ((Item*)item->getGameObject())->value);
+	conf.insertReal("value", ((Item*)item->getGameObject())->getValue());
 	conf.insertInt("operation", ((Item*)item->getGameObject())->operation);
 	
 	ss << "item";
@@ -659,7 +647,7 @@ bool LevelMakerData::itemsEquals(GameObject* i1, GameObject* i2) {
 		return false;
 	if (my->operation != its->operation)
 		return false;
-	if (my->value != its->value)
+	if (my->getValue() != its->getValue())
 		return false;
 	if (my->getShape()->position != its->getShape()->position)
 		return false;

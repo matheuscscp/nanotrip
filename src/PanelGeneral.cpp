@@ -314,7 +314,7 @@ void PanelGeneral::handleItem(const observer::Event& event, bool& stop) {
 	Item* item_obj = new Item();
 	item_obj->getShape()->position = r2vec(InputManager::instance()->mouseX(), InputManager::instance()->mouseY());
 	item_obj->operation = Item::TIME;
-	item_obj->value = 10;
+	item_obj->setValue(10);
 	
 	// sprite
 	item_obj->sprite = LevelMakerData::sprite_item_time;
@@ -325,18 +325,23 @@ void PanelGeneral::handleItem(const observer::Event& event, bool& stop) {
 }
 
 void PanelGeneral::handleInputTime(const observer::Event& event, bool& stop) {
+	int level_time;
+	
 	text_input_time->setText(input_time.get());
 	
 	// check invalid input
-	if (eval(input_time.get(), data->level_time)) {
-		data->level_time = ((data->level_time > 599) ? 599 : data->level_time);
-		data->level_time = ((data->level_time < 5) ? 5 : data->level_time);
+	if (eval(input_time.get(), level_time)) {
+		if ((level_time < 5) || (level_time > 599)) {
+			invalid_input_time = true;
+			sprite_input_time->clip(0, sprite_input_time->srcH()/2, sprite_input_time->srcW(), sprite_input_time->srcH()/2);
+			return;
+		}
+		data->level_time = level_time;
 		
 		invalid_input_time = false;
 		sprite_input_time->clip(0, 0, sprite_input_time->srcW(), sprite_input_time->srcH()/2);
 	}
 	else {
-		data->level_time = LevelMakerData::default_level_time;
 		invalid_input_time = true;
 		sprite_input_time->clip(0, sprite_input_time->srcH()/2, sprite_input_time->srcW(), sprite_input_time->srcH()/2);
 	}
@@ -350,18 +355,23 @@ void PanelGeneral::handleInputTimeButton(const observer::Event& event, bool& sto
 }
 
 void PanelGeneral::handleInputCharge(const observer::Event& event, bool& stop) {
+	lalge::Scalar max_abs_charge;
+	
 	text_input_charge->setText(input_charge.get());
 	
 	// check invalid input
-	if (eval(input_charge.get(), data->max_abs_charge)) {
-		data->max_abs_charge = ((data->max_abs_charge) ? data->max_abs_charge : LevelMakerData::default_max_abs_charge);
-		data->max_abs_charge = ((data->max_abs_charge < 0) ? -data->max_abs_charge : data->max_abs_charge);
+	if (eval(input_charge.get(), max_abs_charge)) {
+		if (max_abs_charge <= 0) {
+			invalid_input_charge = true;
+			sprite_input_charge->clip(0, sprite_input_charge->srcH()/2, sprite_input_charge->srcW(), sprite_input_charge->srcH()/2);
+			return;
+		}
+		data->max_abs_charge = max_abs_charge;
 		
 		invalid_input_charge = false;
 		sprite_input_charge->clip(0, 0, sprite_input_charge->srcW(), sprite_input_charge->srcH()/2);
 	}
 	else {
-		data->max_abs_charge = LevelMakerData::default_max_abs_charge;
 		invalid_input_charge = true;
 		sprite_input_charge->clip(0, sprite_input_charge->srcH()/2, sprite_input_charge->srcW(), sprite_input_charge->srcH()/2);
 	}
@@ -380,22 +390,24 @@ void PanelGeneral::handleInputBGM(const observer::Event& event, bool& stop) {
 	// empty bgm
 	if (!input_bgm.get().size()) {
 		data->bgm = "";
-		sprite_input_bgm->clip(0, 0, sprite_input_bgm->srcW(), sprite_input_bgm->srcH()/2);
+		
 		invalid_input_bgm = false;
+		sprite_input_bgm->clip(0, 0, sprite_input_bgm->srcW(), sprite_input_bgm->srcH()/2);
 		return;
 	}
 	
 	// check whether file exists
 	try {
 		Audio audio_test("sfx/level/" + input_bgm.get() + ".mp3");
+		
 		data->bgm = input_bgm.get();
-		sprite_input_bgm->clip(0, 0, sprite_input_bgm->srcW(), sprite_input_bgm->srcH()/2);
+		
 		invalid_input_bgm = false;
+		sprite_input_bgm->clip(0, 0, sprite_input_bgm->srcW(), sprite_input_bgm->srcH()/2);
 	}
 	catch (mexception&) {
-		data->bgm = input_bgm.get();
-		sprite_input_bgm->clip(0, sprite_input_bgm->srcH()/2, sprite_input_bgm->srcW(), sprite_input_bgm->srcH()/2);
 		invalid_input_bgm = true;
+		sprite_input_bgm->clip(0, sprite_input_bgm->srcH()/2, sprite_input_bgm->srcW(), sprite_input_bgm->srcH()/2);
 	}
 }
 
