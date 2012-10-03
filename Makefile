@@ -42,7 +42,7 @@ OBJ14 = $(OBJ13) $(OBJDIR)/StateLevelMakerQuit.o $(OBJDIR)/LevelMakerData.o $(OB
 OBJ15 = $(OBJ14) $(OBJDIR)/PanelKey.o $(OBJDIR)/PanelAvatar.o $(OBJDIR)/PanelParticle.o
 OBJ16 = $(OBJ15) $(OBJDIR)/PanelItem.o
 
-OBJ  = $(OBJ16)
+OBJ = $(OBJ16)
 
 all: build
 
