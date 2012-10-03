@@ -13,9 +13,9 @@
 #define SOUND_DELAY		3
 #define EATLES_DELAY	4
 
-#define TIME_POINTS		1
-#define LIFE_POINTS		1
-#define KEY_POINTS		1
+#define TIME_POINTS		300
+#define LIFE_POINTS		100
+#define KEY_POINTS		100
 
 #define MAX_CURSOR_X	587
 

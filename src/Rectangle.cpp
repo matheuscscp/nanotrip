@@ -5,12 +5,11 @@ using namespace lalge;
 Rectangle::Rectangle() : width(1), height(1) {}
 Rectangle::~Rectangle() {}
 
-bool Rectangle::pointInside(int x, int y) const {
+bool Rectangle::pointInside(Scalar x, Scalar y) const {
 	if ((x >= position.x(0) - width/2) && (x < position.x(0) + width/2)) {
 		return ((y >= position.x(1) - height/2) && (y < position.x(1) + height/2));
 	}
 	return false;
-	
 }
 
 Scalar Rectangle::getWidth() const { return width; }

@@ -5,7 +5,7 @@ using namespace lalge;
 Circle::Circle() : radius(1) {}
 Circle::~Circle() {}
 
-bool Circle::pointInside(int x, int y) const {
+bool Circle::pointInside(Scalar x, Scalar y) const {
 	return ((position - r2vec(x, y)).size() <= radius);
 }
 

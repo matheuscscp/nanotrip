@@ -12,7 +12,7 @@ public:
 	Rectangle();
 	virtual ~Rectangle();
 	
-	bool pointInside(int x, int y) const;
+	bool pointInside(lalge::Scalar x, lalge::Scalar y) const;
 	
 	lalge::Scalar getWidth() const;
 	void setWidth(lalge::Scalar width);

@@ -39,8 +39,8 @@ GameObject* Particle::clone() {
 Scalar Particle::getElasticity() const { return elasticity; }
 
 void Particle::setElasticity(Scalar elasticity) {
-	this->elasticity = ((elasticity < 0) ? 0 : elasticity);
-	this->elasticity = ((this->elasticity > 0.5) ? 0.5 : this->elasticity);
+	if ((elasticity >= 0) && (elasticity <= 0.5))
+		this->elasticity = elasticity;
 }
 
 Scalar Particle::getCharge() const { return charge; }
@@ -52,8 +52,8 @@ void Particle::setCharge(Scalar charge) {
 Scalar Particle::getMass() const { return mass; }
 
 void Particle::setMass(Scalar mass) {
-	this->mass = ((mass == 0) ? 1 : mass);
-	this->mass = ((this->mass < 0) ? -this->mass : this->mass);
+	if (mass > 0)
+		this->mass = mass;
 }
 
 void Particle::addMass(lalge::Scalar plus) {
