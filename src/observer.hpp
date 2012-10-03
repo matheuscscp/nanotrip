@@ -32,9 +32,21 @@ in its constructors, or somewhere.
 protected:																										\
 	observer::Subject subject;																					\
 public:																											\
+	void connect(int event_type, observer::handler_type handlerfp) {											\
+		subject.connect(event_type, handlerfp);																	\
+	}																											\
+																												\
 	template <class obs_type>																					\
 	void connect(int event_type, obs_type* observer, typename observer::handler<obs_type>::type handlerfp) {	\
 		subject.connect(event_type, observer, handlerfp);														\
+	}																											\
+																												\
+	void disconnect(observer::handler_type handlerfp) {															\
+		subject.disconnect(handlerfp);																			\
+	}																											\
+																												\
+	void disconnect(int event_type, observer::handler_type handlerfp) {											\
+		subject.disconnect(event_type, handlerfp);																\
 	}																											\
 																												\
 	template <class obs_type>																					\
@@ -61,6 +73,9 @@ public:
 	int type() const;	///< Access to the type of the event.
 };
 
+/// Callback type for functions or static member functions.
+typedef void (*handler_type)(const Event& event, bool& stop);
+
 /// A disguise for a typedef "template" for the callbacks.
 template <class obs_type>
 struct handler {
@@ -81,17 +96,28 @@ private:
 		virtual Observer* clone() = 0;
 	};
 	
+	struct ObserverFunction : public Observer {
+		handler_type handlerfp;
+		
+		ObserverFunction(handler_type handlerfp);
+		~ObserverFunction();
+		
+		void callHandler(const Event& event, bool& stop);
+		
+		Observer* clone();
+	};
+	
 	template <class obs_type>
-	struct ObserverDerived : public Observer {
+	struct ObserverObject : public Observer {
 		obs_type* observer;
 		typename handler<obs_type>::type handlerfp;
 		
-		ObserverDerived(obs_type* observer, typename handler<obs_type>::type handlerfp) : observer(observer), handlerfp(handlerfp) {}
-		~ObserverDerived() {}
+		ObserverObject(obs_type* observer, typename handler<obs_type>::type handlerfp) : observer(observer), handlerfp(handlerfp) {}
+		~ObserverObject() {}
 		
 		void callHandler(const Event& event, bool& stop) { ((*observer).*(handlerfp))(event, stop); }
 		
-		Observer* clone() { return new ObserverDerived<obs_type>(*this); }
+		Observer* clone() { return new ObserverObject<obs_type>(*this); }
 	};
 	
 	int n_events;
@@ -119,11 +145,20 @@ public:
 	/// Broadcasts an event.
 	void broadcast(const Event& event);
 	
+	/// Creates an observer for the specified event type, with the observer function callback.
+	void connect(int event_type, handler_type handlerfp);
+	
 	/// Creates an observer for the specified event type, with the observer object and the handlerfp callback.
 	template <class obs_type>
 	void connect(int event_type, obs_type* observer, typename handler<obs_type>::type handlerfp);
 	
-	/// Destroys all the observers the observer object.
+	/// Destroys all the observers for the observer function.
+	void disconnect(handler_type handlerfp);
+	
+	/// Destroys the observer for the specified event type.
+	void disconnect(int event_type, handler_type handlerfp);
+	
+	/// Destroys all the observers for the observer object.
 	template <class obs_type>
 	void disconnect(obs_type* observer);
 	
@@ -178,14 +213,14 @@ void observer::Subject::connect(int event_type, obs_type* observer, typename han
 	// searches the observer to replace the callback and set the flag value to true
 	bool stop = false;
 	for (std::list< Observer* >::iterator it = observers[event_type].begin(); (it != observers[event_type].end()) && (!stop); ++it) {
-		if (((ObserverDerived<obs_type>*)(*it))->observer == observer) {
+		if (((ObserverObject<obs_type>*)(*it))->observer == observer) {
 			stop = true;
-			((ObserverDerived<obs_type>*)(*it))->handlerfp = handlerfp;
+			((ObserverObject<obs_type>*)(*it))->handlerfp = handlerfp;
 		}
 	}
 	// only pushes a new observer if the value of the flag is still false
 	if (!stop) {
-		observers[event_type].push_back(new ObserverDerived<obs_type>(observer, handlerfp));
+		observers[event_type].push_back(new ObserverObject<obs_type>(observer, handlerfp));
 	}
 }
 
@@ -198,7 +233,7 @@ void observer::Subject::disconnect(obs_type* observer) {
 		// searches the observer in the current event type
 		for (std::list<Observer*>::iterator it = observers[i].begin(); it != observers[i].end(); ++it) {
 			// erases if it is found and breaks the loop for this method
-			if (((ObserverDerived<obs_type>*)(*it))->observer == observer) {
+			if (((ObserverObject<obs_type>*)(*it))->observer == observer) {
 				delete *it;
 				observers[i].erase(it);
 				break;
@@ -215,7 +250,7 @@ void observer::Subject::disconnect(int event_type, obs_type* observer) {
 	// searches the observer in the specified event type
 	for (std::list<Observer*>::iterator it = observers[event_type].begin(); it != observers[event_type].end(); ++it) {
 		// erases if it is found and returns this method
-		if (((ObserverDerived<obs_type>*)(*it))->observer == observer) {
+		if (((ObserverObject<obs_type>*)(*it))->observer == observer) {
 			delete *it;
 			observers[event_type].erase(it);
 			return;

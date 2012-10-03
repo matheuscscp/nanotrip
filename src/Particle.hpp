@@ -38,7 +38,7 @@ public:
 	virtual lalge::Scalar getCharge() const;
 	virtual void setCharge(lalge::Scalar charge);
 	
-	void manageParticleCollision(GameObject* target, bool& enable);
+	virtual void particleCollision(GameObject* target, bool& enable);
 	bool collides(const Particle& target) const;
 	
 	void addParticleFieldForces(GameObject* target, bool& enable);

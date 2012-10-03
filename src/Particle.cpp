@@ -3,6 +3,7 @@
 #include "Circle.hpp"
 #include "SDLBase.hpp"
 #include "FieldForce.hpp"
+#include "Avatar.hpp"
 
 using namespace lalge;
 
@@ -61,10 +62,17 @@ void Particle::addMass(lalge::Scalar plus) {
 		mass += plus;
 }
 
-void Particle::manageParticleCollision(GameObject* target, bool& enable) {
+void Particle::particleCollision(GameObject* target, bool& enable) {
 	// check collision
 	if ((hidden) || (!collides(*((Particle*)target))))
 		return;
+	
+	// don't collide with avatar if the game is over
+	Avatar* avatar = dynamic_cast<Avatar*>(target);
+	if (avatar) {
+		if (avatar->win_lose == Avatar::WIN)
+			return;
+	}
 	
 	// respond to collision
 	R2Vector tmp = getShape()->range(*target->getShape());
@@ -99,6 +107,8 @@ void Particle::manageParticleCollision(GameObject* target, bool& enable) {
 		((Particle*)target)->speed = ((tmp * v2f) + normal.proj(((Particle*)target)->speed)) * k_res;
 	
 	// play sound
+	if (!enable)
+		return;
 	if (k_res > 0.5) {
 		if (sound_collision_elastic)
 			sound_collision_elastic->play(1);
@@ -147,6 +157,13 @@ bool Particle::collides(const Particle& target) const {
 void Particle::addParticleFieldForces(GameObject* target, bool& enable) {
 	if (hidden)
 		return;
+	
+	// don't attract avatar if the game is over
+	Avatar* avatar = dynamic_cast<Avatar*>(target);
+	if (avatar) {
+		if (avatar->win_lose == Avatar::WIN)
+			return;
+	}
 	
 	force += gravitationalForce(*((Particle*)target));
 	force += electricalForce(*((Particle*)target));

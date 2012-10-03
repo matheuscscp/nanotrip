@@ -51,7 +51,7 @@ public:
 	float getValue() const;
 	void setValue(float value);
 	
-	void checkAvatarCollision(GameObject* avatar, bool& enable);
+	void particleCollision(GameObject* target, bool& enable);
 };
 
 #endif

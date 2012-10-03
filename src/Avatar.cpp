@@ -7,7 +7,7 @@
 
 using namespace lalge;
 
-Avatar::Avatar() : being_swallowed(false) {
+Avatar::Avatar() : being_swallowed(false), win_lose(NONE) {
 	subject.init(LASTEVENT);
 }
 

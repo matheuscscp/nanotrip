@@ -66,8 +66,8 @@ charge_cursor_position(640)
 	bg_grad = new Sprite("img/level/background.png");
 	bg_nograd = new Sprite("img/level/background.png");
 	bg_grad->render();
-	bg_grad->setAlpha(0.3f);
-	bg_nograd->setAlpha(0.15f);
+	bg_grad->setAlpha(0.4);
+	bg_nograd->setAlpha(0.4);
 	
 	// hud
 	hud = new Sprite("img/level/hud.png");
@@ -452,8 +452,7 @@ void StateLevel::assemble() {
 		interaction_blackhole_collision->enabled = false;
 		
 		// avatar-key interaction
-		interactions.push_back(Interaction(key, avatar, (Interaction::callback)&Item::checkAvatarCollision));
-		interactions_avatar_item.push_back(&interactions.back());
+		interactions.push_back(Interaction(key, avatar, (Interaction::callback)&Item::particleCollision));
 		
 		items.push_back(key);
 	}
@@ -464,18 +463,18 @@ void StateLevel::assemble() {
 		Particle* particle = assembleParticle(*it1);
 		
 		// avatar interactions
-		interactions.push_back(Interaction(particle, avatar, (Interaction::callback)&Particle::manageParticleCollision));
+		interactions.push_back(Interaction(particle, avatar, (Interaction::callback)&Particle::particleCollision));
 		interactions.push_back(Interaction(particle, avatar, (Interaction::callback)&Particle::addParticleFieldForces, true));
 		
 		// key interactions
 		if (key) {
-			interactions.push_back(Interaction(particle, key, (Interaction::callback)&Particle::manageParticleCollision));
+			interactions.push_back(Interaction(particle, key, (Interaction::callback)&Particle::particleCollision));
 			interactions.push_back(Interaction(particle, key, (Interaction::callback)&Particle::addParticleFieldForces, true));
 		}
 		
 		// mutual interactions
 		for (list<Particle*>::iterator it2 = particles.begin(); it2 != particles.end(); ++it2) {
-			interactions.push_back(Interaction(particle, *it2, (Interaction::callback)&Particle::manageParticleCollision));
+			interactions.push_back(Interaction(particle, *it2, (Interaction::callback)&Particle::particleCollision));
 			interactions.push_back(Interaction(particle, *it2, (Interaction::callback)&Particle::addParticleFieldForces, true));
 		}
 		
@@ -490,18 +489,17 @@ void StateLevel::assemble() {
 		
 		if (item) {
 			// avatar interactions
-			interactions.push_back(Interaction(item, avatar, (Interaction::callback)&Item::checkAvatarCollision));
-			interactions_avatar_item.push_back(&interactions.back());
+			interactions.push_back(Interaction(item, avatar, (Interaction::callback)&Item::particleCollision));
 			
 			// mutual interactions
 			for (list<Item*>::iterator it2 = items.begin(); it2 != items.end(); ++it2) {
-				interactions.push_back(Interaction(item, *it2, (Interaction::callback)&Particle::manageParticleCollision));
+				interactions.push_back(Interaction(item, *it2, (Interaction::callback)&Particle::particleCollision));
 				interactions.push_back(Interaction(item, *it2, (Interaction::callback)&Particle::addParticleFieldForces, true));
 			}
 			
 			// particles interactions
 			for (list<Particle*>::iterator it2 = particles.begin(); it2 != particles.end(); ++it2) {
-				interactions.push_back(Interaction(item, *it2, (Interaction::callback)&Particle::manageParticleCollision));
+				interactions.push_back(Interaction(item, *it2, (Interaction::callback)&Particle::particleCollision));
 				interactions.push_back(Interaction(item, *it2, (Interaction::callback)&Particle::addParticleFieldForces, true));
 			}
 			
@@ -653,7 +651,6 @@ void StateLevel::clear() {
 	
 	// all interactions
 	interactions.clear();
-	interactions_avatar_item.clear();
 }
 
 void StateLevel::setTimeText(int seconds) {
@@ -759,6 +756,8 @@ void StateLevel::handleItemCollision(const observer::Event& event, bool& stop) {
 }
 
 void StateLevel::lose() {
+	avatar->win_lose = Avatar::LOSE;
+	
 	// eatles animation
 	eatles = eatles_sheets[3];
 	((Animation*)eatles)->setFrame(0);
@@ -801,14 +800,11 @@ void StateLevel::unpinParticles() {
 	for (list<Item*>::iterator it = items.begin(); it != items.end(); ++it) {
 		(*it)->pinned = false;
 	}
-	
-	// changing the avatar-item interactions
-	for (list<Interaction*>::iterator it = interactions_avatar_item.begin(); it != interactions_avatar_item.end(); ++it) {
-		(*it)->handler = ((Interaction::callback)&Particle::manageParticleCollision);
-	}
 }
 
 void StateLevel::win() {
+	avatar->win_lose = Avatar::WIN;
+	
 	// particles get free
 	unpinParticles();
 	

@@ -15,10 +15,18 @@ public:
 		// don't change this
 		LASTEVENT
 	};
+	
+	enum {
+		NONE = 0,
+		WIN,
+		LOSE
+	};
 private:
 	bool being_swallowed;
 	GameObject* blackhole;
 public:
+	char win_lose;
+	
 	Avatar();
 	
 	void update();

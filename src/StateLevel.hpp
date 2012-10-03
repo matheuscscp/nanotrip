@@ -100,7 +100,6 @@ protected:
 	Configuration raw;
 	
 	std::list<Interaction> interactions;
-	std::list<Interaction*> interactions_avatar_item;
 	Interaction* interaction_blackhole_force;
 	Interaction* interaction_blackhole_collision;
 	

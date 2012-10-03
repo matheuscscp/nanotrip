@@ -30,6 +30,15 @@ Subject::Observer::Observer() : stack_id(Stack::id()) {}
 Subject::Observer::~Observer() {}
 
 // =============================================================================
+// ObserverFunction Class
+// =============================================================================
+
+Subject::ObserverFunction::ObserverFunction(handler_type handlerfp) : handlerfp(handlerfp) {}
+Subject::ObserverFunction::~ObserverFunction() {}
+void Subject::ObserverFunction::callHandler(const Event& event, bool& stop) { (*handlerfp)(event, stop); }
+Subject::Observer* Subject::ObserverFunction::clone() { return new ObserverFunction(*this); }
+
+// =============================================================================
 // Subject Class
 // =============================================================================
 
@@ -115,6 +124,53 @@ void Subject::broadcast(const Event& event) {
 	}
 	
 	broadcasting[event_type] = false;
+}
+
+void Subject::connect(int event_type, handler_type handlerfp) {
+	if (!n_events)
+		return;
+	
+	// searches the observer to set the flag value to true
+	bool stop = false;
+	for (list< Observer* >::iterator it = observers[event_type].begin(); (it != observers[event_type].end()) && (!stop); ++it) {
+		if (((ObserverFunction*)(*it))->handlerfp == handlerfp)
+			stop = true;
+	}
+	// only pushes a new observer if the value of the flag is still false
+	if (!stop)
+		observers[event_type].push_back(new ObserverFunction(handlerfp));
+}
+
+void Subject::disconnect(handler_type handlerfp) {
+	if (!n_events)
+		return;
+	
+	for (int i = 0; i < n_events; ++i) {
+		// searches the observer in the current event type
+		for (list<Observer*>::iterator it = observers[i].begin(); it != observers[i].end(); ++it) {
+			// erases if it is found and breaks the loop for this method
+			if (((ObserverFunction*)(*it))->handlerfp == handlerfp) {
+				delete *it;
+				observers[i].erase(it);
+				break;
+			}
+		}
+	}
+}
+
+void Subject::disconnect(int event_type, handler_type handlerfp) {
+	if (!n_events)
+		return;
+	
+	// searches the observer in the specified event type
+	for (list<Observer*>::iterator it = observers[event_type].begin(); it != observers[event_type].end(); ++it) {
+		// erases if it is found and returns this method
+		if (((ObserverFunction*)(*it))->handlerfp == handlerfp) {
+			delete *it;
+			observers[event_type].erase(it);
+			return;
+		}
+	}
 }
 
 // =============================================================================
