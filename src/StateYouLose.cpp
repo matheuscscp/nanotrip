@@ -10,7 +10,7 @@ StateYouLose::StateYouLose(ArgsBase* args) {
 	bg = new Sprite("img/youlose/background.png");
 	
 	shadow = new Sprite("img/youlose/shadow.png");
-	eatles = new Animation("img/youlose/eatles.png", 0, 10, 1, 4);
+	eatles = new Animation("img/youlose/eatles.png", 0, 20, 1, 4);
 	
 	retry = new Button(new Sprite("img/youlose/retry.png"));
 	menu = new Button(new Sprite("img/youlose/menu.png"));

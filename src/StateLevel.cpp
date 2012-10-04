@@ -75,7 +75,7 @@ charge_cursor_position(640)
 	eatles_sheets[0] = new Sprite("img/level/eatles.png");
 	eatles_sheets[1] = new Animation("img/level/eatles_blink.png", 0, 16, 1, 4);
 	eatles_sheets[2] = new Animation("img/level/eatles_wait.png", 0, 20, 1, 18);
-	eatles_sheets[3] = new Animation("img/level/eatles_pissed.png", 0, 10, 1, 4);
+	eatles_sheets[3] = new Animation("img/level/eatles_pissed.png", 0, 20, 1, 4);
 	eatles_sheets[4] = new Animation("img/level/eatles_laugh.png", 0, 8, 1, 4);
 	sprite_life = new Animation("img/level/life.png", 3, 1, 4, 1);
 	
