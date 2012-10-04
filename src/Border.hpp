@@ -15,7 +15,7 @@ public:
 	lalge::Scalar getElasticity() const;
 	void setElasticity(lalge::Scalar elasticity);
 	
-	void manageParticleCollision(GameObject* particle, bool& enable);
+	void particleCollision(GameObject* particle, bool& enable);
 	bool collides(const Particle& particle) const;
 };
 

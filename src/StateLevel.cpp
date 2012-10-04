@@ -7,6 +7,7 @@
 #include "SDLBase.hpp"
 #include "GameBGM.hpp"
 #include "LevelMakerData.hpp"
+#include "Line.hpp"
 
 #define GRADIENT_CONST	15000
 
@@ -358,22 +359,6 @@ void StateLevel::render() {
 	// background
 	bg->render(bg_x, bg_y);
 	
-	// the blackhole
-	blackhole->render();
-	
-	// all particles
-	for (list<Particle*>::iterator it = particles.begin(); it != particles.end(); ++it) {
-		(*it)->render();
-	}
-	
-	// all items
-	for (list<Item*>::iterator it = items.begin(); it != items.end(); ++it) {
-		(*it)->render();
-	}
-	
-	// the avatar
-	avatar->render();
-	
 	// borders
 	if (border_top)
 		border_top->render(30, 0);
@@ -395,6 +380,22 @@ void StateLevel::render() {
 	// charge changer
 	charge_bar->render(0, 666);
 	charge_cursor->render(charge_cursor_position, 709, true);
+	
+	// the blackhole
+	blackhole->render();
+	
+	// all particles
+	for (list<Particle*>::iterator it = particles.begin(); it != particles.end(); ++it) {
+		(*it)->render();
+	}
+	
+	// all items
+	for (list<Item*>::iterator it = items.begin(); it != items.end(); ++it) {
+		(*it)->render();
+	}
+	
+	// the avatar
+	avatar->render();
 	
 	// press space to start
 	if ((avatar->pinned) && ((SDL_GetTicks()/600) % 2) && (!frozen_))
@@ -433,7 +434,11 @@ void StateLevel::assemble() {
 	
 	bg = bg_grad;
 	
+	assembleBorders();
+	
 	assembleAvatar();
+	
+	addBordersInteraction(avatar);
 	
 	assembleBlackHole();
 	
@@ -451,6 +456,8 @@ void StateLevel::assemble() {
 		interaction_blackhole_force->enabled = false;
 		interaction_blackhole_collision->enabled = false;
 		
+		addBordersInteraction(key);
+		
 		// avatar-key interaction
 		interactions.push_back(Interaction(key, avatar, (Interaction::callback)&Item::particleCollision));
 		
@@ -461,6 +468,8 @@ void StateLevel::assemble() {
 	list<Configuration> conf_particles = raw.getConfigList("particle");
 	for (list<Configuration>::iterator it1 = conf_particles.begin(); it1 != conf_particles.end(); ++it1) {
 		Particle* particle = assembleParticle(*it1);
+		
+		addBordersInteraction(particle);
 		
 		// avatar interactions
 		interactions.push_back(Interaction(particle, avatar, (Interaction::callback)&Particle::particleCollision));
@@ -488,6 +497,8 @@ void StateLevel::assemble() {
 		Item* item = assembleItem(*it1);
 		
 		if (item) {
+			addBordersInteraction(item);
+			
 			// avatar interactions
 			interactions.push_back(Interaction(item, avatar, (Interaction::callback)&Item::particleCollision));
 			
@@ -506,6 +517,38 @@ void StateLevel::assemble() {
 			items.push_back(item);
 		}
 	}
+}
+
+void StateLevel::assembleBorders() {
+	if (border_top) {
+		borders.push_back(new Border());
+		((Line*)borders.back()->getShape())->setDirection(r2vec(1, 0));
+		((Line*)borders.back()->getShape())->position = r2vec(0, 12);
+	}
+	
+	if (border_right) {
+		borders.push_back(new Border());
+		((Line*)borders.back()->getShape())->setDirection(r2vec(0, 1));
+		((Line*)borders.back()->getShape())->position = r2vec(1279 - 12, 0);
+	}
+	
+	if (border_bottom) {
+		borders.push_back(new Border());
+		((Line*)borders.back()->getShape())->setDirection(r2vec(1, 0));
+		((Line*)borders.back()->getShape())->position = r2vec(0, 719 - 24);
+	}
+	
+	if (border_left) {
+		borders.push_back(new Border());
+		((Line*)borders.back()->getShape())->setDirection(r2vec(0, 1));
+		((Line*)borders.back()->getShape())->position = r2vec(12, 0);
+	}
+	
+}
+
+void StateLevel::addBordersInteraction(Particle* particle) {
+	for (list<Border*>::iterator it = borders.begin(); it != borders.end(); ++it)
+		interactions.push_back(Interaction(*it, particle, (Interaction::callback)&Border::particleCollision));
 }
 
 void StateLevel::assembleAvatar() {
@@ -631,6 +674,12 @@ Item* StateLevel::assembleItem(const Configuration& conf) {
 }
 
 void StateLevel::clear() {
+	// all borders
+	while (borders.size()) {
+		delete borders.back();
+		borders.pop_back();
+	}
+	
 	// the avatar
 	delete avatar;
 	

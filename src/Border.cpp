@@ -1,21 +1,46 @@
 #include "Border.hpp"
 
+#include "Line.hpp"
+#include "SDLBase.hpp"
+
+using namespace lalge;
+
 Border::Border() { setShape(new Line()); }
 
 void Border::update() {}
 
-lalge::Scalar Border::getElasticity() const { return elasticity; }
+Scalar Border::getElasticity() const { return elasticity; }
 
-void Border::setElasticity(lalge::Scalar elasticity) {
+void Border::setElasticity(Scalar elasticity) {
 	if ((elasticity >= 0) && (elasticity <= 0.5))
 		this->elasticity = elasticity;
 }
 
-void Border::manageParticleCollision(GameObject* particle, bool& enable) {
+void Border::particleCollision(GameObject* particle, bool& enable) {
 	if (!collides(*((Particle*)particle)))
 		return;
 	
+	try {
+		R2Vector speed_projection = ((Line*)getShape())->getDirection().proj(((Particle*)particle)->speed);
+		((Particle*)particle)->speed += (speed_projection - ((Particle*)particle)->speed)*2;
+	}
+	catch (ProjectionNotDefined&) {
+		((Particle*)particle)->speed *= -1;
+	}
 	
+	// play sound
+	if (elasticity + ((Particle*)particle)->getElasticity() > 0.5) {
+		if (Particle::sound_collision_elastic)
+			Particle::sound_collision_elastic->play(1);
+		else if (Particle::sound_collision_inelastic)
+			Particle::sound_collision_inelastic->play(1);
+	}
+	else {
+		if (Particle::sound_collision_inelastic)
+			Particle::sound_collision_inelastic->play(1);
+		else if (Particle::sound_collision_elastic)
+			Particle::sound_collision_elastic->play(1);
+	}
 }
 
 bool Border::collides(const Particle& particle) const {

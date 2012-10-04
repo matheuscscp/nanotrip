@@ -23,9 +23,6 @@ void Line::setDirection(const R2Vector& direction) {
 }
 
 bool Line::collides(const Circle& circle) const {
-	Scalar a = 1;
-	Scalar b = -direction.x(1)/direction.x(0);
-	Scalar c = position.x(0)*direction.x(1)/direction.x(0) - position.x(1);
-	
-	return (ABSVAL(a*circle.position.x(0) + b*circle.position.x(1) + c)/sqrt(a*a + b*b) > circle.getRadius());
+	R2Vector range = circle.position - position;
+	return ((range - direction.proj(range)).size() <= circle.getRadius());
 }

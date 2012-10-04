@@ -12,6 +12,7 @@
 #include "Rectangle.hpp"
 #include "Audio.hpp"
 #include "Animation.hpp"
+#include "Border.hpp"
 
 class StateLevel : public State {
 GAMESTATE
@@ -103,6 +104,7 @@ protected:
 	Interaction* interaction_blackhole_force;
 	Interaction* interaction_blackhole_collision;
 	
+	std::list<Border*> borders;
 	Avatar* avatar;
 	Particle* blackhole;
 	std::list<Particle*> particles;
@@ -125,6 +127,8 @@ protected:
 	
 	void reload();
 	void assemble();
+	void assembleBorders();
+	void addBordersInteraction(Particle* particle);
 	void assembleAvatar();
 	void assembleBlackHole();
 	Item* assembleKey();
