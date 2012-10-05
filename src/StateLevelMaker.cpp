@@ -29,6 +29,10 @@ StateLevelMaker::StateLevelMaker(ArgsBase* args) : clicking_button(false) {
 	
 	// hud
 	hud = new Sprite("img/levelmaker/hud.png");
+	pupil = new Sprite("img/levelmaker/eatles_pupil.png");
+	pupil_center = r2vec(72, 131);
+	pupil_position = pupil_center;
+	charge_bar = new Sprite("img/levelmaker/charge_bar.png");
 	
 	// all sprites
 	LevelMakerData::sprite_avatar = new Sprite("img/levelmaker/avatar.png");
@@ -63,35 +67,35 @@ StateLevelMaker::StateLevelMaker(ArgsBase* args) : clicking_button(false) {
 	
 	// all buttons
 	
-	button_quit = new Button(new Sprite("img/levelmaker/button_quit.png"));
-	button_quit->getShape()->position = r2vec(60, 50);
-	button_quit->connect(Button::CLICKED, this, &StateLevelMaker::handleQuitButton);
-	button_quit->update();
-	
-	button_save = new Button(new Sprite("img/levelmaker/button_save.png"));
-	button_save->getShape()->position = r2vec(160, 50);
-	button_save->connect(Button::CLICKED, this, &StateLevelMaker::handleSave);
-	button_save->update();
-	
-	button_revert = new Button(new Sprite("img/levelmaker/button_revert.png"));
-	button_revert->getShape()->position = r2vec(60, 100);
-	button_revert->connect(Button::CLICKED, this, &StateLevelMaker::handleRevert);
-	button_revert->update();
-	
 	button_test = new Button(new Sprite("img/levelmaker/button_test.png"));
-	button_test->getShape()->position = r2vec(160, 100);
+	button_test->getShape()->position = r2vec(260, 34);
 	button_test->connect(Button::CLICKED, this, &StateLevelMaker::handleTest);
 	button_test->update();
 	
+	button_revert = new Button(new Sprite("img/levelmaker/button_revert.png"));
+	button_revert->getShape()->position = r2vec(222, 83);
+	button_revert->connect(Button::CLICKED, this, &StateLevelMaker::handleRevert);
+	button_revert->update();
+	
+	button_clone = new Button(new Sprite("img/levelmaker/button_clone.png"));
+	button_clone->getShape()->position = r2vec(201, 130);
+	button_clone->connect(Button::CLICKED, this, &StateLevelMaker::handleClone);
+	button_clone->update();
+	
 	button_delete = new Button(new Sprite("img/levelmaker/button_delete.png"));
-	button_delete->getShape()->position = r2vec(60, 150);
+	button_delete->getShape()->position = r2vec(174, 180);
 	button_delete->connect(Button::CLICKED, this, &StateLevelMaker::handleDelete);
 	button_delete->update();
 	
-	button_clone = new Button(new Sprite("img/levelmaker/button_clone.png"));
-	button_clone->getShape()->position = r2vec(160, 150);
-	button_clone->connect(Button::CLICKED, this, &StateLevelMaker::handleClone);
-	button_clone->update();
+	button_save = new Button(new Sprite("img/levelmaker/button_save.png"));
+	button_save->getShape()->position = r2vec(135, 229);
+	button_save->connect(Button::CLICKED, this, &StateLevelMaker::handleSave);
+	button_save->update();
+	
+	button_quit = new Button(new Sprite("img/levelmaker/button_quit.png"));
+	button_quit->getShape()->position = r2vec(43, 276);
+	button_quit->connect(Button::CLICKED, this, &StateLevelMaker::handleQuitButton);
+	button_quit->update();
 	
 	// data
 	if (dynamic_cast<Args*>(args))
@@ -106,6 +110,8 @@ StateLevelMaker::StateLevelMaker(ArgsBase* args) : clicking_button(false) {
 StateLevelMaker::~StateLevelMaker() {
 	delete bg;
 	delete hud;
+	delete pupil;
+	delete charge_bar;
 	
 	// all sprites
 	delete LevelMakerData::sprite_avatar;
@@ -196,6 +202,8 @@ void StateLevelMaker::handleUnstack(ArgsBase* args) {
 }
 
 void StateLevelMaker::update() {
+	updatePupil();
+	
 	checkSelectionRequests();
 	
 	LevelMakerPanel::checkSelectionRequests();
@@ -225,6 +233,16 @@ void StateLevelMaker::update() {
 void StateLevelMaker::render() {
 	bg->render(bg_x, bg_y);
 	
+	// hud
+	hud->render();
+	pupil->render(pupil_position.x(0), pupil_position.x(1), true);
+	button_save->render();
+	button_revert->render();
+	button_test->render();
+	button_quit->render();
+	button_delete->render();
+	button_clone->render();
+	
 	// borders
 	if (data->has_top)
 		border_top->render(30, 0);
@@ -235,14 +253,7 @@ void StateLevelMaker::render() {
 	if (data->has_left)
 		border_left->render();
 	
-	// hud
-	hud->render();
-	button_save->render();
-	button_revert->render();
-	button_test->render();
-	button_quit->render();
-	button_delete->render();
-	button_clone->render();
+	charge_bar->render(0, 666);
 	
 	data->blackhole->render();
 	
@@ -265,6 +276,16 @@ void StateLevelMaker::render() {
 	
 	// panel
 	LevelMakerPanel::renderCurrent();
+}
+
+void StateLevelMaker::updatePupil() {
+	R2Vector range = r2vec(InputManager::instance()->mouseX(), InputManager::instance()->mouseY()) - pupil_center;
+	try {
+		pupil_position = pupil_center + range.unitvec()*4*range.size()/500;
+	}
+	catch (DirectionNotDefined&) {
+		pupil_position = pupil_center;
+	}
 }
 
 void StateLevelMaker::renderAvatarSpeed() {

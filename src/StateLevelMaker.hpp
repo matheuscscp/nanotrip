@@ -30,8 +30,9 @@ public:
 private:
 	int bg_x, bg_y;
 	Sprite* bg;
-	
 	Sprite* hud;
+	Sprite* pupil;
+	Sprite* charge_bar;
 	
 	Sprite* border_top;
 	Sprite* border_right;
@@ -48,6 +49,9 @@ private:
 	bool clicking_button;
 	
 	LevelMakerData* data;
+	
+	lalge::R2Vector pupil_center;
+	lalge::R2Vector pupil_position;
 public:
 	StateLevelMaker(ArgsBase* args);
 	~StateLevelMaker();
@@ -57,6 +61,7 @@ public:
 	void update();
 	void render();
 private:
+	void updatePupil();
 	void renderAvatarSpeed();
 	
 	void disableButtons();

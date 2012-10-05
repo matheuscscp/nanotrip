@@ -128,12 +128,51 @@ void PanelItem::show() {
 		input_value.set(eval(((Item*)(*LevelMakerObject::selected.begin())->getGameObject())->getValue()));
 	}
 	else {
-		text_input_mass->setText("");
-		input_mass.clear();
-		text_input_elasticity->setText("");
-		input_elasticity.clear();
-		text_input_value->setText("");
-		input_value.clear();
+		Scalar mass, elasticity, value;
+		bool set_mass = true;
+		bool set_elasticity = true;
+		bool set_value = true;
+		
+		set<LevelMakerObject*>::iterator it = LevelMakerObject::selected.begin();
+		
+		mass = ((Particle*)(*it)->getGameObject())->getMass();
+		elasticity = ((Particle*)(*it)->getGameObject())->getElasticity();
+		value = ((Item*)(*it)->getGameObject())->getValue();
+		
+		++it;
+		
+		for (it = it; it != LevelMakerObject::selected.end(); ++it) {
+			if ((!set_mass) && (!set_elasticity) && (!set_value))
+				break;
+			
+			if (((Particle*)(*it)->getGameObject())->getMass() != mass)
+				set_mass = false;
+			if (((Particle*)(*it)->getGameObject())->getElasticity() != elasticity)
+				set_elasticity = false;
+			if (((Item*)(*it)->getGameObject())->getValue() != value)
+				set_value = false;
+		}
+		
+		if (set_mass)
+			input_mass.set(eval(mass));
+		else {
+			text_input_mass->setText("");
+			input_mass.clear();
+		}
+		
+		if (set_elasticity)
+			input_elasticity.set(eval(elasticity));
+		else {
+			text_input_elasticity->setText("");
+			input_elasticity.clear();
+		}
+		
+		if (set_value)
+			input_value.set(eval(value));
+		else {
+			text_input_value->setText("");
+			input_value.clear();
+		}
 	}
 	
 	// operations
