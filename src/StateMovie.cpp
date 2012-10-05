@@ -95,7 +95,7 @@ void StateMovie::update() {
 		//args = new StateArgs( nextstate );
 	}
 	else if( skip_stopwatch.time() >= 0 )
-		SDLBase::setFadeOpacity( float( skip_stopwatch.time() ) / skip_fade );
+		SDLBase::setFadeAlpha( float( skip_stopwatch.time() ) / skip_fade );
 }
 
 void StateMovie::render() {

@@ -8,6 +8,7 @@
 #include "GameBGM.hpp"
 #include "LevelMakerData.hpp"
 #include "Line.hpp"
+#include "StateTransition.hpp"
 
 #define GRADIENT_CONST	15000
 
@@ -250,6 +251,9 @@ void StateLevel::handleUnstack(ArgsBase* args) {
 		break;
 		
 	case UnstackArgs::TRYAGAIN:
+		if (history)
+			throw new Change("StateTransition", nextargs);
+		
 		life = 3;
 		((Animation*)sprite_life)->setFrame(life);
 		reload();
@@ -260,13 +264,13 @@ void StateLevel::handleUnstack(ArgsBase* args) {
 		if (!history)
 			throw new Change(nextstate, new FinalArgs(points, nextargs));
 		
-		if (nextargs)
-			delete nextargs;
-		
-		if (life < 0)
+		if (life < 0) {
+			if (nextargs)
+				delete nextargs;
 			throw new Change("StateInstructions");
+		}
 		
-		throw new Change("StatePlay");
+		throw new Change("StatePlay", nextargs);
 		break;
 		
 	case UnstackArgs::NEXT:
@@ -741,6 +745,13 @@ void StateLevel::handleKeyDown(const observer::Event& event, bool& stop) {
 			return;
 		avatar->pinned = false;
 		timer.start(level_time*1000);
+		break;
+		
+	// cheat for demonstrations
+	case 'W':
+	case SDLK_w:
+		if (!avatar->pinned)
+			win();
 		break;
 		
 	default:

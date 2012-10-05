@@ -4,7 +4,9 @@
 #include "GameBGM.hpp"
 #include "InputManager.hpp"
 
-#define BEGIN_DELAY	500
+#define BEGIN_FADEIN_ALPHA_DIFF	-0.01
+
+#define BEGIN_DELAY	4000
 #define TRUCK_DELAY	500
 #define PRESS_DELAY	2000
 
@@ -16,7 +18,7 @@
 #define FADEIN_START	4000
 #define FADEIN_OVER		5000
 
-#define FADEIN_ALPHA_DIFF	-0.05
+#define MENU_FADEIN_ALPHA_DIFF	-0.05
 
 using namespace lalge;
 
@@ -32,8 +34,6 @@ pressed_enter(false)
 	press = new Animation("img/introduction/press_enter.png", 0, 12, 1, 10);
 	mainmenu = new Sprite("img/introduction/mainmenu.png");
 	bg = new Sprite("img/introduction/background.png");
-	
-	fadein_alpha = 1;
 	
 	eatles_states[0] = new Animation("img/introduction/eatles_busted.png", 0, 10, 1, 4);
 	eatles_states[1] = new Animation("img/introduction/eatles_smoke.png", 0, 10, 1, 8);
@@ -53,6 +53,9 @@ pressed_enter(false)
 	
 	InputManager::instance()->connect(InputManager::KEYDOWN, this, &StateIntroduction::handleKeyDown);
 	
+	fadein_alpha = 1;
+	SDLBase::setFadeAlpha(fadein_alpha);
+	
 	stopwatch_begin.start();
 	
 	GameBGM::play();
@@ -70,8 +73,14 @@ StateIntroduction::~StateIntroduction() {
 }
 
 void StateIntroduction::update() {
-	if (stopwatch_begin.time() <= BEGIN_DELAY)
+	// fade in
+	if (stopwatch_begin.time() <= BEGIN_DELAY) {
+		fadein_alpha += BEGIN_FADEIN_ALPHA_DIFF;
+		if (fadein_alpha < 0)
+			fadein_alpha = 0;
+		SDLBase::setFadeAlpha(fadein_alpha);
 		return;
+	}
 	
 	if (stopwatch_fadein.time() > FADEIN_OVER)
 		throw new Change("StateMainMenu");
@@ -117,6 +126,7 @@ void StateIntroduction::update() {
 
 void StateIntroduction::render() {
 	storyboard->render(storyboard_position.x(0), storyboard_position.x(1));
+	SDLBase::renderFade();
 	
 	truck->render(truck_position.x(0), 6480 + storyboard_position.x(1) + truck_position.x(1));
 	eatles->render(eatles_position.x(0), 6480 + storyboard_position.x(1) + eatles_position.x(1));
@@ -128,7 +138,7 @@ void StateIntroduction::render() {
 	
 	// main menu fade in
 	if (stopwatch_fadein.time() > FADEIN_START) {
-		fadein_alpha += FADEIN_ALPHA_DIFF;
+		fadein_alpha += MENU_FADEIN_ALPHA_DIFF;
 		if (fadein_alpha <= 0)
 			fadein_alpha = 0;
 		bg->setAlpha(fadein_alpha);
@@ -145,6 +155,7 @@ void StateIntroduction::updateEatles() {
 	else if (stopwatch_eatles.time() > EATLES_GETUP + eatles_states[1]->getTimeSize()) {
 		eatles = eatles_states[2];
 		stopwatch_fadein.start();
+		fadein_alpha = 1;
 		return;
 	}
 	else if (stopwatch_eatles.time() > EATLES_GETUP) {
@@ -159,19 +170,18 @@ void StateIntroduction::updateEatles() {
 
 void StateIntroduction::handleKeyDown(const observer::Event& event, bool& stop) {
 	switch (inputmanager_event.key.keysym.sym) {
-	case SDLK_SPACE:
-		storyboard_position.set(1, -6480);
-		break;
-		
 	case SDLK_RETURN:
 	case SDLK_KP_ENTER:
-		if (stopwatch_end.time() > PRESS_DELAY) {
+		if (stopwatch_end.time() <= PRESS_DELAY)
+			throw new Change("StateMainMenu");
+		else {
 			pressed_enter = true;
 			stopwatch_eatles.start();
 		}
 		break;
 		
 	default:
+		throw new Change("StateMainMenu");
 		break;
 	}
 }

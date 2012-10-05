@@ -6,6 +6,7 @@
 
 #include "SDLBase.hpp"
 #include "StateLevel.hpp"
+#include "StateTransition.hpp"
 
 using namespace lalge;
 using namespace common;
@@ -24,6 +25,10 @@ StatePlay::StatePlay(ArgsBase* args) : warning_hidden(true) {
 	inputstring.connect(InputString::ENTER, this, &StatePlay::handleEnter);
 	inputstring.setMaxSize(25);
 	inputstring.enabled = true;
+	if (args) {
+		inputstring.set(((StateTransition::Args*)args)->player_name);
+		delete args;
+	}
 	
 	warning = new Text("", "Empty name!", 15, 0, SDLBase::getColor(255, 0, 0), Text::blended);
 	
@@ -77,10 +82,8 @@ void StatePlay::handleInput(const observer::Event& event, bool& stop) {
 }
 
 void StatePlay::handleEnter(const observer::Event& event, bool& stop) {
-	if (inputstring.get().size()) {
-		SHOW("handleEnter");
-		return;	//TODO trocar pelo throw do primeiro level da historia
-	}
+	if (inputstring.get().size())
+		throw new Change("StateTransition", new StateTransition::Args(inputstring.get()));
 	
 	warning_hidden = false;
 }

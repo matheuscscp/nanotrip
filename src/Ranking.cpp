@@ -227,50 +227,55 @@ Ranking::Ranking(
 	int spacing, bool center, int left, int top, int right, int bottom
 )
 {
-	DataManager data( filename );
-	unsigned int max_slots = data.maxSlots();
-	bool end = false;
-	
-	for( unsigned int i = 0; ( i < max_slots ) && ( !end ); ++i )
-	{
-		if( !data.setText( text, i, max_points ) )
-			end = true;
-		else
+	try {
+		DataManager data( filename );
+		unsigned int max_slots = data.maxSlots();
+		bool end = false;
+		
+		for( unsigned int i = 0; ( i < max_slots ) && ( !end ); ++i )
 		{
-			int x, y;
-			
-			if( center )
-			{
-				x = ( SDLBase::screen()->w - text->w() ) / 2;
-				y = (
-					(
-						SDLBase::screen()->h -
-						( text->h() + 2 * spacing ) * max_slots
-					) / 2 +
-					i * ( text->h() + 2 * spacing ) +
-					spacing
-				);
-			}
+			if( !data.setText( text, i, max_points ) )
+				end = true;
 			else
 			{
-				if( left )
-					x = left;
-				else
-					x = ( SDLBase::screen()->w - text->w() - right );
+				int x, y;
 				
-				if( top )
-					y = ( top + i * ( text->h() + 2 * spacing ) + spacing );
-				else
+				if( center )
 				{
+					x = ( SDLBase::screen()->w - text->w() ) / 2;
 					y = (
-						SDLBase::screen()->h - bottom + spacing -
-						( text->h() + 2 * spacing ) * ( max_slots - i )
+						(
+							SDLBase::screen()->h -
+							( text->h() + 2 * spacing ) * max_slots
+						) / 2 +
+						i * ( text->h() + 2 * spacing ) +
+						spacing
 					);
 				}
+				else
+				{
+					if( left )
+						x = left;
+					else
+						x = ( SDLBase::screen()->w - text->w() - right );
+					
+					if( top )
+						y = ( top + i * ( text->h() + 2 * spacing ) + spacing );
+					else
+					{
+						y = (
+							SDLBase::screen()->h - bottom + spacing -
+							( text->h() + 2 * spacing ) * ( max_slots - i )
+						);
+					}
+				}
+				
+				surface.render( text, x, y );
 			}
-			
-			surface.render( text, x, y );
 		}
+	}
+	catch(mexception&) {
+		SHOW("KKK");
 	}
 }
 

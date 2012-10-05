@@ -41,8 +41,9 @@ OBJ13 = $(OBJ12) $(OBJDIR)/LevelMakerObject.o $(OBJDIR)/GameBGM.o $(OBJDIR)/Pane
 OBJ14 = $(OBJ13) $(OBJDIR)/StateLevelMakerQuit.o $(OBJDIR)/LevelMakerData.o $(OBJDIR)/PanelBlackHole.o
 OBJ15 = $(OBJ14) $(OBJDIR)/PanelKey.o $(OBJDIR)/PanelAvatar.o $(OBJDIR)/PanelParticle.o
 OBJ16 = $(OBJ15) $(OBJDIR)/PanelItem.o $(OBJDIR)/Line.o $(OBJDIR)/Border.o $(OBJDIR)/StateIntroduction.o
+OBJ17 = $(OBJ16) $(OBJDIR)/StateTransition.o
 
-OBJ = $(OBJ16)
+OBJ = $(OBJ17)
 
 all: build
 

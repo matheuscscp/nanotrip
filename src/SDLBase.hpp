@@ -103,7 +103,7 @@ public:
 	
 	static void renderFade();
 	
-	static void setFadeOpacity(float opacity);
+	static void setFadeAlpha(float opacity);
 	
 	static void renderStackScreen();
 	

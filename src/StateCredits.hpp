@@ -12,6 +12,8 @@ private:
 	Sprite* credits;
 	
 	Button* back;
+	
+	bool show_ranking;
 public:
 	StateCredits(ArgsBase* args);
 	~StateCredits();

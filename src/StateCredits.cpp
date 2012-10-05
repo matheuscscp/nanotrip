@@ -4,13 +4,18 @@ using namespace lalge;
 
 GAMESTATE_DEF(StateCredits)
 
-StateCredits::StateCredits(ArgsBase* args) {
+StateCredits::StateCredits(ArgsBase* args) : show_ranking(false) {
 	bg = new Sprite("img/menus/background.png");
 	credits = new Sprite("img/menus/credits.png");
 	
 	back = new Button(new Sprite("img/menus/button_back.png"));
 	back->getShape()->position = r2vec(640, 600);
 	back->connect(Button::CLICKED, this, &StateCredits::handleGoBack);
+	
+	if (args) {
+		delete args;
+		show_ranking = true;
+	}
 }
 
 StateCredits::~StateCredits() {
@@ -33,5 +38,8 @@ void StateCredits::render() {
 }
 
 void StateCredits::handleGoBack(const observer::Event& event, bool& stop) {
+	if (show_ranking)
+		throw new Change("StateRanking");
+	
 	throw new Change("StateMainMenu");
 }

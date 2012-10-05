@@ -334,7 +334,7 @@ void SDLBase::renderFade()
 	SDL_BlitSurface( fade, 0, screen_, 0 );
 }
 
-void SDLBase::setFadeOpacity(float opacity)
+void SDLBase::setFadeAlpha(float opacity)
 {
 	SDL_SetAlpha( fade, SDL_SRCALPHA, opacity * 255 );
 }
