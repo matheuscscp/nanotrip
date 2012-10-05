@@ -11,6 +11,7 @@ class StateMakeLevel : public State {
 GAMESTATE
 private:
 	Sprite* bg;
+	Sprite* mainmenu;
 	
 	Sprite* inputbox;
 	Text* inputtext;

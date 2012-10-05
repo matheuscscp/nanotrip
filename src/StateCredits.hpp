@@ -9,6 +9,7 @@ class StateCredits : public State {
 GAMESTATE
 private:
 	Sprite* bg;
+	Sprite* credits;
 	
 	Button* back;
 public:

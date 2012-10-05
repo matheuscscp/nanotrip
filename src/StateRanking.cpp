@@ -5,15 +5,17 @@ using namespace lalge;
 GAMESTATE_DEF(StateRanking)
 
 StateRanking::StateRanking(ArgsBase* args) {
-	bg = new Sprite("img/level/background.png");
+	bg = new Sprite("img/menus/background.png");
+	ranking = new Sprite("img/menus/ranking.png");
 	
 	back = new Button(new Sprite("img/menus/button_back.png"));
-	back->getShape()->position = r2vec(100, 680);
+	back->getShape()->position = r2vec(640, 600);
 	back->connect(Button::CLICKED, this, &StateRanking::handleGoBack);
 }
 
 StateRanking::~StateRanking() {
 	delete bg;
+	delete ranking;
 	
 	delete back->sprite;
 	delete back;
@@ -25,6 +27,8 @@ void StateRanking::update() {
 
 void StateRanking::render() {
 	bg->render();
+	ranking->render();
+	
 	back->render();
 }
 

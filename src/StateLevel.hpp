@@ -138,8 +138,9 @@ protected:
 	
 	void setTimeText(int seconds);
 	
+	void updateCharge();
+	
 	void handleKeyDown(const observer::Event& event, bool& stop);
-	void handleMouseMotion(const observer::Event& event, bool& stop);
 	void handleTimerDone(const observer::Event& event, bool& stop);
 	void handleAvatarBeingSwallowed(const observer::Event& event, bool& stop);
 	void handleItemCollision(const observer::Event& event, bool& stop);

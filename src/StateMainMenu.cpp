@@ -9,30 +9,32 @@ GAMESTATE_DEF(StateMainMenu)
 
 StateMainMenu::StateMainMenu(ArgsBase* args) {
 	bg = new Sprite("img/menus/background.png");
+	mainmenu = new Sprite("img/menus/mainmenu.png");
 	
 	newgame = new Button(new Sprite("img/menus/button_new_game.png"));
-	newgame->getShape()->position = r2vec(640, 100);
+	newgame->getShape()->position = r2vec(640, 335);
 	newgame->connect(Button::CLICKED, this, &StateMainMenu::handleNewGame);
 	
 	ranking = new Button(new Sprite("img/menus/button_ranking.png"));
-	ranking->getShape()->position = r2vec(640, 200);
+	ranking->getShape()->position = r2vec(640, 385);
 	ranking->connect(Button::CLICKED, this, &StateMainMenu::handleRanking);
 	
 	instructions = new Button(new Sprite("img/menus/button_instructions.png"));
-	instructions->getShape()->position = r2vec(640, 300);
+	instructions->getShape()->position = r2vec(640, 435);
 	instructions->connect(Button::CLICKED, this, &StateMainMenu::handleInstructions);
 	
 	credits = new Button(new Sprite("img/menus/button_credits.png"));
-	credits->getShape()->position = r2vec(640, 400);
+	credits->getShape()->position = r2vec(640, 485);
 	credits->connect(Button::CLICKED, this, &StateMainMenu::handleCredits);
 	
 	quit = new Button(new Sprite("img/menus/button_quit.png"));
-	quit->getShape()->position = r2vec(640, 500);
+	quit->getShape()->position = r2vec(640, 535);
 	quit->connect(Button::CLICKED, this, &StateMainMenu::handleQuit);
 }
 
 StateMainMenu::~StateMainMenu() {
 	delete bg;
+	delete mainmenu;
 	
 	delete newgame->sprite;
 	delete newgame;
@@ -60,6 +62,7 @@ void StateMainMenu::update() {
 
 void StateMainMenu::render() {
 	bg->render();
+	mainmenu->render();
 	
 	newgame->render();
 	ranking->render();

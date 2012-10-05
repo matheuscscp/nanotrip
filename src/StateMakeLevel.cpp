@@ -8,7 +8,8 @@ using namespace lalge;
 GAMESTATE_DEF(StateMakeLevel)
 
 StateMakeLevel::StateMakeLevel(ArgsBase* args) : warning_hidden(true) {
-	bg = new Sprite("img/level/background.png");
+	bg = new Sprite("img/menus/background.png");
+	mainmenu = new Sprite("img/menus/mainmenu.png");
 	
 	inputbox = new Sprite("img/menus/input_level_name.png");
 	
@@ -26,16 +27,17 @@ StateMakeLevel::StateMakeLevel(ArgsBase* args) : warning_hidden(true) {
 	warning = new Text("", "Empty name!", 15, 0, SDLBase::getColor(255, 0, 0), Text::blended);
 	
 	back = new Button(new Sprite("img/menus/button_back.png"));
-	back->getShape()->position = r2vec(540, 500);
+	back->getShape()->position = r2vec(600 - back->sprite->rectW()/2, 600);
 	back->connect(Button::CLICKED, this, &StateMakeLevel::handleGoBack);
 	
 	makelevel = new Button(new Sprite("img/menus/button_make_level.png"));
-	makelevel->getShape()->position = r2vec(740, 500);
+	makelevel->getShape()->position = r2vec(680 + makelevel->sprite->rectW()/2, 600);
 	makelevel->connect(Button::CLICKED, this, &StateMakeLevel::handleEnter);
 }
 
 StateMakeLevel::~StateMakeLevel() {
 	delete bg;
+	delete mainmenu;
 	
 	delete inputbox;
 	delete inputtext;
@@ -57,11 +59,12 @@ void StateMakeLevel::update() {
 
 void StateMakeLevel::render() {
 	bg->render();
+	mainmenu->render();
 	
-	inputbox->render(640, 300, true);
-	inputtext->render(640, 315);
+	inputbox->render(640, 425, true);
+	inputtext->render(640, 440);
 	if (!warning_hidden)
-		warning->render(640, 340);
+		warning->render(640, 465);
 	
 	back->render();
 	makelevel->render();

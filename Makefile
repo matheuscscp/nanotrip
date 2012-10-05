@@ -5,7 +5,7 @@ DOCDIR = doc
 
 ERRLOG = ErrorLog.txt
 
-STATE = StateMainMenu
+STATE = StateIntroduction
 RELEASE = -D'RELEASE="$(STATE)"'
 
 HIDE_WARN = 
@@ -40,7 +40,7 @@ OBJ12 = $(OBJ11) $(OBJDIR)/StateYouWin.o $(OBJDIR)/Item.o $(OBJDIR)/LevelMakerPa
 OBJ13 = $(OBJ12) $(OBJDIR)/LevelMakerObject.o $(OBJDIR)/GameBGM.o $(OBJDIR)/PanelGeneral.o
 OBJ14 = $(OBJ13) $(OBJDIR)/StateLevelMakerQuit.o $(OBJDIR)/LevelMakerData.o $(OBJDIR)/PanelBlackHole.o
 OBJ15 = $(OBJ14) $(OBJDIR)/PanelKey.o $(OBJDIR)/PanelAvatar.o $(OBJDIR)/PanelParticle.o
-OBJ16 = $(OBJ15) $(OBJDIR)/PanelItem.o $(OBJDIR)/Line.o $(OBJDIR)/Border.o
+OBJ16 = $(OBJ15) $(OBJDIR)/PanelItem.o $(OBJDIR)/Line.o $(OBJDIR)/Border.o $(OBJDIR)/StateIntroduction.o
 
 OBJ = $(OBJ16)
 
@@ -62,7 +62,7 @@ gdb: build
 	gdb $(EXE)
 #r -f -p /home/matheus/Documents/C_C++/C++/IDJ/nanotrip/ -s StateNewGame
 
-release: $(OBJ) smclean
+release: clean $(OBJ) smclean
 	g++ $(RELEASE) $(CXXFLAGS) $(INCLUDE) -c src/StateManager.cpp -o obj/StateManager.o
 	g++ $(CXXFLAGS) $(OBJ) -o $(EXE) $(LIB)
 

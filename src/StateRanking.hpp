@@ -9,6 +9,7 @@ class StateRanking : public State {
 GAMESTATE
 private:
 	Sprite* bg;
+	Sprite* ranking;
 	
 	Button* back;
 public:

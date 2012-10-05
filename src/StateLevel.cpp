@@ -114,7 +114,6 @@ charge_cursor_position(640)
 	
 	// input hooks
 	InputManager::instance()->connect(InputManager::KEYDOWN, this, &StateLevel::handleKeyDown);
-	InputManager::instance()->connect(InputManager::MOUSEMOTION, this, &StateLevel::handleMouseMotion);
 	
 	// texts
 	text_time = new Text("ttf/Swiss721BlackRoundedBT.ttf", "0:00", 13, 0, SDLBase::getColor(255, 31, 77), Text::blended);
@@ -299,6 +298,7 @@ void StateLevel::update() {
 	
 	// the avatar
 	avatar->update();
+	updateCharge();
 	
 	// all particles
 	for (list<Particle*>::iterator it = particles.begin(); it != particles.end(); ++it) {
@@ -314,7 +314,9 @@ void StateLevel::update() {
 	if (eatles)
 		eatles->update();
 	
-	if (states.back()->id() != StateLevel::getid()) {}	// avoiding throws while stacked
+	// avoiding throws while stacked
+	if (states.back()->id() != StateLevel::getid())
+		return;
 	else if ((!lose_) && (!win_)) {
 		int fps = SDLBase::FPS();
 		// eatles go back to normal sprite
@@ -714,6 +716,16 @@ void StateLevel::setTimeText(int seconds) {
 	text_time->setText(ss.str());
 }
 
+void StateLevel::updateCharge() {
+	// handling avatar charge variables
+	charge_cursor_position = InputManager::instance()->mouseX();
+	if (charge_cursor_position < 640 - MAX_CURSOR_X)
+		charge_cursor_position = 640 - MAX_CURSOR_X;
+	else if (charge_cursor_position > 640 + MAX_CURSOR_X)
+		charge_cursor_position = 640 + MAX_CURSOR_X;
+	avatar->setCharge(max_abs_charge*(charge_cursor_position - 640)/MAX_CURSOR_X);
+}
+
 void StateLevel::handleKeyDown(const observer::Event& event, bool& stop) {
 	switch (inputmanager_event.key.keysym.sym) {
 	case SDLK_ESCAPE:
@@ -734,16 +746,6 @@ void StateLevel::handleKeyDown(const observer::Event& event, bool& stop) {
 	default:
 		break;
 	}
-}
-
-void StateLevel::handleMouseMotion(const observer::Event& event, bool& stop) {
-	// handling avatar charge variables
-	charge_cursor_position = InputManager::instance()->mouseX();
-	if (charge_cursor_position < 640 - MAX_CURSOR_X)
-		charge_cursor_position = 640 - MAX_CURSOR_X;
-	else if (charge_cursor_position > 640 + MAX_CURSOR_X)
-		charge_cursor_position = 640 + MAX_CURSOR_X;
-	avatar->setCharge(max_abs_charge*(charge_cursor_position - 640)/MAX_CURSOR_X);
 }
 
 void StateLevel::handleTimerDone(const observer::Event& event, bool& stop) {

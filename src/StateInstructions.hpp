@@ -9,6 +9,7 @@ class StateInstructions : public State {
 GAMESTATE
 private:
 	Sprite* bg;
+	Sprite* instructions;
 	
 	Button* back;
 public:

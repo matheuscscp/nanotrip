@@ -9,6 +9,7 @@ class StateNewGame : public State {
 GAMESTATE
 private:
 	Sprite* bg;
+	Sprite* mainmenu;
 	
 	Button* play;
 	Button* loadlevel;
