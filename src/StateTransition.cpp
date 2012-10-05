@@ -17,17 +17,22 @@ points(0)
 
 StateTransition::StateTransition(ArgsBase* args) : bg1(0), bg2(0) {
 	StateLevel::FinalArgs* casted_args = dynamic_cast<StateLevel::FinalArgs*>(args);
-	bool try_again = false;
 	
 	if (!casted_args) {
 		this->args = (Args*)args;
 		
-		// thrown by state level (try again)
-		if (this->args->level != Args::VERY_FIRST)
-			try_again = true;
 		// just clicked play story
-		else
+		if (this->args->level == Args::VERY_FIRST)
 			++this->args->level;
+		// thrown by state level (try again)
+		else {
+			this->args->level = Args::FIRST;
+			saveRanking();
+			this->args->points = 0;
+			bg1 = new Sprite("img/transition/open_level1.png");
+			stopwatch.start();
+			return;
+		}
 	}
 	else {
 		this->args = (Args*)casted_args->nextargs;
@@ -41,23 +46,15 @@ StateTransition::StateTransition(ArgsBase* args) : bg1(0), bg2(0) {
 		break;
 		
 	case Args::SECOND:
-		if (try_again)
-			bg1 = new Sprite("img/transition/open_level2.png");
-		else {
-			saveRanking();
-			bg1 = new Sprite("img/transition/close_level1.png");
-			bg2 = new Sprite("img/transition/open_level2.png");
-		}
+		saveRanking();
+		bg1 = new Sprite("img/transition/close_level1.png");
+		bg2 = new Sprite("img/transition/open_level2.png");
 		break;
 		
 	case Args::THIRD:
-		if (try_again)
-			bg1 = new Sprite("img/transition/open_level3.png");
-		else {
-			saveRanking();
-			bg1 = new Sprite("img/transition/close_level2.png");
-			bg2 = new Sprite("img/transition/open_level3.png");
-		}
+		saveRanking();
+		bg1 = new Sprite("img/transition/close_level2.png");
+		bg2 = new Sprite("img/transition/open_level3.png");
 		break;
 		
 	case Args::LAST:

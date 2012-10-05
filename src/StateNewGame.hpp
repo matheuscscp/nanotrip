@@ -11,7 +11,7 @@ private:
 	Sprite* bg;
 	Sprite* mainmenu;
 	
-	Button* play;
+	Button* playstory;
 	Button* loadlevel;
 	Button* makelevel;
 	Button* back;
@@ -22,7 +22,7 @@ public:
 	void update();
 	void render();
 private:
-	void handlePlay(const observer::Event& event, bool& stop);
+	void handlePlayStory(const observer::Event& event, bool& stop);
 	void handleLoadLevel(const observer::Event& event, bool& stop);
 	void handleMakeLevel(const observer::Event& event, bool& stop);
 	void handleGoBack(const observer::Event& event, bool& stop);

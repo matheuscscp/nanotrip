@@ -36,9 +36,9 @@ StateLoadLevel::StateLoadLevel(ArgsBase* args) : warning_hidden(true) {
 	back->getShape()->position = r2vec(600 - back->sprite->rectW()/2, 600);
 	back->connect(Button::CLICKED, this, &StateLoadLevel::handleGoBack);
 	
-	play = new Button(new Sprite("img/menus/button_play.png"));
-	play->getShape()->position = r2vec(680 + play->sprite->rectW()/2, 600);
-	play->connect(Button::CLICKED, this, &StateLoadLevel::handleEnter);
+	load = new Button(new Sprite("img/menus/button_load.png"));
+	load->getShape()->position = r2vec(680 + load->sprite->rectW()/2, 600);
+	load->connect(Button::CLICKED, this, &StateLoadLevel::handleEnter);
 }
 
 StateLoadLevel::~StateLoadLevel() {
@@ -52,15 +52,15 @@ StateLoadLevel::~StateLoadLevel() {
 	delete back->sprite;
 	delete back;
 	
-	delete play->sprite;
-	delete play;
+	delete load->sprite;
+	delete load;
 }
 
 void StateLoadLevel::update() {
 	inputstring.update();
 	
 	back->update();
-	play->update();
+	load->update();
 }
 
 void StateLoadLevel::render() {
@@ -73,7 +73,7 @@ void StateLoadLevel::render() {
 		warning->render(640, 465);
 	
 	back->render();
-	play->render();
+	load->render();
 }
 
 void StateLoadLevel::handleInput(const observer::Event& event, bool& stop) {

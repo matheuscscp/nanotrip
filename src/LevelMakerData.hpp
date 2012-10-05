@@ -36,6 +36,7 @@ public:
 	
 	std::string levelname;
 	
+	bool history;
 	int level_time;
 	lalge::Scalar max_abs_charge;
 	std::string bgm;

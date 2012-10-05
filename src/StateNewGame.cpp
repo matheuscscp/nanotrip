@@ -11,9 +11,9 @@ StateNewGame::StateNewGame(ArgsBase* args) {
 	bg = new Sprite("img/menus/background.png");
 	mainmenu = new Sprite("img/menus/mainmenu.png");
 	
-	play = new Button(new Sprite("img/menus/button_play.png"));
-	play->getShape()->position = r2vec(640, 335);
-	play->connect(Button::CLICKED, this, &StateNewGame::handlePlay);
+	playstory = new Button(new Sprite("img/menus/button_play_story.png"));
+	playstory->getShape()->position = r2vec(640, 335);
+	playstory->connect(Button::CLICKED, this, &StateNewGame::handlePlayStory);
 	
 	loadlevel = new Button(new Sprite("img/menus/button_load_level.png"));
 	loadlevel->getShape()->position = r2vec(640, 385);
@@ -32,8 +32,8 @@ StateNewGame::~StateNewGame() {
 	delete bg;
 	delete mainmenu;
 	
-	delete play->sprite;
-	delete play;
+	delete playstory->sprite;
+	delete playstory;
 	
 	delete loadlevel->sprite;
 	delete loadlevel;
@@ -46,7 +46,7 @@ StateNewGame::~StateNewGame() {
 }
 
 void StateNewGame::update() {
-	play->update();
+	playstory->update();
 	loadlevel->update();
 	makelevel->update();
 	back->update();
@@ -56,13 +56,13 @@ void StateNewGame::render() {
 	bg->render();
 	mainmenu->render();
 	
-	play->render();
+	playstory->render();
 	loadlevel->render();
 	makelevel->render();
 	back->render();
 }
 
-void StateNewGame::handlePlay(const observer::Event& event, bool& stop) {
+void StateNewGame::handlePlayStory(const observer::Event& event, bool& stop) {
 	throw new Change("StatePlay");
 }
 

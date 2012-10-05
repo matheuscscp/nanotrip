@@ -20,7 +20,7 @@ private:
 	bool warning_hidden;
 	
 	Button* back;
-	Button* makelevel;
+	Button* make;
 public:
 	StateMakeLevel(ArgsBase* args);
 	~StateMakeLevel();

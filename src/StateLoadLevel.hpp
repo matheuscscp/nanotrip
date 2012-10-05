@@ -20,7 +20,7 @@ private:
 	bool warning_hidden;
 	
 	Button* back;
-	Button* play;
+	Button* load;
 public:
 	StateLoadLevel(ArgsBase* args);
 	~StateLoadLevel();

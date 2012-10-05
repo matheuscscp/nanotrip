@@ -30,9 +30,9 @@ StateMakeLevel::StateMakeLevel(ArgsBase* args) : warning_hidden(true) {
 	back->getShape()->position = r2vec(600 - back->sprite->rectW()/2, 600);
 	back->connect(Button::CLICKED, this, &StateMakeLevel::handleGoBack);
 	
-	makelevel = new Button(new Sprite("img/menus/button_make_level.png"));
-	makelevel->getShape()->position = r2vec(680 + makelevel->sprite->rectW()/2, 600);
-	makelevel->connect(Button::CLICKED, this, &StateMakeLevel::handleEnter);
+	make = new Button(new Sprite("img/menus/button_make.png"));
+	make->getShape()->position = r2vec(680 + make->sprite->rectW()/2, 600);
+	make->connect(Button::CLICKED, this, &StateMakeLevel::handleEnter);
 }
 
 StateMakeLevel::~StateMakeLevel() {
@@ -46,15 +46,15 @@ StateMakeLevel::~StateMakeLevel() {
 	delete back->sprite;
 	delete back;
 	
-	delete makelevel->sprite;
-	delete makelevel;
+	delete make->sprite;
+	delete make;
 }
 
 void StateMakeLevel::update() {
 	inputstring.update();
 	
 	back->update();
-	makelevel->update();
+	make->update();
 }
 
 void StateMakeLevel::render() {
@@ -67,7 +67,7 @@ void StateMakeLevel::render() {
 		warning->render(640, 465);
 	
 	back->render();
-	makelevel->render();
+	make->render();
 }
 
 void StateMakeLevel::handleInput(const observer::Event& event, bool& stop) {

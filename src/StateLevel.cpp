@@ -251,8 +251,10 @@ void StateLevel::handleUnstack(ArgsBase* args) {
 		break;
 		
 	case UnstackArgs::TRYAGAIN:
-		if (history)
+		if (history) {
+			((StateTransition::Args*)nextargs)->points += points;
 			throw new Change("StateTransition", nextargs);
+		}
 		
 		life = 3;
 		((Animation*)sprite_life)->setFrame(life);

@@ -137,7 +137,7 @@ void LevelMakerData::save() {
 	{
 		Configuration general;
 		
-		general.insertInt("history", 0);
+		general.insertInt("history", history);
 		general.insertInt("level_time", level_time);
 		general.insertReal("max_abs_charge", max_abs_charge);
 		general.insertStr("bgm", bgm);
@@ -291,6 +291,7 @@ void LevelMakerData::assembleEmptyLevel() {
 	((Circle*)blackhole_obj->getShape())->setRadius(blackhole_obj->sprite->rectW()/2);
 	
 	// general config
+	history = false;
 	level_time = default_level_time;
 	max_abs_charge = default_max_abs_charge;
 	bgm = "";
@@ -327,6 +328,8 @@ void LevelMakerData::assemble() {
 	// general config
 	{
 		Configuration general = level.getConfig("general");
+		
+		history = general.getInt("history");
 		
 		level_time = general.getInt("level_time");
 		if (level_time > 599)

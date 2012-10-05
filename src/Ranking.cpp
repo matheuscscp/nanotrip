@@ -275,7 +275,6 @@ Ranking::Ranking(
 		}
 	}
 	catch(mexception&) {
-		SHOW("KKK");
 	}
 }
 
