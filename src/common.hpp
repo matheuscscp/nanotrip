@@ -27,7 +27,7 @@ bool eval(const std::string& raw, T& buf);
 
 /// Evaluate function to strings.
 template <typename T>
-std::string eval(T buf);
+std::string eval(const T& raw);
 
 /// Class to manage the main function arguments.
 class MainArgs {
@@ -117,9 +117,9 @@ bool common::eval(const std::string& raw, T& buf) {
 }
 
 template <typename T>
-std::string common::eval(T buf) {
+std::string common::eval(const T& raw) {
 	std::stringstream ss;
-	ss << buf;
+	ss << raw;
 	return ss.str();
 }
 
