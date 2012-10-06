@@ -20,8 +20,9 @@ public:
 	class UnstackArgs : public ArgsBase {
 	public:
 		enum {
-			RETRY,
-			TRYAGAIN,
+			RESET,
+			TRYAGAIN_LOSE,
+			TRYAGAIN_WIN,
 			MENU,
 			NEXT
 		};

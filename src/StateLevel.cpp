@@ -246,16 +246,18 @@ void StateLevel::handleUnstack(ArgsBase* args) {
 	delete args;
 	
 	switch (op) {
-	case UnstackArgs::RETRY:
+	case UnstackArgs::RESET:
 		lose();
 		break;
 		
-	case UnstackArgs::TRYAGAIN:
+	case UnstackArgs::TRYAGAIN_LOSE:
 		if (history) {
 			((StateTransition::Args*)nextargs)->points += points;
 			throw new Change("StateTransition", nextargs);
 		}
+		// don't break, go to try again (win) if not history
 		
+	case UnstackArgs::TRYAGAIN_WIN:
 		life = 3;
 		((Animation*)sprite_life)->setFrame(life);
 		reload();
@@ -266,6 +268,7 @@ void StateLevel::handleUnstack(ArgsBase* args) {
 		if (!history)
 			throw new Change(nextstate, new FinalArgs(points, nextargs));
 		
+		// player lose
 		if (life < 0) {
 			if (nextargs)
 				delete nextargs;

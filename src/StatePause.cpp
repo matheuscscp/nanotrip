@@ -87,7 +87,7 @@ void StatePause::handleKeyDown(const observer::Event& event, bool& stop) {
 }
 
 void StatePause::handleRetry(const observer::Event& event, bool& stop) {
-	throw new Unstack(new StateLevel::UnstackArgs(StateLevel::UnstackArgs::RETRY));
+	throw new Unstack(new StateLevel::UnstackArgs(StateLevel::UnstackArgs::RESET));
 }
 
 void StatePause::handleMenu(const observer::Event& event, bool& stop) {

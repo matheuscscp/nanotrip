@@ -5,6 +5,7 @@
 #include "State.hpp"
 #include "Animation.hpp"
 #include "Stopwatch.hpp"
+#include "Audio.hpp"
 
 class StateIntroduction : public State {
 GAMESTATE
@@ -34,8 +35,15 @@ private:
 	lalge::R2Vector eatles_speed;
 	
 	bool pressed_enter;
+	bool played_sound;
 	
 	float fadein_alpha;
+	
+	Audio* sound_scream;
+	Audio* sound_bird;
+	Audio* sound_fall;
+	Audio* sound_truck;
+	Audio* sound_eatles_getup;
 public:
 	StateIntroduction(ArgsBase* args);
 	~StateIntroduction();

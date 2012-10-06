@@ -53,7 +53,7 @@ void StateYouLose::render() {
 }
 
 void StateYouLose::handleRetry(const observer::Event& event, bool& stop) {
-	throw new Unstack(new StateLevel::UnstackArgs(StateLevel::UnstackArgs::TRYAGAIN));
+	throw new Unstack(new StateLevel::UnstackArgs(StateLevel::UnstackArgs::TRYAGAIN_LOSE));
 }
 
 void StateYouLose::handleMenu(const observer::Event& event, bool& stop) {

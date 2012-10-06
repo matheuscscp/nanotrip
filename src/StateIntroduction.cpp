@@ -7,8 +7,8 @@
 #define BEGIN_FADEIN_ALPHA_DIFF	-0.01
 
 #define BEGIN_DELAY	4000
-#define TRUCK_DELAY	500
-#define PRESS_DELAY	2000
+#define TRUCK_DELAY	2500
+#define PRESS_DELAY	6000
 
 // eatles delays
 #define EATLES_WALK		1000
@@ -25,7 +25,8 @@ using namespace lalge;
 GAMESTATE_DEF(StateIntroduction)
 
 StateIntroduction::StateIntroduction(ArgsBase* args) :
-pressed_enter(false)
+pressed_enter(false),
+played_sound(false)
 {
 	GameBGM::stop();
 	
@@ -43,7 +44,6 @@ pressed_enter(false)
 	
 	storyboard_position = r2vec(0, -1);
 	storyboard_speed = r2vec(0, -100);
-	storyboard_acceleration = r2vec(0, 0);
 	
 	truck_position = r2vec(490, 140);
 	truck_speed = r2vec(600, 200);
@@ -58,10 +58,20 @@ pressed_enter(false)
 	
 	stopwatch_begin.start();
 	
+	// sounds
+	sound_scream = new Audio("sfx/introduction/scream.wav");
+	sound_bird = new Audio("sfx/introduction/bird.wav");
+	sound_fall = new Audio("sfx/introduction/fall.wav");
+	sound_truck = new Audio("sfx/introduction/truck.wav");
+	sound_eatles_getup = new Audio("sfx/introduction/eatles_getup.wav");
+	
+	Audio::musicVolume(0.5);
 	GameBGM::play();
 }
 
 StateIntroduction::~StateIntroduction() {
+	Audio::musicVolume(1);
+	
 	delete storyboard;
 	delete truck;
 	delete press;
@@ -70,6 +80,12 @@ StateIntroduction::~StateIntroduction() {
 	
 	for (int i = 0; i < 3; ++i)
 		delete eatles_states[i];
+	
+	delete sound_scream;
+	delete sound_bird;
+	delete sound_fall;
+	delete sound_truck;
+	delete sound_eatles_getup;
 }
 
 void StateIntroduction::update() {
@@ -98,12 +114,34 @@ void StateIntroduction::update() {
 		truck_position += truck_speed*dt;
 		return;
 	}
-	else if (stopwatch_end.time() >= 0)	// wait for truck to go away
+	else if (stopwatch_end.time() >= 0)	// waiting truck to go away
 		return;
-	else if (y < -4904)	// after bird disappear
+	else if (y < -5900) {	// almost hitting the ground
+		if (!played_sound) {
+			sound_fall->play(1);
+			played_sound = true;
+		}
+	}
+	else if (y < -4904) {	// after bird disappear
 		storyboard_speed.set(1, -900);
-	else if (y < -4184)	// after bird appear
+		played_sound = false;
+	}
+	else if (y < -4350) {	// right after scream sound
+		if (!played_sound) {
+			sound_bird->play(1);
+			played_sound = true;
+		}
+	}
+	else if (y < -4184)	{// after bird appear
 		storyboard_speed.set(1, -150);
+		played_sound = false;
+	}
+	else if (y < -3900) {	// almost bird appearing
+		if (!played_sound) {
+			sound_scream->play(1);
+			played_sound = true;
+		}
+	}
 	else if (y < -1184)	// after star appear
 		storyboard_acceleration.set(1, 0);
 	else if (y < -760)	// after moon disappear
@@ -118,6 +156,7 @@ void StateIntroduction::update() {
 		else {
 			storyboard_position.set(1, -6480);
 			stopwatch_end.start();
+			sound_truck->play(1);
 		}
 		
 		storyboard_speed += storyboard_acceleration*dt;
@@ -153,6 +192,10 @@ void StateIntroduction::updateEatles() {
 	if (stopwatch_eatles.time() > EATLES_GETUP + eatles_states[1]->getTimeSize() + EATLES_WALK)
 		eatles_position += eatles_speed*dt;
 	else if (stopwatch_eatles.time() > EATLES_GETUP + eatles_states[1]->getTimeSize()) {
+		if (!played_sound) {
+			sound_eatles_getup->play(1);
+			played_sound = true;
+		}
 		eatles = eatles_states[2];
 		stopwatch_fadein.start();
 		fadein_alpha = 1;
@@ -174,7 +217,8 @@ void StateIntroduction::handleKeyDown(const observer::Event& event, bool& stop) 
 	case SDLK_KP_ENTER:
 		if (stopwatch_end.time() <= PRESS_DELAY)
 			throw new Change("StateMainMenu");
-		else {
+		else if (!pressed_enter) {
+			played_sound = false;
 			pressed_enter = true;
 			stopwatch_eatles.start();
 		}

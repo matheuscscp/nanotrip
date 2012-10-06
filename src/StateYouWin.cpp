@@ -79,7 +79,7 @@ void StateYouWin::render() {
 }
 
 void StateYouWin::handleRetry(const observer::Event& event, bool& stop) {
-	throw new Unstack(new StateLevel::UnstackArgs(StateLevel::UnstackArgs::TRYAGAIN));
+	throw new Unstack(new StateLevel::UnstackArgs(StateLevel::UnstackArgs::TRYAGAIN_WIN));
 }
 
 void StateYouWin::handleMenu(const observer::Event& event, bool& stop) {
