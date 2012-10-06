@@ -1,10 +1,9 @@
 #include <cmath>
-
 #include "common.hpp"
-
 #include "Animation.hpp"
-
 #include "SDLBase.hpp"
+
+#define TINT_DELTA 20
 
 using std::string;
 
@@ -81,7 +80,7 @@ void Animation::setFPS(int fps) {
  * 
  */
 void Animation::tint(float hueShift){
-	int hueDelta = 360*hueShift;
+	int hueDelta = TINT_DELTA + (360-TINT_DELTA)*hueShift;
 
 	hsv hsvColor;
 	rgb rgbColor;

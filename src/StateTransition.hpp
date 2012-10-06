@@ -46,6 +46,8 @@ private:
 	void saveRanking();
 	
 	int closeDelay() const;
+
+	void handleKeyDown(const observer::Event& event, bool &stop);
 };
 
 #endif

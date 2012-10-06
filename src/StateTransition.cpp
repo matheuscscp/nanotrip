@@ -3,6 +3,7 @@
 #include "StateLevel.hpp"
 #include "Ranking.hpp"
 #include "GameBGM.hpp"
+#include "InputManager.hpp"
 
 using namespace common;
 
@@ -32,6 +33,8 @@ sound_open(0),
 sound_close(0)
 {
 	GameBGM::stop();
+
+	InputManager::instance()->connect(InputManager::KEYDOWN, this, &StateTransition::handleKeyDown);
 	
 	StateLevel::FinalArgs* casted_args = dynamic_cast<StateLevel::FinalArgs*>(args);
 	
@@ -149,4 +152,8 @@ int StateTransition::closeDelay() const {
 		delay += open_delays[args->level];
 	
 	return delay;
+}
+
+void StateTransition::handleKeyDown(const observer::Event& event, bool &stop){
+	throw new Change("StateLevel", new StateLevel::Args(eval(args->level), "StateTransition", args));
 }
