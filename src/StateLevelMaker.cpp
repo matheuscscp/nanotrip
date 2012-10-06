@@ -233,16 +233,6 @@ void StateLevelMaker::update() {
 void StateLevelMaker::render() {
 	bg->render(bg_x, bg_y);
 	
-	// hud
-	hud->render();
-	pupil->render(pupil_position.x(0), pupil_position.x(1), true);
-	button_save->render();
-	button_revert->render();
-	button_test->render();
-	button_quit->render();
-	button_delete->render();
-	button_clone->render();
-	
 	// borders
 	if (data->has_top)
 		border_top->render(30, 0);
@@ -273,6 +263,16 @@ void StateLevelMaker::render() {
 	renderAvatarSpeed();
 	
 	LevelMakerObject::renderSelection();
+	
+	// hud
+	hud->render();
+	pupil->render(pupil_position.x(0), pupil_position.x(1), true);
+	button_save->render();
+	button_revert->render();
+	button_test->render();
+	button_quit->render();
+	button_delete->render();
+	button_clone->render();
 	
 	// panel
 	LevelMakerPanel::renderCurrent();

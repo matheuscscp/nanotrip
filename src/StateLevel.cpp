@@ -378,14 +378,6 @@ void StateLevel::render() {
 	if (border_left)
 		border_left->render();
 	
-	// hud
-	hud->render();
-	if ((eatles) && (!frozen_))
-		eatles->render(37, 13);
-	text_time->render(289, 53);
-	text_points->render(281, 115);
-	sprite_life->render(236, 161);
-	
 	// charge changer
 	charge_bar->render(0, 666);
 	charge_cursor->render(charge_cursor_position, 709, true);
@@ -405,6 +397,14 @@ void StateLevel::render() {
 	
 	// the avatar
 	avatar->render();
+	
+	// hud
+	hud->render();
+	if ((eatles) && (!frozen_))
+		eatles->render(37, 13);
+	text_time->render(289, 53);
+	text_points->render(281, 115);
+	sprite_life->render(236, 161);
 	
 	// press space to start
 	if ((avatar->pinned) && ((SDL_GetTicks()/600) % 2) && (!frozen_))
