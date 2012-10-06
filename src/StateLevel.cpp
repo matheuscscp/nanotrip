@@ -129,8 +129,6 @@ charge_cursor_position(640)
 	{
 		Configuration general = raw.getConfig("general");
 		
-		history = general.getInt("history");
-		
 		// level time
 		level_time = general.getInt("level_time");
 		if (level_time < 5)
@@ -251,7 +249,7 @@ void StateLevel::handleUnstack(ArgsBase* args) {
 		break;
 		
 	case UnstackArgs::TRYAGAIN_LOSE:
-		if (history) {
+		if (dynamic_cast<StateTransition::Args*>(nextargs)) {
 			((StateTransition::Args*)nextargs)->points += points;
 			throw new Change("StateTransition", nextargs);
 		}
@@ -265,7 +263,7 @@ void StateLevel::handleUnstack(ArgsBase* args) {
 		
 	case UnstackArgs::MENU:
 		// next if not nanotrip history
-		if (!history)
+		if (!dynamic_cast<StateTransition::Args*>(nextargs))
 			throw new Change(nextstate, new FinalArgs(points, nextargs));
 		
 		// player lose

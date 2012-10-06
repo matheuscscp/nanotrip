@@ -46,7 +46,6 @@ public:
 		FinalArgs(int points, ArgsBase* nextargs = 0);
 	};
 protected:
-	bool history;
 	std::string nextstate;
 	ArgsBase* nextargs;
 	
