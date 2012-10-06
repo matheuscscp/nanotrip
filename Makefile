@@ -10,7 +10,7 @@ RELEASE = -D'RELEASE="$(STATE)"'
 
 HIDE_WARN = 
 SHOW_WARN = -Wall -Wextra
-WARN = $(SHOW_WARN)
+WARN = $(HIDE_WARN)
 
 CXXFLAGS = -ansi -pedantic $(WARN) -g -std=c++0x
 INCLUDE = -I /usr/include/SDL -I /usr/local/include/SDL
