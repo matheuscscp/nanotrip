@@ -33,7 +33,7 @@ void Avatar::update() {
 }
 
 void Avatar::checkBlackHoleCollision(GameObject* blackhole, bool& enable) {
-	if (collides(*((Particle*)blackhole))) {
+	if ((collides(*((Particle*)blackhole))) && (!win_lose)) {
 		enable = false;
 		being_swallowed = true;
 		this->blackhole = blackhole;

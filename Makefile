@@ -61,7 +61,7 @@ test: build
 
 gdb: build
 	gdb $(EXE)
-#r -f -p /home/matheus/Documents/C_C++/C++/IDJ/nanotrip/ -s StatePlay
+#r -f -p /home/matheus/Documents/C_C++/C++/IDJ/nanotrip/ -s StateIntroduction
 
 release: clean $(OBJ) smclean
 	g++ $(RELEASE) $(CXXFLAGS) $(INCLUDE) -c src/StateManager.cpp -o obj/StateManager.o

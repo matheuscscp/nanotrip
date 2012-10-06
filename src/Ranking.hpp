@@ -2,37 +2,28 @@
 #ifndef RANKING_HPP
 #define RANKING_HPP
 
+#include <list>
 #include <string>
 
-#include "ClearSurface.hpp"
+#include "Text.hpp"
 
-struct RankingData
-{
-	std::string name;
-	unsigned int points;
-	
-	RankingData(const std::string& name = "", unsigned int points = 0);
-	~RankingData();
-	
-	unsigned int save(
-		const std::string& filename,
-		unsigned int max_slots
-	) const;
-};
-
-class Ranking
-{
+class Ranking {
 private:
-	ClearSurface surface;
+	class Record;
+	
+	std::list<Record*> records;
+	
+	Text* text;
 public:
-	Ranking(
-		const std::string& filename, Text* text, unsigned int max_points,
-		int spacing = 0, bool center = true,
-		int left = 0, int top = 0, int right = 0, int bottom = 0
-	);
+	Ranking(bool rendering = true);
 	~Ranking();
 	
-	void render();
+	static void save(const std::string& player_name, int points);
+	
+	void render(int x = 0, int y = 0);
+private:
+	void insert(Record* record);
+	void write();
 };
 
 #endif

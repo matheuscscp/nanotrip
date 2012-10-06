@@ -4,7 +4,6 @@
 
 #include "State.hpp"
 #include "Button.hpp"
-#include "Text.hpp"
 #include "Ranking.hpp"
 
 class StateRanking : public State {
@@ -13,8 +12,7 @@ private:
 	Sprite* bg;
 	Sprite* ranking;
 	
-	Text* text;
-	Ranking* ranking_data;
+	Ranking ranking_data;
 	
 	Button* back;
 public:

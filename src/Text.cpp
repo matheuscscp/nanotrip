@@ -152,7 +152,7 @@ void Text::swapColors()
 	render_text();
 }
 
-void Text::calcSize(const string& text, int* w, int* h)
+void Text::calcSize(const string& text, int& w, int& h)
 {
-	TTF_SizeText( font, text.c_str(), w, h );
+	TTF_SizeText( font, text.c_str(), &w, &h );
 }

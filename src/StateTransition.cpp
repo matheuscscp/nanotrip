@@ -137,8 +137,7 @@ void StateTransition::render() {
 }
 
 void StateTransition::saveRanking() {
-	RankingData rnk_data(this->args->player_name, this->args->points);
-	rnk_data.save("bin/nanotrip.rnk", 5);
+	Ranking::save(this->args->player_name, this->args->points);
 }
 
 int StateTransition::closeDelay() const {

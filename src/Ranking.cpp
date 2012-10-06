@@ -1,288 +1,157 @@
 #include <fstream>
-#include <sstream>
-
-#include "common.hpp"
 
 #include "Ranking.hpp"
 
+#include "common.hpp"
+
 #include "SDLBase.hpp"
+
+#define RANKING_PATH		"bin/nanotrip.rnk"
+#define RANKING_MAX_SLOTS	10
+
+#define GAP_WIDTH	50
+#define GAP_HEIGHT	10
 
 using namespace common;
 
 using std::string;
+using std::list;
 using std::fstream;
-using std::stringstream;
 
-// ==========================================================================
-// Private
-// ==========================================================================
-
-struct RecordData
-{
-	char name[21];
-	unsigned int points;
-	char date[25];
-	
-	string str(unsigned int max_points);
-};
-
-class DataManager
-{
-private:
-	string filename;
-	unsigned int max_slots;
-	RecordData* array;
+class Ranking::Record {
 public:
-	DataManager(const string& filename, unsigned int max_slots = 0);
-	~DataManager();
-	
-	unsigned int maxSlots() const;
-	
-	bool setText(Text* text, unsigned int i, unsigned int max_points) const;
-	
-	static unsigned int save(
-		const RankingData& newdata,
-		const string& filename,
-		unsigned int max_slots = 0
-	);
-private:
-	unsigned int insert(const RankingData& newdata);
+	string player_name;
+	int points;
+	Record(const string& player_name = "", int points = 0);
 };
 
-string RecordData::str(unsigned int max_points)
-{
-	// buffer
-	int tmp = 0;
-	char ret[63];
-	for( int i = 0; i < 62; ++i )
-		ret[i] = ' ';
-	ret[62] = '\0';
+Ranking::Record::Record(const string& player_name, int points) :
+player_name(player_name),
+points(points)
+{}
+
+Ranking::Ranking(bool rendering) : text(0) {
+	fstream f(RootPath::get(RANKING_PATH), fstream::binary | fstream::in);
 	
-	// name
-	for( int i = 0; ( i < 20 ) && ( name[i] != '\0' ); ++i )
-	{
-		ret[tmp] = name[i];
-		++tmp;
+	if (!f.is_open()) {
+		for (int i = 0; i < RANKING_MAX_SLOTS; ++i)
+			records.push_back(new Record());
+		return;
 	}
 	
-	// points
-	{
-		stringstream ss1, ss2;
-		ss1 << max_points;
-		ss2 << "%0";
-		ss2 << ss1.str().size();
-		ss2 << "d";
+	for (int i = 0; i < RANKING_MAX_SLOTS; ++i) {
+		Record* record = new Record();
+		int size;
+		char buf;
 		
-		char stmp[11];
-		sprintf( stmp, ss2.str().c_str(), points );
-		
-		tmp = 24 + ( 10 - ss1.str().size() );
-		
-		for( int i = 0; i < int( ss1.str().size() ); ++i )
-		{
-			ret[tmp] = stmp[i];
-			++tmp;
+		f.read((char*)&size, sizeof(int));
+		for (int j = 0; j < size; ++j) {
+			f.read(&buf, sizeof(char));
+			record->player_name += buf;
 		}
-	}
-	
-	// date
-	tmp = 38;
-	for( int i = 0; i < 24; ++i )
-	{
-		ret[tmp] = date[i];
-		++tmp;
-	}
-	
-	return string( ret );
-}
-
-DataManager::DataManager(const string& filename, unsigned int max_slots) :
-filename(filename), max_slots(max_slots)
-{
-	fstream f( RootPath::get( filename ).c_str(), fstream::binary | fstream::in );
-	
-	// if max_slots is not set, then ranking will loaded and rendered
-	if( !this->max_slots )
-	{
-		if( !f.is_open() )
-			throw( mexception( "Could not open ranking file" ) );
+		f.read((char*)&record->points, sizeof(int));
 		
-		f.read( (char*) &this->max_slots, sizeof( this->max_slots ) );
+		records.push_back(record);
 	}
 	
-	// allocating memory and initializing
-	array = new RecordData[ this->max_slots ];
-	for( unsigned int i = 0; i < this->max_slots; ++i )
-		array[i].points = 0;
+	f.close();
 	
-	// reading file
-	if( f.is_open() )
-	{
-		for( unsigned int i = 0; i < this->max_slots; ++i )
-			f.read( (char*) &array[i], sizeof( array[i] ) );
+	if (rendering)
+		text = new Text("ttf/Swiss721BlackRoundedBT.ttf", "", 20, 0, SDLBase::getColor(255, 255, 255), Text::blended);
+}
+
+Ranking::~Ranking() {
+	// free memory
+	while (records.size()) {
+		delete records.back();
+		records.pop_back();
+	}
+	
+	if (text)
+		delete text;
+}
+
+void Ranking::save(const string& player_name, int points) {
+	Ranking data(false);
+	Record* record = new Record(player_name, points);
+	
+	data.insert(record);
+	
+	data.write();
+}
+
+void Ranking::render(int x, int y) {
+	int point_max_w = 0;
+	int max_w = 0;
+	int max_h = 0;
+	int w, h;
+	int i;
+	
+	// calc max w h
+	for (list<Record*>::iterator it = records.begin(); it != records.end(); ++it) {
+		if (!(*it)->points)
+			continue;
 		
-		f.close();
-	}
-}
-
-DataManager::~DataManager()
-{
-	delete[] array;
-}
-
-unsigned int DataManager::maxSlots() const
-{
-	return max_slots;
-}
-
-bool DataManager::setText(Text* text, unsigned int i, unsigned int max_points) const
-{
-	if( array[i].points )
-	{
-		text->setText( array[i].str( max_points ) );
-		return true;
+		text->calcSize((*it)->player_name, w, h);
+		
+		if (w > max_w)
+			max_w = w;
+		if (h > max_h)
+			max_h = h;
+		
+		text->calcSize(eval((*it)->points), w, h);
+		
+		if (w > point_max_w)
+			point_max_w = w;
 	}
 	
-	return false;
-}
-
-unsigned int DataManager::save(
-	const RankingData& newdata,
-	const string& filename,
-	unsigned int max_slots
-)
-{
-	DataManager data( filename, max_slots );
-	unsigned int ret = data.insert( newdata );
+	if ((!max_w) && (!point_max_w))
+		return;
 	
-	if( ret != max_slots )
-	{
-		fstream f( RootPath::get( filename ).c_str(), fstream::binary | fstream::out );
-		
-		f.write( (const char*) &max_slots, sizeof( max_slots ) );
-		for( unsigned int i = 0; i < max_slots; ++i )
-			f.write( (const char*) &data.array[i], sizeof( data.array[i] ) );
-		
-		f.close();
-	}
+	x -= (max_w + GAP_WIDTH + point_max_w)/2;
+	y -= (max_h + GAP_HEIGHT)*RANKING_MAX_SLOTS/2;
 	
-	return ret;
-}
-
-unsigned int DataManager::insert(const RankingData& newdata)
-{
-	unsigned int pos = max_slots;
-	
-	// look for a position in the array
-	for( unsigned int i = 0; ( i < max_slots ) && ( pos == max_slots ); ++i )
-	{
-		if( array[i].points < newdata.points )
-			pos = i;
-	}
-	
-	// pull the array and insert the new record
-	if( pos != max_slots )
-	{
-		// pull
-		for( unsigned int i = max_slots - 1; i >= pos + 1; --i )
-			array[i] = array[ i - 1 ];
+	// render all
+	i = 0;
+	for (list<Record*>::iterator it = records.begin(); it != records.end(); ++it) {
+		if (!(*it)->points)
+			continue;
 		
-		// copying name
-		int i;
-		for( i = 0; ( i < int( newdata.name.size() ) ) && ( i < 21 ); ++i )
-			array[pos].name[i] = ( ( i < 20 ) ? newdata.name[i] : '\0' );
-		if( i < 21 )
-			array[pos].name[i] = '\0';
+		text->setText((*it)->player_name);
+		text->render(x, y + i*(max_h + GAP_HEIGHT), false);
+		text->setText(eval((*it)->points));
+		text->render(x + max_w + GAP_WIDTH, y + i*(max_h + GAP_HEIGHT), false);
 		
-		array[pos].points = newdata.points;
-		
-		// getting current date and time
-		time_t rawtime = time( NULL );
-		strcpy( array[pos].date, ctime( &rawtime ) );
-	}
-	
-	return pos;
-}
-
-// ==========================================================================
-// Interface
-// ==========================================================================
-
-RankingData::RankingData(const string& name, unsigned int points) :
-name(name), points(points)
-{
-}
-
-RankingData::~RankingData()
-{
-}
-
-unsigned int RankingData::save(const string& filename, unsigned int max_slots) const
-{
-	return DataManager::save( *this, filename, max_slots );
-}
-
-Ranking::Ranking(
-	const string& filename, Text* text, unsigned int max_points,
-	int spacing, bool center, int left, int top, int right, int bottom
-)
-{
-	try {
-		DataManager data( filename );
-		unsigned int max_slots = data.maxSlots();
-		bool end = false;
-		
-		for( unsigned int i = 0; ( i < max_slots ) && ( !end ); ++i )
-		{
-			if( !data.setText( text, i, max_points ) )
-				end = true;
-			else
-			{
-				int x, y;
-				
-				if( center )
-				{
-					x = ( SDLBase::screen()->w - text->w() ) / 2;
-					y = (
-						(
-							SDLBase::screen()->h -
-							( text->h() + 2 * spacing ) * max_slots
-						) / 2 +
-						i * ( text->h() + 2 * spacing ) +
-						spacing
-					);
-				}
-				else
-				{
-					if( left )
-						x = left;
-					else
-						x = ( SDLBase::screen()->w - text->w() - right );
-					
-					if( top )
-						y = ( top + i * ( text->h() + 2 * spacing ) + spacing );
-					else
-					{
-						y = (
-							SDLBase::screen()->h - bottom + spacing -
-							( text->h() + 2 * spacing ) * ( max_slots - i )
-						);
-					}
-				}
-				
-				surface.render( text, x, y );
-			}
-		}
-	}
-	catch(mexception&) {
+		++i;
 	}
 }
 
-Ranking::~Ranking()
-{
+void Ranking::insert(Record* record) {
+	list<Record*>::iterator it = records.begin();
+	
+	while ((it != records.end()) && ((*it)->points > record->points))
+		++it;
+	
+	if (it == records.end())
+		delete record;
+	else
+		records.insert(it, record);
 }
 
-void Ranking::render()
-{
-	surface.render();
+void Ranking::write() {
+	fstream f(RootPath::get(RANKING_PATH), fstream::binary | fstream::out);
+	
+	while (records.size()) {
+		Record* record = records.front();
+		int size = record->player_name.size();
+		
+		f.write((const char*)&size, sizeof(int));
+		f.write(record->player_name.c_str(), size);
+		f.write((const char*)&record->points, sizeof(int));
+		
+		delete record;
+		records.pop_front();
+	}
+	
+	f.close();
 }

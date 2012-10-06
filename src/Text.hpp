@@ -49,7 +49,7 @@ public:
 	void setBGColor(const SDL_Color& bg);
 	void swapColors();
 	
-	void calcSize(const std::string& text, int* w, int* h);
+	void calcSize(const std::string& text, int& w, int& h);
 };
 
 #endif
