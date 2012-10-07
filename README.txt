@@ -14,4 +14,3 @@ Executar: make run
 Limpar: make clean
 Gerar documentação (nem vira, hehe): make dox
 Limpar documentação (isso, melhor apagar): make doxclean
-
