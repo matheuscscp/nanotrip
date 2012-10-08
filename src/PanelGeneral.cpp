@@ -77,9 +77,9 @@ PanelGeneral::PanelGeneral() {
 	text_input_time = new Text("ttf/Swiss721BlackRoundedBT.ttf", "", 20, 0, SDLBase::getColor(51, 51, 51), Text::blended);
 	text_input_time->setText(input_time.get());
 	
-	sprite_input_charge = new Sprite("img/levelmaker/input_general_charge.png");
+	sprite_input_charge = new Sprite("img/levelmaker/input_general_max_charge.png");
 	sprite_input_charge->clip(0, 0, sprite_input_charge->srcW(), sprite_input_charge->srcH()/2);
-	button_input_charge = new Button(new Sprite("img/levelmaker/input_general_charge_button.png"));
+	button_input_charge = new Button(new Sprite("img/levelmaker/input_general_max_charge_button.png"));
 	button_input_charge->connect(Button::CLICKED, this, &PanelGeneral::handleInputChargeButton);
 	input_charge_position = r2vec(200 + button_input_charge->sprite->rectW()/2, 64 + 29);
 	invalid_input_charge = false;

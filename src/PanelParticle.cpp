@@ -16,9 +16,9 @@ PanelParticle::PanelParticle() {
 	
 	// inputs
 	
-	sprite_input_mass = new Sprite("img/levelmaker/input_particle_mass.png");
+	sprite_input_mass = new Sprite("img/levelmaker/input_mass.png");
 	sprite_input_mass->clip(0, 0, sprite_input_mass->srcW(), sprite_input_mass->srcH()/2);
-	button_input_mass = new Button(new Sprite("img/levelmaker/input_particle_mass_button.png"));
+	button_input_mass = new Button(new Sprite("img/levelmaker/input_mass_button.png"));
 	button_input_mass->connect(Button::CLICKED, this, &PanelParticle::handleInputMassButton);
 	input_mass_position = r2vec(105 + button_input_mass->sprite->rectW()/2, 156 - 29);
 	invalid_input_mass = false;
@@ -27,9 +27,9 @@ PanelParticle::PanelParticle() {
 	text_input_mass = new Text("ttf/Swiss721BlackRoundedBT.ttf", "", 13, 0, SDLBase::getColor(51, 51, 51), Text::blended);
 	text_input_mass->setText(input_mass.get());
 	
-	sprite_input_elasticity = new Sprite("img/levelmaker/input_particle_elasticity.png");
+	sprite_input_elasticity = new Sprite("img/levelmaker/input_elasticity.png");
 	sprite_input_elasticity->clip(0, 0, sprite_input_elasticity->srcW(), sprite_input_elasticity->srcH()/2);
-	button_input_elasticity = new Button(new Sprite("img/levelmaker/input_particle_elasticity_button.png"));
+	button_input_elasticity = new Button(new Sprite("img/levelmaker/input_elasticity_button.png"));
 	button_input_elasticity->connect(Button::CLICKED, this, &PanelParticle::handleInputElasticityButton);
 	input_elasticity_position = r2vec(159 + button_input_elasticity->sprite->rectW()/2, 156);
 	invalid_input_elasticity = false;

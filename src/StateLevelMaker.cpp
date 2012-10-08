@@ -25,28 +25,28 @@ StateLevelMaker::StateLevelMaker(ArgsBase* args) : clicking_button(false) {
 	srand(time(0));
 	bg_x = -(rand()%641);
 	bg_y = -(rand()%361);
-	bg = new Sprite("img/levelmaker/background.png");
+	bg = new Sprite("img/level/background.png");
 	
 	// hud
 	hud = new Sprite("img/levelmaker/hud.png");
 	pupil = new Sprite("img/levelmaker/eatles_pupil.png");
 	pupil_center = r2vec(72, 131);
 	pupil_position = pupil_center;
-	charge_bar = new Sprite("img/levelmaker/charge_bar.png");
+	charge_bar = new Sprite("img/level/charge_bar.png");
 	
 	// all sprites
 	LevelMakerData::sprite_avatar = new Sprite("img/levelmaker/avatar.png");
 	LevelMakerData::sprite_blackhole = new Sprite("img/levelmaker/blackhole.png");
 	LevelMakerData::sprite_key = new Sprite("img/levelmaker/item_key.png");
-	LevelMakerData::sprite_negative = new Sprite("img/levelmaker/particle_negative.png");
-	LevelMakerData::sprite_neutral = new Sprite("img/levelmaker/particle_neutral.png");
-	LevelMakerData::sprite_positive = new Sprite("img/levelmaker/particle_positive.png");
-	LevelMakerData::sprite_item_time = new Sprite("img/levelmaker/item_time.png");
-	LevelMakerData::sprite_item_point = new Sprite("img/levelmaker/item_point.png");
-	LevelMakerData::sprite_item_life = new Sprite("img/levelmaker/item_life.png");
-	LevelMakerData::sprite_item_mass = new Sprite("img/levelmaker/item_mass.png");
-	LevelMakerData::sprite_item_barrier = new Sprite("img/levelmaker/item_bounce_star.png");
-	LevelMakerData::sprite_item_lethal_barrier = new Sprite("img/levelmaker/item_death_star.png");
+	LevelMakerData::sprite_negative = new Sprite("img/level/particle_negative.png");
+	LevelMakerData::sprite_neutral = new Sprite("img/level/particle_neutral.png");
+	LevelMakerData::sprite_positive = new Sprite("img/level/particle_positive.png");
+	LevelMakerData::sprite_item_time = new Sprite("img/level/item_time.png");
+	LevelMakerData::sprite_item_point = new Sprite("img/level/item_point.png");
+	LevelMakerData::sprite_item_life = new Sprite("img/level/item_life.png");
+	LevelMakerData::sprite_item_mass = new Sprite("img/level/item_mass.png");
+	LevelMakerData::sprite_item_barrier = new Sprite("img/level/item_bounce_star.png");
+	LevelMakerData::sprite_item_lethal_barrier = new Sprite("img/level/item_death_star.png");
 	LevelMakerData::sprite_avatar_selection = new Sprite("img/levelmaker/avatar_selection.png");
 	LevelMakerData::sprite_blackhole_selection = new Sprite("img/levelmaker/blackhole_selection.png");
 	LevelMakerData::sprite_key_selection = new Sprite("img/levelmaker/item_key_selection.png");
@@ -57,10 +57,10 @@ StateLevelMaker::StateLevelMaker(ArgsBase* args) : clicking_button(false) {
 	LevelMakerData::sprite_item_mass_selection = new Sprite("img/levelmaker/item_mass_selection.png");
 	LevelMakerData::sprite_item_barrier_selection = new Sprite("img/levelmaker/item_bounce_star_selection.png");
 	LevelMakerData::sprite_item_lethal_barrier_selection = new Sprite("img/levelmaker/item_death_star_selection.png");
-	border_top = new Sprite("img/levelmaker/border_top.png");
-	border_right = new Sprite("img/levelmaker/border_right.png");
-	border_bottom = new Sprite("img/levelmaker/border_bottom.png");
-	border_left = new Sprite("img/levelmaker/border_left.png");
+	border_top = new Sprite("img/level/border_top.png");
+	border_right = new Sprite("img/level/border_right.png");
+	border_bottom = new Sprite("img/level/border_bottom.png");
+	border_left = new Sprite("img/level/border_left.png");
 	LevelMakerObject::sprite_selection_box = new Sprite("img/levelmaker/selection_box.png");
 	LevelMakerObject::sprite_selection_horizontal = new Sprite("img/levelmaker/selection_horizontal.png");
 	LevelMakerObject::sprite_selection_vertical = new Sprite("img/levelmaker/selection_vertical.png");

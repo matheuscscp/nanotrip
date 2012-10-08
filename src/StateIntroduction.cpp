@@ -33,8 +33,8 @@ played_sound(false)
 	storyboard = new Sprite("img/introduction/storyboard.png");
 	truck = new Sprite("img/introduction/truck.png");
 	press = new Animation("img/introduction/press_enter.png", 0, 12, 1, 10);
-	mainmenu = new Sprite("img/introduction/mainmenu.png");
-	bg = new Sprite("img/introduction/background.png");
+	mainmenu = new Sprite("img/menus/mainmenu.png");
+	bg = new Sprite("img/menus/background.png");
 	
 	eatles_states[0] = new Animation("img/introduction/eatles_busted.png", 0, 10, 1, 4);
 	eatles_states[1] = new Animation("img/introduction/eatles_smoke.png", 0, 10, 1, 8);

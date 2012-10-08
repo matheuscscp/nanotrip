@@ -11,10 +11,10 @@ using namespace lalge;
 GAMESTATE_DEF(StateYouWin)
 
 StateYouWin::StateYouWin(ArgsBase* args) {
-	bg = new Sprite("img/youwin/background.png");
+	bg = new Sprite("img/level/background_youwin.png");
 	
-	shadow = new Sprite("img/youwin/shadow.png");
-	eatles = new Animation("img/youwin/eatles.png", 0, 8, 1, 4);
+	shadow = new Sprite("img/level/shadow.png");
+	eatles = new Animation("img/level/eatles_laugh.png", 0, 8, 1, 4);
 	
 	std::stringstream ss;
 	ss << ((StateLevel::FinalArgs*)args)->points;
@@ -23,9 +23,9 @@ StateYouWin::StateYouWin(ArgsBase* args) {
 	text_score = new Text("ttf/Swiss721BlackRoundedBT.ttf", "score:", 22, 0, SDLBase::getColor(255, 255, 255), Text::blended);
 	text_points = new Text("ttf/Swiss721BlackRoundedBT.ttf", ss.str(), 50, 0, SDLBase::getColor(63, 217, 255), Text::blended);
 	
-	retry = new Button(new Sprite("img/youwin/retry.png"));
-	menu = new Button(new Sprite("img/youwin/menu.png"));
-	next = new Button(new Sprite("img/youwin/next.png"));
+	retry = new Button(new Sprite("img/level/button_retry.png"));
+	menu = new Button(new Sprite("img/level/button_menu.png"));
+	next = new Button(new Sprite("img/level/button_next.png"));
 	
 	retry->getShape()->position = r2vec(600 - (retry->sprite->srcW() + menu->sprite->srcW())/2, 572);
 	retry->connect(Button::CLICKED, this, &StateYouWin::handleRetry);

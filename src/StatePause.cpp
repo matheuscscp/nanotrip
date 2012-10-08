@@ -9,14 +9,14 @@ using namespace lalge;
 GAMESTATE_DEF(StatePause)
 
 StatePause::StatePause(ArgsBase* args) {
-	bg = new Sprite("img/pause/background.png");
+	bg = new Sprite("img/level/background_pause.png");
 	
-	shadow = new Sprite("img/pause/shadow.png");
-	eatles = new Animation("img/pause/eatles.png", 0, 20, 1, 18);
+	shadow = new Sprite("img/level/shadow.png");
+	eatles = new Animation("img/level/eatles_wait.png", 0, 20, 1, 18);
 	
-	retry = new Button(new Sprite("img/pause/retry.png"));
-	menu = new Button(new Sprite("img/pause/menu.png"));
-	resume = new Button(new Sprite("img/pause/resume.png"));
+	retry = new Button(new Sprite("img/level/button_retry.png"));
+	menu = new Button(new Sprite("img/level/button_menu.png"));
+	resume = new Button(new Sprite("img/level/button_resume.png"));
 	
 	
 	int retry_x, menu_x, resume_x;

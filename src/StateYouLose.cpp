@@ -7,13 +7,13 @@ using namespace lalge;
 GAMESTATE_DEF(StateYouLose)
 
 StateYouLose::StateYouLose(ArgsBase* args) {
-	bg = new Sprite("img/youlose/background.png");
+	bg = new Sprite("img/level/background_youlose.png");
 	
-	shadow = new Sprite("img/youlose/shadow.png");
-	eatles = new Animation("img/youlose/eatles.png", 0, 20, 1, 4);
+	shadow = new Sprite("img/level/shadow.png");
+	eatles = new Animation("img/level/eatles_pissed.png", 0, 20, 1, 4);
 	
-	retry = new Button(new Sprite("img/youlose/retry.png"));
-	menu = new Button(new Sprite("img/youlose/menu.png"));
+	retry = new Button(new Sprite("img/level/button_retry.png"));
+	menu = new Button(new Sprite("img/level/button_menu.png"));
 	
 	retry->getShape()->position = r2vec(600 - retry->sprite->srcW()/2, 572);
 	retry->connect(Button::CLICKED, this, &StateYouLose::handleRetry);

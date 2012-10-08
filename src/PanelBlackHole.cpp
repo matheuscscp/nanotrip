@@ -14,9 +14,9 @@ PanelBlackHole::PanelBlackHole() {
 	
 	// inputs
 	
-	sprite_input_mass = new Sprite("img/levelmaker/input_blackhole_mass.png");
+	sprite_input_mass = new Sprite("img/levelmaker/input_mass.png");
 	sprite_input_mass->clip(0, 0, sprite_input_mass->srcW(), sprite_input_mass->srcH()/2);
-	button_input_mass = new Button(new Sprite("img/levelmaker/input_blackhole_mass_button.png"));
+	button_input_mass = new Button(new Sprite("img/levelmaker/input_mass_button.png"));
 	button_input_mass->connect(Button::CLICKED, this, &PanelBlackHole::handleInputMassButton);
 	input_mass_position = r2vec(105 + button_input_mass->sprite->rectW()/2, 302);
 	invalid_input_mass = false;
