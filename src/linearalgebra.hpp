@@ -57,7 +57,7 @@ public:
 		}
 	};
 private:
-	RnVector< n >::ArraySrc src_;
+	typename RnVector< n >::ArraySrc src_;
 	Scalar length_;
 public:
 	RnVector ();
@@ -67,7 +67,7 @@ public:
 	void annul ();
 	
 	const Scalar& x (const unsigned int& i) const;
-	RnVector< n >::ArraySrc src () const;
+	typename RnVector< n >::ArraySrc src () const;
 	void set (const unsigned int& i, const Scalar& param);
 	void add (const unsigned int& i, const Scalar& param);
 	
@@ -155,7 +155,7 @@ public:
 private:
 	class NullDeterminant {};
 	
-	LinearMap< m, n >::MatrixSrc src_;
+	typename LinearMap< m, n >::MatrixSrc src_;
 	Scalar det_;
 public:
 	LinearMap ();
@@ -801,7 +801,7 @@ bool LinearMap< m, n >::operator!= (const LinearMap< m, n >& param) const
 template <unsigned int m, unsigned int n>
 LinearMap< m, n > LinearMap< m, n >::opposite () const
 {
-	LinearMap< m, n >::MatrixSrc src;
+	typename LinearMap< m, n >::MatrixSrc src;
 	
 	for ( unsigned int i = 0; i < m; i++ )
 	{
@@ -839,7 +839,7 @@ LinearMap< m, n > LinearMap< m, n >::operator+ (
 	const LinearMap< m, n >& param
 ) const
 {
-	LinearMap< m, n >::MatrixSrc src;
+	typename LinearMap< m, n >::MatrixSrc src;
 	
 	for ( unsigned int i = 0; i < m; i++ )
 	{
@@ -871,7 +871,7 @@ LinearMap< m, n > LinearMap< m, n >::operator- (
 	const LinearMap< m, n >& param
 ) const
 {
-	LinearMap< m, n >::MatrixSrc src;
+	typename LinearMap< m, n >::MatrixSrc src;
 	
 	for ( unsigned int i = 0; i < m; i++ )
 	{
@@ -903,7 +903,7 @@ LinearMap< m, n > LinearMap< m, n >::operator* (const Scalar& param) const
 	if ( !param )
 		return LinearMap< m, n > ();
 	
-	LinearMap< m, n >::MatrixSrc src;
+	typename LinearMap< m, n >::MatrixSrc src;
 	
 	for ( unsigned int i = 0; i < m; i++ )
 	{

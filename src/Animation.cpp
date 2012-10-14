@@ -30,8 +30,14 @@ Animation::Animation (
 		for (int j=0; j < src->h; j++){
 			SDL_GetRGBA(getPixel(i, j), src->format, &r, &g, &b, &a);
 			if (1 || (a>0 && r<96 && abs(g-b)<48)){ //TODO color key
+				rgb tmp;
+				tmp.r = r/255.0f;
+				tmp.g = g/255.0f;
+				tmp.b = b/255.0f;
+				tmp.a = a/255.0f;
+				
 				tintPixels.push_back(std::pair<int,int>(i,j));
-				tintColors.push_back(rgb2hsv({r/255.0f,g/255.0f,b/255.0f,a/255.0f}));
+				tintColors.push_back(rgb2hsv(tmp));
 			}
 		}
 	}

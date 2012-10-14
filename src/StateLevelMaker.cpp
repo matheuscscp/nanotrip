@@ -1,3 +1,5 @@
+#include <ctime>
+
 #include "StateLevelMaker.hpp"
 
 #include "InputManager.hpp"

@@ -31,7 +31,7 @@ points(points)
 {}
 
 Ranking::Ranking(bool rendering) : text(0) {
-	fstream f(RootPath::get(RANKING_PATH), fstream::binary | fstream::in);
+	fstream f(RootPath::get(RANKING_PATH).c_str(), fstream::binary | fstream::in);
 	
 	if (!f.is_open()) {
 		for (int i = 0; i < RANKING_MAX_SLOTS; ++i)
@@ -139,7 +139,7 @@ void Ranking::insert(Record* record) {
 }
 
 void Ranking::write() {
-	fstream f(RootPath::get(RANKING_PATH), fstream::binary | fstream::out);
+	fstream f(RootPath::get(RANKING_PATH).c_str(), fstream::binary | fstream::out);
 	
 	while (records.size()) {
 		Record* record = records.front();

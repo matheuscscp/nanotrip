@@ -12,7 +12,7 @@ using std::string;
 GAMESTATE_DEF(StateTransition)
 
 const int open_delays[StateTransition::Args::LAST] = {
-	0,	// VERY FIRST (no screen to show)
+	0,		// VERY FIRST (no screen to show)
 	6500,	// FIRST level
 	6500,	// SECOND level
 	6500	// THIRD level
