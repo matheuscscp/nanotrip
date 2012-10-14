@@ -50,7 +50,7 @@ State::ArgsBase* State::Unstack::args() const { return args_; }
 // =============================================================================
 
 // Static vars
-std::map<string, State* (*)(State::ArgsBase*)> State::builders;
+std::map<string, State::Builder> State::builders;
 list<State*> State::states;
 
 State::State() : frozen_(false) {
@@ -62,10 +62,26 @@ State::~State() {
 }
 
 State* State::build(const string& name, ArgsBase* args) {
+	return (*getIdByName(name))(args);
+}
+
+State::Builder State::getIdByName(const string& name) {
+	// if it is an already loaded game state
+	if (builders.find(name) != builders.end())
+		return builders[name];
+	
+	void* handle = SDL_LoadObject(RootPath::get("obj/" + name + ".o").c_str());
+	SHOW(SDL_GetError());
+	
 	// for unknown game states
-	if (builders.find(name) == builders.end())
+	if (!handle)
 		throw mexception("Trying to load unknown game state");
-	return (*builders[name])(args);
+	
+	builders[name] = (Builder)SDL_LoadFunction(handle, string("build" + name).c_str());
+	
+	SDL_UnloadObject(handle);
+	
+	return builders[name];
 }
 
 void State::handleUnstack(ArgsBase* args) {}

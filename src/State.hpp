@@ -19,37 +19,18 @@
 #include "Interaction.hpp"
 
 /// Declares the game state ID.
-#define GAMESTATE				\
-public:							\
-	class Assigner {			\
-	public:						\
-		Assigner();				\
-	};							\
-private:						\
-	static Assigner assigner;	\
-								\
-	static id_buf id_;			\
-public:							\
-	static id_type getid();		\
-	id_type id() const;
+#define GAMESTATE		\
+public:					\
+	Builder id() const;
 
-/// Defines the game state ID and the constructor builder.
-#define GAMESTATE_DEF(GameState)												\
-GameState::Assigner GameState::assigner;										\
-State::id_buf GameState::id_ = true;											\
-State* build##GameState(State::ArgsBase* args) { return new GameState(args); }	\
-GameState::Assigner::Assigner() {												\
-	State::builders[#GameState] = &build##GameState;							\
-}																				\
-State::id_type GameState::getid() { return &id_; }								\
-State::id_type GameState::id() const { return &id_; }
+/// Defines the game state builder and ID.
+#define GAMESTATE_DEF(GameState)																\
+extern "C" { State* build##GameState(State::ArgsBase* args) { return new GameState(args); } }	\
+State::Builder GameState::id() const { return &build##GameState; }
 
 /// Base class for a game state.
 class State {
 public:
-	typedef const bool id_buf;
-	typedef id_buf* id_type;
-	
 	/// Class for passing arguments between game states.
 	class ArgsBase {
 	public:
@@ -113,7 +94,11 @@ public:
 		ArgsBase* args() const;
 	};
 	
-	static std::map<std::string, State* (*)(ArgsBase*)> builders;
+	/// Game state builder definition.
+	typedef State* (*Builder)(ArgsBase*);
+	
+	/// Map with all game state builders.
+	static std::map<std::string, Builder> builders;
 	
 	/// List with all loaded game states.
 	static std::list<State*> states;
@@ -127,11 +112,12 @@ public:
 	virtual ~State();
 	
 	static State* build(const std::string& name, ArgsBase* args = 0);
+	static Builder getIdByName(const std::string& name);
 	
 	virtual void handleUnstack(ArgsBase* args);
 	
 	/// Access method to the game state ID.
-	virtual id_type id() const = 0;
+	virtual Builder id() const = 0;
 	
 	/// The state tells if it's frozen, or not.
 	bool frozen() const;

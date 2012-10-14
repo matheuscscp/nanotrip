@@ -323,7 +323,7 @@ void StateLevel::update() {
 		eatles->update();
 	
 	// avoiding throws while stacked
-	if (states.back()->id() != StateLevel::getid())
+	if (states.back()->id() != id())
 		return;
 	else if ((!lose_) && (!win_)) {
 		int fps = SDLBase::FPS();
