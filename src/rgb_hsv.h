@@ -7,7 +7,6 @@
 		  : __isnanl (x))
 
 int __isnan(double) throw();
-int __isnanf(float) throw();
 int __isnanl(long double) throw();
 
 #endif
