@@ -1,4 +1,7 @@
 
+// for windows
+#ifndef isnan
+
 #define isnan(x) (sizeof (x) == sizeof (float) ? __isnanf (x)   \
 		  : sizeof (x) == sizeof (double) ? __isnan (x) \
 		  : __isnanl (x))
@@ -6,6 +9,8 @@
 int __isnan(double);
 int __isnanf(float);
 int __isnanl(long double);
+
+#endif
 
 typedef struct {
 	float r;       // percent
