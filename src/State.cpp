@@ -70,8 +70,7 @@ State::Builder State::getIdByName(const string& name) {
 	if (builders.find(name) != builders.end())
 		return builders[name];
 	
-	void* handle = SDL_LoadObject(RootPath::get("obj/" + name + ".o").c_str());
-	SHOW(SDL_GetError());
+	void* handle = SDL_LoadObject(RootPath::get("obj/libnanotrip.so").c_str());
 	
 	// for unknown game states
 	if (!handle)

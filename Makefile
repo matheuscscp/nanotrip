@@ -47,11 +47,12 @@ OBJ = $(OBJ17)
 
 all: build
 
-$(OBJDIR)/%.o: $(SRCDIR)/%.cpp
-	g++ $(CXXFLAGS) $(INCLUDE) -c $< -o $@
+$(OBJDIR)/%.o:
+	g++ $(CXXFLAGS) $(INCLUDE) -c $(SRCDIR)/$*.cpp -o $@
 
 build: $(OBJ)
 	g++ $(CXXFLAGS) $(OBJ) -o $(EXE) $(LIB)
+	g++ $(OBJDIR)/*.o -shared -o $(OBJDIR)/libnanotrip.so
 
 run: build
 	./$(EXE) $(RUNFLAGS)
@@ -66,6 +67,7 @@ gdb: build
 release: clean $(OBJ) smclean
 	g++ $(RELEASE) $(CXXFLAGS) $(INCLUDE) -c src/StateManager.cpp -o obj/StateManager.o
 	g++ $(CXXFLAGS) $(OBJ) -o $(EXE) $(LIB)
+	g++ $(OBJDIR)/*.o -shared -o $(OBJDIR)/libnanotrip.so
 
 smclean:
 	rm obj/StateManager.o
