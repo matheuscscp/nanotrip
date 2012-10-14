@@ -6,9 +6,9 @@
 		  : sizeof (x) == sizeof (double) ? __isnan (x) \
 		  : __isnanl (x))
 
-int __isnan(double);
-int __isnanf(float);
-int __isnanl(long double);
+int __isnan(double) throw();
+int __isnanf(float) throw();
+int __isnanl(long double) throw();
 
 #endif
 
