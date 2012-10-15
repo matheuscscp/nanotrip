@@ -2,6 +2,8 @@
 
 #include "Audio.hpp"
 
+#include "SDLBase.hpp"
+
 using namespace common;
 
 using std::string;
@@ -13,6 +15,9 @@ bool Audio::music_mute = false;
 
 Audio::Audio(const std::string& filename) : sound(NULL), music(NULL), channel(0)
 {
+	if (!SDLBase::hasAudio())
+		return;
+	
 	if( filename[ filename.size() - 1 ] == 'v' )
 	{
 		sound = Mix_LoadWAV( RootPath::get( filename ).c_str() );
@@ -29,6 +34,9 @@ Audio::Audio(const std::string& filename) : sound(NULL), music(NULL), channel(0)
 
 Audio::~Audio()
 {
+	if (!SDLBase::hasAudio())
+		return;
+	
 	if( sound )
 		Mix_FreeChunk( sound );
 	else
@@ -37,6 +45,9 @@ Audio::~Audio()
 
 void Audio::play(int n)
 {
+	if (!SDLBase::hasAudio())
+		return;
+	
 	if( sound )
 		channel = Mix_PlayChannel( -1, sound, n - 1 );
 	else
@@ -45,6 +56,9 @@ void Audio::play(int n)
 
 void Audio::stop(int fade)
 {
+	if (!SDLBase::hasAudio())
+		return;
+	
 	if( sound )
 		Mix_HaltChannel( channel );
 	else
@@ -53,6 +67,9 @@ void Audio::stop(int fade)
 
 void Audio::pause()
 {
+	if (!SDLBase::hasAudio())
+		return;
+	
 	if( sound )
 		Mix_Pause( channel );
 	else
@@ -61,6 +78,9 @@ void Audio::pause()
 
 void Audio::resume()
 {
+	if (!SDLBase::hasAudio())
+		return;
+	
 	if( sound )
 		Mix_Resume( channel );
 	else
@@ -69,6 +89,9 @@ void Audio::resume()
 
 float Audio::soundVolume(float volume)
 {
+	if (!SDLBase::hasAudio())
+		return 0;
+	
 	if( ( volume >= 0 ) && ( volume <= 1 ) )
 	{
 		sound_volume = volume;
@@ -81,6 +104,9 @@ float Audio::soundVolume(float volume)
 
 float Audio::musicVolume(float volume)
 {
+	if (!SDLBase::hasAudio())
+		return 0;
+	
 	if( ( volume >= 0 ) && ( volume <= 1 ) )
 	{
 		music_volume = volume;
@@ -93,6 +119,9 @@ float Audio::musicVolume(float volume)
 
 void Audio::soundMute(bool flag)
 {
+	if (!SDLBase::hasAudio())
+		return;
+	
 	if( ( !sound_mute ) && ( flag ) )
 	{
 		Mix_Volume( -1, 0 );
@@ -107,6 +136,9 @@ void Audio::soundMute(bool flag)
 
 void Audio::musicMute(bool flag)
 {
+	if (!SDLBase::hasAudio())
+		return;
+	
 	if( ( !music_mute ) && ( flag ) )
 	{
 		Mix_VolumeMusic( 0 );
@@ -121,10 +153,16 @@ void Audio::musicMute(bool flag)
 
 bool Audio::soundMuted()
 {
+	if (!SDLBase::hasAudio())
+		return false;
+	
 	return sound_mute;
 }
 
 bool Audio::musicMuted()
 {
+	if (!SDLBase::hasAudio())
+		return false;
+	
 	return music_mute;
 }

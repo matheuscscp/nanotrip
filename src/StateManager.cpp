@@ -1,3 +1,10 @@
+
+#if (defined _WIN32 || defined __WIN32__ || defined __CYGWIN32__) && defined RELEASE
+	#define _WIN32_WINNT	0x0500
+	#include <windows.h>
+	#define HIDE_WINDOW
+#endif
+
 #include "StateManager.hpp"
 
 #include "SDLBase.hpp"
@@ -18,6 +25,11 @@ using std::list;
 using std::cout;
 
 StateManager::StateManager() : fps(0) {
+	// hide console in windows
+#ifdef HIDE_WINDOW
+	ShowWindow(GetConsoleWindow(), SW_HIDE);
+#endif
+	
 	SDLBase::init();
 	InputManager::instance();
 	SurfaceManager::instance();

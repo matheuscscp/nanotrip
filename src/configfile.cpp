@@ -1131,7 +1131,7 @@ list< var_type > Configuration::getList (
 		if ( j == name.size () )
 		{
 			ret.push_back (
-				CALLBACK ( *this, access_method ) ( vec[i].name () )
+				COMMON_CALLBACK ( *this, access_method ) ( vec[i].name () )
 			);
 		}
 	}

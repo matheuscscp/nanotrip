@@ -7,8 +7,8 @@ go1(go1), go2(go2), handler(handler), enabled(true), twice(twice) {}
 
 void Interaction::interact() {
 	if (enabled) {
-		CALLBACK(*go1, handler)(go2, enabled);
+		COMMON_CALLBACK(*go1, handler)(go2, enabled);
 		if (twice)
-			CALLBACK(*go2, handler)(go1, enabled);
+			COMMON_CALLBACK(*go2, handler)(go1, enabled);
 	}
 }

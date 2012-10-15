@@ -36,6 +36,8 @@ private:
 	
 	/// @brief Frames-per-second rate
 	static int fps;
+	
+	static bool has_audio;
 public:
 	static void init();
 	
@@ -108,6 +110,8 @@ public:
 	static void renderStackScreen();
 	
 	static void drawLine(const lalge::R2Vector& beg, const lalge::R2Vector& end, int rgb, int spacing, int size);
+	
+	static bool hasAudio();
 };
 
 #endif

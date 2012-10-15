@@ -53,7 +53,7 @@ $(OBJDIR)/%.o:
 build: $(OBJ)
 	g++ $(CXXFLAGS) $(OBJ) -o $(EXE) $(LIB)
 
-run: build
+run:
 	./$(EXE) $(RUNFLAGS)
 
 test: build

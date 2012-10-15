@@ -35,6 +35,7 @@ SDL_Surface* SDLBase::fade = NULL;
 SDL_Surface* SDLBase::stack_screen = NULL;
 int SDLBase::dt_ = 0;
 int SDLBase::fps = 0;
+bool SDLBase::has_audio = true;
 
 struct StackScreen
 {
@@ -190,7 +191,8 @@ void SDLBase::init()
 		1024
 	) )
 	{
-		throw( mexception( "Mix_OpenAudio error" ) );
+		has_audio = false;
+		mexception("Mix_OpenAudio error").logerr();
 	}
 }
 
@@ -378,3 +380,5 @@ void SDLBase::drawLine(const R2Vector& beg, const R2Vector& end, int rgb, int sp
 	} catch(DirectionNotDefined& e) {
 	}
 }
+
+bool SDLBase::hasAudio() { return has_audio; }
