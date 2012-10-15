@@ -12,7 +12,8 @@ HIDE_WARN =
 SHOW_WARN = -Wall -Wextra
 WARN = $(HIDE_WARN)
 
-CXXFLAGS = -ansi -pedantic $(WARN) -g -std=c++0x
+CXXFLAGS = -ansi -pedantic $(WARN) -std=c++0x
+DEBUG = -g
 INCLUDE = -I /usr/include/SDL -I /usr/local/include/SDL
 
 EXE = nanotrip
@@ -48,24 +49,24 @@ OBJ = $(OBJ17)
 all: build
 
 $(OBJDIR)/%.o:
-	g++ $(CXXFLAGS) $(INCLUDE) -c $(SRCDIR)/$*.cpp -o $@
+	g++ $(CXXFLAGS) $(DEBUG) $(INCLUDE) -c $(SRCDIR)/$*.cpp -o $@
 
 build: $(OBJ)
-	g++ $(CXXFLAGS) $(OBJ) -o $(EXE) $(LIB)
+	g++ $(CXXFLAGS) $(DEBUG) $(OBJ) -o $(EXE) $(LIB)
 
 run:
 	./$(EXE) $(RUNFLAGS)
 
-test: build
+test:
 	./$(EXE) -f -p $(CURDIR)/ -s StateTest
 
-gdb: build
+gdb:
 	gdb $(EXE)
 #r -f -p /home/matheus/Documents/C_C++/C++/IDJ/nanotrip/ -s StateIntroduction
 
 release: clean $(OBJ) smclean
-	g++ $(RELEASE) $(CXXFLAGS) $(INCLUDE) -c src/StateManager.cpp -o obj/StateManager.o
-	g++ $(CXXFLAGS) $(OBJ) -o $(EXE) $(LIB)
+	g++ $(RELEASE) $(CXXFLAGS) $(DEBUG) $(INCLUDE) -c src/StateManager.cpp -o obj/StateManager.o
+	g++ $(CXXFLAGS) $(DEBUG) $(OBJ) -o $(EXE) $(LIB)
 
 smclean:
 	rm obj/StateManager.o

@@ -104,7 +104,7 @@ State* State::build(const string& name, ArgsBase* args) {
 State::Builder State::getIdByName(const string& name) {
 	// for unknown game states
 	if (builders.find(name) == builders.end())
-		throw mexception("Trying to load unknown game state");
+		throw mexception("Trying to get id of unknown game state");
 	
 	return builders[name];
 }
