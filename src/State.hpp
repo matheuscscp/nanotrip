@@ -19,13 +19,22 @@
 #include "Interaction.hpp"
 
 /// Declares the game state ID.
-#define GAMESTATE		\
-public:					\
+#define GAMESTATE				\
+public:							\
+	class Assigner {			\
+	public:						\
+		Assigner();				\
+	};							\
+private:						\
+	static Assigner assigner;	\
+public:							\
 	Builder id() const;
 
 /// Defines the game state builder and ID.
-#define GAMESTATE_DEF(GameState)																\
-extern "C" { State* build##GameState(State::ArgsBase* args) { return new GameState(args); } }	\
+#define GAMESTATE_DEF(GameState)														\
+GameState::Assigner GameState::assigner;												\
+State* build##GameState(State::ArgsBase* args) { return new GameState(args); }			\
+GameState::Assigner::Assigner() { State::getMap()[#GameState] = &build##GameState; }	\
 State::Builder GameState::id() const { return &build##GameState; }
 
 /// Base class for a game state.
@@ -96,10 +105,10 @@ public:
 	
 	/// Game state builder definition.
 	typedef State* (*Builder)(ArgsBase*);
-	
+private:
 	/// Map with all game state builders.
 	static std::map<std::string, Builder> builders;
-	
+public:
 	/// List with all loaded game states.
 	static std::list<State*> states;
 protected:
@@ -111,6 +120,11 @@ public:
 	/// Empty destructor.
 	virtual ~State();
 	
+	static std::map<std::string, Builder>& getMap();
+	static void closeMap();
+private:
+	static std::map<std::string, Builder>** initMap();
+public:
 	static State* build(const std::string& name, ArgsBase* args = 0);
 	static Builder getIdByName(const std::string& name);
 	

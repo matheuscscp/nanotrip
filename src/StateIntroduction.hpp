@@ -19,7 +19,6 @@ private:
 	Animation* eatles;
 	Animation* eatles_states[3];
 	
-	Stopwatch stopwatch_begin;
 	Stopwatch stopwatch_end;
 	Stopwatch stopwatch_eatles;
 	Stopwatch stopwatch_fadein;

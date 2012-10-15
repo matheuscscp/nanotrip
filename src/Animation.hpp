@@ -3,8 +3,9 @@
 
 #include <string>
 
+#include "rgb_hsv.hpp"
+
 #include "Sprite.hpp"
-#include "rgb_hsv.h"
 
 class Animation : public Sprite
 {

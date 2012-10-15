@@ -5,6 +5,7 @@
 using namespace common;
 
 using std::string;
+using std::map;
 using std::list;
 
 // =============================================================================
@@ -50,7 +51,7 @@ State::ArgsBase* State::Unstack::args() const { return args_; }
 // =============================================================================
 
 // Static vars
-std::map<string, State::Builder> State::builders;
+map<string, State::Builder> State::builders;
 list<State*> State::states;
 
 State::State() : frozen_(false) {
@@ -61,24 +62,49 @@ State::~State() {
 	InputManager::instance()->disconnect(this);
 }
 
+map<string, State::Builder>& State::getMap() {
+	return *(*initMap());
+}
+
+void State::closeMap() {
+	map<string, Builder>** init_map;
+	try {
+		init_map = initMap();
+	}
+	catch (mexception&) {
+		throw mexception("Trying to close the initialization map of game states builders after engine initialization");
+	}
+	
+	// assign initialization map to static map
+	builders = *(*init_map);
+	
+	// closing initialization map
+	delete *init_map;
+	*init_map = 0;
+}
+
+map<string, State::Builder>** State::initMap() {
+	static map<string, Builder>* init_map = new map<string, Builder>();
+	
+	// if the map was already closed (we're not in the static initialization anymore)
+	if (!init_map)
+		throw mexception("Trying to get the initialization map of game states builders after static initialization");
+	
+	return &init_map;
+}
+
 State* State::build(const string& name, ArgsBase* args) {
-	return (*getIdByName(name))(args);
+	// for unknown game states
+	if (builders.find(name) == builders.end())
+		throw mexception("Trying to load unknown game state");
+	
+	return (*builders[name])(args);
 }
 
 State::Builder State::getIdByName(const string& name) {
-	// if it is an already loaded game state
-	if (builders.find(name) != builders.end())
-		return builders[name];
-	
-	void* handle = SDL_LoadObject(RootPath::get("obj/libnanotrip.so").c_str());
-	
 	// for unknown game states
-	if (!handle)
+	if (builders.find(name) == builders.end())
 		throw mexception("Trying to load unknown game state");
-	
-	builders[name] = (Builder)SDL_LoadFunction(handle, string("build" + name).c_str());
-	
-	SDL_UnloadObject(handle);
 	
 	return builders[name];
 }

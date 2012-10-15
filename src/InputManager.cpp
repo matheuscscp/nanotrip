@@ -43,7 +43,13 @@ void InputManager::update() {
 			
 		case SDL_KEYDOWN:
 			key_pressed[event_.key.keysym.sym] = true;
-			broadcast(KEYDOWN);
+			
+			// not alt+f4
+			if ((event_.key.keysym.sym != SDLK_F4) || ((!key_pressed[SDLK_RALT]) && (!key_pressed[SDLK_LALT])))
+				broadcast(KEYDOWN);
+			// alt+f4
+			else
+				broadcast(QUIT);
 			break;
 			
 		case SDL_KEYUP:

@@ -1,6 +1,9 @@
 #include <cmath>
+
 #include "common.hpp"
+
 #include "Animation.hpp"
+
 #include "SDLBase.hpp"
 
 #define TINT_DELTA 20

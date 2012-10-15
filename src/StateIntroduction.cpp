@@ -6,7 +6,6 @@
 
 #define BEGIN_FADEIN_ALPHA_DIFF	-0.01
 
-#define BEGIN_DELAY	4000
 #define TRUCK_DELAY	2500
 #define PRESS_DELAY	6000
 
@@ -56,8 +55,6 @@ played_sound(false)
 	fadein_alpha = 1;
 	SDLBase::setFadeAlpha(fadein_alpha);
 	
-	stopwatch_begin.start();
-	
 	// sounds
 	sound_scream = new Audio("sfx/introduction/scream.wav");
 	sound_bird = new Audio("sfx/introduction/bird.wav");
@@ -90,7 +87,7 @@ StateIntroduction::~StateIntroduction() {
 
 void StateIntroduction::update() {
 	// fade in
-	if (stopwatch_begin.time() <= BEGIN_DELAY) {
+	if ((fadein_alpha > 0) && (stopwatch_fadein.time() < 0)) {
 		fadein_alpha += BEGIN_FADEIN_ALPHA_DIFF;
 		if (fadein_alpha < 0)
 			fadein_alpha = 0;
@@ -215,13 +212,17 @@ void StateIntroduction::handleKeyDown(const observer::Event& event, bool& stop) 
 	switch (inputmanager_event.key.keysym.sym) {
 	case SDLK_RETURN:
 	case SDLK_KP_ENTER:
-		if (stopwatch_end.time() <= PRESS_DELAY)
+		if ((stopwatch_end.time() <= PRESS_DELAY) || (pressed_enter))
 			throw new Change("StateMainMenu");
-		else if (!pressed_enter) {
+		else {
 			played_sound = false;
 			pressed_enter = true;
 			stopwatch_eatles.start();
 		}
+		break;
+		
+	case SDLK_RALT:
+	case SDLK_LALT:
 		break;
 		
 	default:

@@ -1,4 +1,7 @@
 
+#ifndef RGB_HSV_HPP
+#define RGB_HSV_HPP
+
 // for windows
 #ifndef isnan
 
@@ -133,3 +136,5 @@ rgb hsv2rgb(hsv in)
 	}
 	return out;     
 }
+
+#endif

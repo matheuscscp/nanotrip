@@ -41,7 +41,7 @@ void StateManager::initStuff() {
 	RootPath::init(path);
 	
 	// initializes the fps
-	if (((MainArgs::find("-f")) || (MainArgs::find("--fps"))) && (!string(RELEASE).size()))
+	if ((MainArgs::find("-f")) || (MainArgs::find("--fps")))
 		fps = new Text("", "", 20, 0, SDLBase::getColor(255, 255, 255), Text::shaded, SDLBase::getColor(0, 0, 0));
 	
 	// game BGM
@@ -53,6 +53,9 @@ void StateManager::initStuff() {
 }
 
 void StateManager::loadFirst() {
+	// closing the initialization map of game states builders
+	State::closeMap();
+	
 	// release version
 	if (string(RELEASE).size()) {
 		State::states.push_back(State::build(RELEASE));
