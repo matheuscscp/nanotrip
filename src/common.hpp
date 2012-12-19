@@ -13,13 +13,20 @@ Some structures that can be easily needed everywhere.
 
 #include <iostream>
 #include <sstream>
+#include <cmath>
+#include <cstring>
 
 #define COMMON_CALLBACK(ref,mfunc)	((ref).*(mfunc))
 
 #define COMMON_SHOW(X)				std::cout << #X << ": (" << (X) << ")" << std::endl
 
+#define COMMON_BITSOF(X)			(sizeof(X)*8)
+
 /// Namespace for some common classes and functions.
 namespace common {
+
+/// Amount of bits in a char variable.
+const int BITSOFCHAR = COMMON_BITSOF(char);
 
 /// Evaluate function for strings.
 template <typename T>
@@ -97,6 +104,40 @@ public:
 	static std::string get(const std::string& path_);
 };
 
+/// Interface to bitarray for unknown size.
+class bitarray_base {
+public:
+	virtual int size() const = 0;
+};
+
+/// Implementation for an array of bits to save memory.
+template <int n>
+class bitarray : public bitarray_base {
+public:
+	/// Tells the amout of characters necessary to store a bitarray of size n.
+	static const int char_amount;
+	char* buf;	///< Storage for the bitarray.
+	
+	bitarray();	///< Allocate the memory and set all positions to false.
+	~bitarray();	///< Delete the array.
+	
+	int size() const;	///< Returns the n template value.
+	/// Makes a new bitarray. If expanding, zeroes will be the MSBs.
+	/// If shrinking, the MSBs will be lost.
+	template <int size_> bitarray<size_> to_size() const;
+	std::string to_str() const;	///< Returns the bit array in string format.
+	
+	bool operator()(int pos) const;	///< Access method.
+	void operator()(int pos, bool val);	///< Modifier method.
+	
+	bitarray<n>& operator<<(int amount);	///< Common left shift operation.
+	bitarray<n>& operator>>(int amount);	///< Common right shift operation.
+	
+	bitarray<n>& operator=(const bitarray<n>& other);	///< Clone operation.
+};
+
+// bitarray HEADER end
+
 }	// namespace common end
 
 // =============================================================================
@@ -136,6 +177,95 @@ T common::MainArgs::get(const std::string& what) {
 		return eval<T>(argv[i + 1]);
 	
 	return T();
+}
+
+// =============================================================================
+// bitarray class
+// =============================================================================
+
+template <int n>
+const int common::bitarray<n>::char_amount = ceil(float(n)/BITSOFCHAR);
+
+template <int n>
+common::bitarray<n>::bitarray() {
+	if (n <= 0)
+		throw mexception("Trying to allocate bit array with invalid size");
+	
+	buf = new char[char_amount];
+	memset(buf, 0, char_amount);
+}
+
+template <int n>
+common::bitarray<n>::~bitarray() {
+	delete[] buf;
+}
+
+template <int n>
+int common::bitarray<n>::size() const {
+	return n;
+}
+
+template <int n>
+template <int size_>
+common::bitarray<size_> common::bitarray<n>::to_size() const {
+	bitarray<size_> ret;
+	for (int i = 0; (i < bitarray<n>::char_amount) && (i < bitarray<size_>::char_amount); ++i)
+		ret.buf[i] = buf[i];
+	return ret;
+}
+
+template <int n>
+std::string common::bitarray<n>::to_str() const {
+	std::string ret;
+	for (int i = n - 1; i >= 0; --i)
+		ret += ((*this)(i) ? '1' : '0');
+	return ret;
+}
+
+template <int n>
+bool common::bitarray<n>::operator()(int pos) const {
+	if (pos >= n)
+		throw mexception("Trying to get value of invalid position of bit array");
+	
+	return ((buf[pos/BITSOFCHAR] & char(1 << (BITSOFCHAR-1 - pos%BITSOFCHAR))) != 0);
+}
+
+template <int n>
+void common::bitarray<n>::operator()(int pos, bool val) {
+	if (pos >= n)
+		throw mexception("Trying to set value of invalid position of bit array");
+	
+	if (val)
+		buf[pos/BITSOFCHAR] |= char(1 << (BITSOFCHAR-1 - pos%BITSOFCHAR));
+	else
+		buf[pos/BITSOFCHAR] &= ~char(1 << (BITSOFCHAR-1 - pos%BITSOFCHAR));
+}
+
+template <int n>
+common::bitarray<n>& common::bitarray<n>::operator<<(int amount) {
+	for (int j = 0; j < amount; ++j) {
+		for (int i = n - 1; i > 0; --i)
+			(*this)(i, (*this)(i - 1));
+		(*this)(0, false);
+	}
+	return *this;
+}
+
+template <int n>
+common::bitarray<n>& common::bitarray<n>::operator>>(int amount) {
+	for (int j = 0; j < amount; ++j) {
+		for (int i = 0; i < n - 1; ++i)
+			(*this)(i, (*this)(i + 1));
+		(*this)(n - 1, false);
+	}
+	return *this;
+}
+
+template <int n>
+common::bitarray<n>& common::bitarray<n>::operator=(const bitarray<n>& other) {
+	for (int i = 0; i < bitarray<n>::char_amount; ++i)
+		buf[i] = other.buf[i];
+	return *this;
 }
 
 #endif

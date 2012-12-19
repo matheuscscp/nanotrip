@@ -10,6 +10,36 @@ using std::fstream;
 using namespace common;
 
 // =============================================================================
+// string functions
+// =============================================================================
+
+string toLower(const string& src) {
+	string buf;
+	
+	for (int i = 0; i < int(src.size()); ++i) {
+		if ((src[i] >= 'A') && (src[i] <= 'Z'))
+			buf += char(src[i] - 'A' + 'a');
+		else
+			buf += src[i];
+	}
+	
+	return buf;
+}
+
+string toUpper(const string& src) {
+	string buf;
+	
+	for (int i = 0; i < int(src.size()); ++i) {
+		if ((src[i] >= 'a') && (src[i] <= 'z'))
+			buf += char(src[i] - 'a' + 'A');
+		else
+			buf += src[i];
+	}
+	
+	return buf;
+}
+
+// =============================================================================
 // MainArgs Class
 // =============================================================================
 
