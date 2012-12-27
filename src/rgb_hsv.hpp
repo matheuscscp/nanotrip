@@ -2,18 +2,6 @@
 #ifndef RGB_HSV_HPP
 #define RGB_HSV_HPP
 
-// for windows
-#ifndef isnan
-
-#define isnan(x) (sizeof (x) == sizeof (float) ? __isnanf (x)   \
-		  : sizeof (x) == sizeof (double) ? __isnan (x) \
-		  : __isnanl (x))
-
-int __isnan(double) throw();
-int __isnanl(long double) throw();
-
-#endif
-
 typedef struct {
 	float r;       // percent
 	float g;       // percent
@@ -79,7 +67,7 @@ rgb hsv2rgb(hsv in)
 	out.a = in.a;
 
 	if(in.s <= 0.0) {       // < is bogus, just shuts up warnings
-		if(isnan(in.h)) {   // in.h == NAN
+		if(std::isnan(in.h)) {   // in.h == NAN
 			out.r = in.v;
 			out.g = in.v;
 			out.b = in.v;
