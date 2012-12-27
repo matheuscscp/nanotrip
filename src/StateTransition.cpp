@@ -155,5 +155,8 @@ int StateTransition::closeDelay() const {
 }
 
 void StateTransition::handleKeyDown(const observer::Event& event, bool &stop){
+	if (args->level == Args::LAST)
+		throw new Change("StateCredits", new ArgsBase());
+	
 	throw new Change("StateLevel", new StateLevel::Args(eval(args->level), "StateTransition", args));
 }
