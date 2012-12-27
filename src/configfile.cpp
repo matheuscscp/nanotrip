@@ -54,6 +54,7 @@ private:
 		unsigned int line_;
 		State state_;
 		char input_;
+		bool keep_input_;
 		stack< string > names_;
 		string value_;
 		string spaces_;
@@ -141,7 +142,8 @@ void Configuration::Variable< T >::set (const T& value)
 // File Parser Class
 // =============================================================================
 
-Parser::FileParser::FileParser (const string& filename, Configuration* dest)
+Parser::FileParser::FileParser (const string& filename, Configuration* dest) :
+keep_input_(false)
 {
 	file_.open ( filename.c_str () );
 	
@@ -204,8 +206,12 @@ void Parser::FileParser::parse ()
 				break;
 		}
 		
-		if ( !file_.eof () )
-			input_ = file_.get ();
+		if ( !file_.eof () ) {
+			if (keep_input_)
+				keep_input_ = false;
+			else
+				input_ = file_.get ();
+		}
 		
 		if ( file_.eof () )
 			handleEof ();
@@ -275,7 +281,7 @@ void Parser::FileParser::handleLineBreak ()
 	if ( !file_.eof () )
 	{
 		if ( input_ != '\n' )
-			file_.seekg ( -1, ios::cur );
+			keep_input_ = true;
 	}
 }
 
@@ -646,6 +652,7 @@ string Parser::parseOutStr (const string& src)
 	stringstream ss;
 	ss << src;
 	char input = ss.get ();
+	bool keep_input = false;
 	char tmp;
 	
 	while ( !ss.eof () )
@@ -672,12 +679,16 @@ string Parser::parseOutStr (const string& src)
 			else
 			{
 				s += input;
-				ss.seekg ( -1, ios::cur );
+				keep_input = true;
 			}
 		}
 		
-		if ( !ss.eof () )
-			input = ss.get ();
+		if ( !ss.eof () ) {
+			if (keep_input)
+				keep_input = false;
+			else
+				input = ss.get ();
+		}
 	}
 	
 	return s;
