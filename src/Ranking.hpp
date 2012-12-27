@@ -23,6 +23,7 @@ public:
 	void render(int x = 0, int y = 0);
 private:
 	void insert(Record* record);
+	void sort();
 	void write();
 };
 

@@ -76,7 +76,7 @@ void Ranking::save(const string& player_name, int points) {
 	Record* record = new Record(player_name, points);
 	
 	data.insert(record);
-	
+	data.sort();
 	data.write();
 }
 
@@ -129,13 +129,49 @@ void Ranking::render(int x, int y) {
 void Ranking::insert(Record* record) {
 	list<Record*>::iterator it = records.begin();
 	
+	// looks for existing name
+	while ((it != records.end()) && ((*it)->player_name != record->player_name))
+		++it;
+	if (it != records.end()) {
+		if ((*it)->points < record->points)
+			(*it)->points = record->points;
+		return;
+	}
+	
+	// name not found. checks if the record points can be put in the ranking
+	it = records.begin();
 	while ((it != records.end()) && ((*it)->points > record->points))
 		++it;
-	
 	if (it == records.end())
 		delete record;
 	else
 		records.insert(it, record);
+}
+
+// bubble sort
+void Ranking::sort() {
+	bool swapped = true;
+	
+	while (swapped) {
+		swapped = false;
+		
+		list<Record*>::iterator it1 = records.begin();
+		list<Record*>::iterator it2;
+		for (int i = 0; i < records.size() - 1; ++i) {
+			it2 = it1;
+			++it2;
+			
+			if ((*it1)->points < (*it2)->points) {
+				swapped = true;
+				
+				Record* tmp = *it1;
+				*it1 = *it2;
+				*it2 = tmp;
+			}
+			
+			++it1;
+		}
+	}
 }
 
 void Ranking::write() {
