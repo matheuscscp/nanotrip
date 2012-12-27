@@ -21,6 +21,7 @@ EXE = nanotrip
 FPS = 
 RUNFLAGS = $(FPS) -p $(CURDIR)/ -s $(STATE)
 
+#Windows libs: LIB = -lmingw32 -lSDLmain -lSDL -lSDL_image -lSDL_gfx -lSDL_ttf -lSDL_mixer
 LIB = -lSDL -lSDL_image -lSDL_gfx -lSDL_ttf -lSDL_mixer
 
 MOD = $(OBJDIR)/configfile.o $(OBJDIR)/linearalgebra.o $(OBJDIR)/common.o $(OBJDIR)/observer.o
