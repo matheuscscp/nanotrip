@@ -1,18 +1,18 @@
 nanotrip
 ========
 
-Universidade de Brasília - Departamento de Ciência da Computação
+Universidade de Brasília - Departamento de Ciência da Computação<br />
 Introdução ao Desenvolvimento de Jogos - Turma A - Semestre 2012/1
 
-Equipe:
-Matheus Pimenta - Programador
-Igor Rafael de Sousa - Programador
-Vinícius Romualdo - Arte visual
-Vinícius de Azevedo - Arte visual
+Equipe:<br />
+Matheus Pimenta - Programador<br />
+Igor Rafael de Sousa - Programador<br />
+Vinícius Romualdo - Design<br />
+Vinícius de Azevedo - Design<br />
 Edgard Felipe - Arte auditiva
 
-Compilar: make
-Executar: make run
-Limpar: make clean
-Gerar documentação (nem vira, hehe): make dox
+Compilar: make<br />
+Executar: make run<br />
+Limpar: make clean<br />
+Gerar documentação (nem vira, hehe): make dox<br />
 Limpar documentação (isso, melhor apagar): make doxclean
