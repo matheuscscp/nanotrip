@@ -1,0 +1,10 @@
+.cproject
+.project
+.settings
+Debug
+*.exe
+*.dll
+!3rd/bin/*
+ErrorLog.txt
+stdout.txt
+nanotrip.rnk
