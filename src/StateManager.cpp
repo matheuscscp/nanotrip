@@ -13,22 +13,18 @@
 #include "Button.hpp"
 #include "GameBGM.hpp"
 
-#ifndef RELEASE
-	#define RELEASE	""
-#endif
-
 using namespace common;
 
 using std::string;
 using std::list;
 using std::cout;
 
-StateManager::StateManager() : fps(0) {
+StateManager::StateManager(const string& firstState) : fps(0) {
 	SDLBase::init();
 	InputManager::instance();
 	SurfaceManager::instance();
 	initStuff();
-	loadFirst();
+	loadFirst(firstState);
 }
 
 StateManager::~StateManager() {
@@ -58,32 +54,11 @@ void StateManager::initStuff() {
 	Button::sound_clicked = new Audio("sfx/button_clicked.wav");
 }
 
-void StateManager::loadFirst() {
+void StateManager::loadFirst(const string& firstState) {
 	// closing the initialization map of game states builders
 	State::closeMap();
 	
-	// release version
-	if (string(RELEASE).size()) {
-		State::states.push_back(State::build(RELEASE));
-		return;
-	}
-	
-	// searches for the game state to be loaded
-	string state = MainArgs::get<string>("-s");
-	if (!state.size())
-		state = MainArgs::get<string>("--state");
-	// for a movie as the first game state
-	if (state == "StateMovie") {
-		string movie = MainArgs::get<string>(state);
-		string nextstate = MainArgs::get<string>(movie);
-		State::states.push_back(new StateMovie(new StateMovie::Args(movie, nextstate)));
-	}
-	// you can't load pause manager as your first game state
-	else if (state == "StatePauseManager")
-		throw mexception("Trying to load pause manager as the first game state");
-	// for specific game states
-	else
-		State::states.push_back(State::build(state));
+	State::states.push_back(State::build(firstState));
 }
 
 void StateManager::dumpStates() {

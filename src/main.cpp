@@ -9,7 +9,7 @@ int main(int argc, char** argv) {
 	MainArgs::init(argc, argv);
 	
 	try {
-		StateManager sm;
+		StateManager sm("StateIntroduction");
 		sm.run();
 	} catch (Quit&) {
 		// just quit

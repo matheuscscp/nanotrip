@@ -11,11 +11,12 @@ class StateManager {
 private:
 	Text* fps;
 public:
-	StateManager();		///< Initializes SDL and other stuff.
+	/// Initializes SDL and other stuff.
+	StateManager(const std::string& firstState);
 	~StateManager();	///< Closes everything.
 private:
 	void initStuff();
-	void loadFirst();
+	void loadFirst(const std::string& firstState);
 	
 	void dumpStates();
 	void closeStuff();
