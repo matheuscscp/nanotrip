@@ -24,11 +24,6 @@ using std::list;
 using std::cout;
 
 StateManager::StateManager() : fps(0) {
-	// hide console in windows
-#ifdef _WIN32_WINNT
-	ShowWindow(GetConsoleWindow(), SW_HIDE);
-#endif
-	
 	SDLBase::init();
 	InputManager::instance();
 	SurfaceManager::instance();
