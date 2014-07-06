@@ -6,7 +6,7 @@
 
 #include "SDLBase.hpp"
 
-#define RANKING_PATH		"bin/nanotrip.rnk"
+#define RANKING_PATH		"nanotrip.rnk"
 #define RANKING_MAX_SLOTS	10
 
 #define GAP_WIDTH	50
