@@ -3,7 +3,6 @@
 .settings
 Debug
 *.exe
-*.o
 *.dll
 !3rd/bin/*
 ErrorLog.txt
