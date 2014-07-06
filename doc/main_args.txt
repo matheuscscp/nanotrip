@@ -1,3 +1,0 @@
--p/--path <your_absolute_path> (tell your game installation directory)
--f/--fps (check the fps your game is reaching)
--s/--state <your_game_state> (tell which game state must be loaded in first place)

@@ -36,11 +36,7 @@ StateManager::~StateManager() {
 }
 
 void StateManager::initStuff() {
-	// initializes the root path
-	string path = MainArgs::get<string>("-p");
-	if (!path.size())
-		path = MainArgs::get<string>("--path");
-	RootPath::init(path);
+	RootPath::init("");
 	
 	// initializes the fps
 	if ((MainArgs::find("-f")) || (MainArgs::find("--fps")))
