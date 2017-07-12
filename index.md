@@ -19,9 +19,9 @@ Also, this game comes with a level editor! Create new levels and share with your
 ![Ranking](https://raw.githubusercontent.com/matheuscscp/nanotrip/gh-pages/images/ranking.png)
 ![Map editor](https://raw.githubusercontent.com/matheuscscp/nanotrip/gh-pages/images/map_editor.png)
 
-### Authors and Contributors
-Matheus Pimenta (matheuscscp@gmail.com)<br />
-Igor Rafael de Sousa (igorrafaeldesousa@gmail.com)<br />
-Vinícius Romualdo (viniciusromualdo@gmail.com)<br />
-Vinícius de Azevedo (vinicius.d.azevedo@gmail.com)<br />
-Edgard Felipe (tonsinteiros@gmail.com)
+### Authors
+Matheus Pimenta - Developer (matheuscscp@gmail.com)<br />
+Igor Rafael de Sousa - Developer (igorrafaeldesousa@gmail.com)<br />
+Vinícius Romualdo - Art & Design (viniciusromualdo@gmail.com)<br />
+Vinícius de Azevedo - Art & Design (vinicius.d.azevedo@gmail.com)<br />
+Edgard Felipe - Sound artist (tonsinteiros@gmail.com)
