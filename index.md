@@ -1,6 +1,6 @@
 ![Eatles](https://raw.githubusercontent.com/matheuscscp/nanotrip/gh-pages/images/icon.png)
 
-### Welcome to nanotrip
+### nanotrip
 nanotrip is a game created for a college class, Introduction to Game Development.
 
 In this game you must help Eatles, the alien, to recover his spaceship.
@@ -9,7 +9,7 @@ It is a physics game about field forces and electromagnetism, where you must cha
 
 Also, this game comes with a level editor! Create new levels and share with your friends!
 
-### Download link for Windows executable release
+### Windows executable
 [Download](https://downloads.sourceforge.net/project/nanotrip/nanotrip.zip?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fnanotrip%2F&ts=1360884880&use_mirror=ufpr)
 
 ### Screenshots
