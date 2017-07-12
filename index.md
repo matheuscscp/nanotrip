@@ -20,8 +20,8 @@ Also, this game comes with a level editor! Create new levels and share with your
 ![Map editor](https://raw.githubusercontent.com/matheuscscp/nanotrip/gh-pages/images/map_editor.png)
 
 ### Authors
-Matheus Pimenta - Developer (matheuscscp@gmail.com)<br />
-Igor Rafael de Sousa - Developer (igorrafaeldesousa@gmail.com)<br />
-Vinícius Romualdo - Art & Design (viniciusromualdo@gmail.com)<br />
-Vinícius de Azevedo - Art & Design (vinicius.d.azevedo@gmail.com)<br />
-Edgard Felipe - Sound artist (tonsinteiros@gmail.com)
+Matheus Pimenta - Dev (matheuscscp@gmail.com)<br />
+Igor Rafael de Sousa - Dev (igorrafaeldesousa@gmail.com)<br />
+Vinícius Romualdo - Art (viniciusromualdo@gmail.com)<br />
+Vinícius de Azevedo - Art (vinicius.d.azevedo@gmail.com)<br />
+Edgard Felipe - Sound (tonsinteiros@gmail.com)
