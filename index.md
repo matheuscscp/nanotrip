@@ -1,9 +1,9 @@
 ![Eatles](https://raw.githubusercontent.com/matheuscscp/nanotrip/gh-pages/images/icon.png)
 
 ### nanotrip
-nanotrip is a game created for a college class, Introduction to Game Development. In this game you must help Eatles, the alien, to recover his spaceship!
+nanotrip is a game created for a college class, Introduction to Game Development. In this game you must help Eatles, the alien, to reclaim his spaceship!
 
-nanotrip is a physics game about field forces and electromagnetism, where you must change the electrical charge of a moving particle that can eat things to raise its mass and pick up point items, the Eatles' psychic avatar.
+nanotrip is a physics game about field forces and electromagnetism, where you must change the electrical charge of a moving particle, the Eatles' psychic avatar. The avatar is capable of eating things to raise its mass and pick up point items to score better.
 
 nanotrip comes with a level editor! Create new levels and share with your friends!
 
