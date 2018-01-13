@@ -3,9 +3,11 @@
 ### nanotrip
 nanotrip is a game created for a college class, Introduction to Game Development. In this game you must help Eatles, the alien, to reclaim his spaceship!
 
-nanotrip is a physics game about field forces and electromagnetism, where you must change the electrical charge of a moving particle, the Eatles' psychic avatar. The avatar is capable of eating things to raise its mass and pick up point items to score better.
+nanotrip is a physics game about field forces and electromagnetism, where you control the electric charge of Eatles' psychic avatar (a microorganism particle) aiming to reach the black whole for the next level.
 
-nanotrip comes with a level editor! Create new levels and share with your friends!
+Pick up points and time items to score better, but avoid eating beans and getting heavier! And don't touch the spikes!
+
+nanotrip also comes with a level creator. Create and share levels!
 
 ### Windows executable
 [Download](https://downloads.sourceforge.net/project/nanotrip/nanotrip.zip?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fnanotrip%2F&ts=1360884880&use_mirror=ufpr)
