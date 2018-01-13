@@ -3,7 +3,7 @@
 ### nanotrip
 nanotrip is a game created for a college class, Introduction to Game Development. In this game you must help Eatles, the alien, to reclaim his spaceship!
 
-nanotrip is a physics game about field forces and electromagnetism, where you control the electric charge of Eatles' psychic avatar (a microorganism particle) aiming to reach the black whole for the next level.
+nanotrip is a physics game about field forces and electromagnetism, where you control the electric charge of Eatles' psychic avatar (a microorganism particle), inside a particle system of heavy point charges, aiming to reach the black whole for the next level.
 
 Pick up points and time items to score better, but avoid eating beans and getting heavier! And don't touch the spikes!
 
