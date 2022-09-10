@@ -1,7 +1,7 @@
 .cproject
 .project
 .settings
-Debug
+bin/
 *.exe
 *.dll
 !3rd/bin/*

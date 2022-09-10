@@ -12,18 +12,18 @@ ifneq ($(shell uname -s),Linux)
 	OS_INCLUDES = $(WIN_INCLUDES)
 endif
 
-nanotrip: Debug/src $(shell ls src/*.cpp | sed 's/.cpp/.o/g' | sed 's/src\///g')
-	g++ Debug/src/*.o -o $@ $(OS_LIBS) -lSDLmain -lSDL -lSDL_image -lSDL_gfx -lSDL_ttf -lSDL_mixer $(OS_FLAGS)
+nanotrip: bin $(shell ls src/*.cpp | sed 's/.cpp/.o/g' | sed 's/src/bin/g')
+	g++ bin/*.o -o $@ $(OS_LIBS) -lSDLmain -lSDL -lSDL_image -lSDL_gfx -lSDL_ttf -lSDL_mixer $(OS_FLAGS)
 
-Debug/src:
+bin:
 	mkdir -p $@
 
-%.o: src/%.cpp
-	g++ $(OS_INCLUDES) -c $< -o Debug/src/$@
+bin/%.o: src/%.cpp
+	g++ $(OS_INCLUDES) -c $< -o $@
 
 .PHONY: clean
 clean:
-	rm -rf Debug/ nanotrip*
+	rm -rf bin/ nanotrip*
 
 .PHONY: install-linux-deps
 install-linux-deps:
