@@ -22,8 +22,8 @@ ifneq ($(shell uname -s),Linux)
 	OS_INCLUDES = $(WIN_INCLUDES)
 endif
 
-all: $(OBJ)
-	g++ Debug/src/*.o -o nanotrip $(OS_LIBS) -lSDLmain -lSDL -lSDL_image -lSDL_gfx -lSDL_ttf -lSDL_mixer $(OS_FLAGS)
+nanotrip: $(OBJ)
+	g++ Debug/src/*.o -o $@ $(OS_LIBS) -lSDLmain -lSDL -lSDL_image -lSDL_gfx -lSDL_ttf -lSDL_mixer $(OS_FLAGS)
 
 %.o: src/%.cpp
 	g++ $(OS_INCLUDES) -c $< -o Debug/src/$@
