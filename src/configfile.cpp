@@ -853,12 +853,12 @@ void Configuration::writeTxt_ (fstream& f, unsigned short tab) const
 	{
 		f << inden;
 		f << cvars[i].name ();
-		f << "\r\n";
+		f << "\n";
 		f << inden;
-		f << "{\r\n";
+		f << "{\n";
 		cvars[i].value ().writeTxt_ ( f, tab + 1 );
 		f << inden;
-		f << "}\r\n";
+		f << "}\n";
 		
 		// extra line break to separate blocks, if the last block
 		// written isn't the last variable of its configuration instance
@@ -866,7 +866,7 @@ void Configuration::writeTxt_ (fstream& f, unsigned short tab) const
 			( !vars.size () )	) )
 		{
 			f << inden;
-			f << "\r\n";
+			f << "\n";
 		}
 	}
 	
@@ -877,7 +877,7 @@ void Configuration::writeTxt_ (fstream& f, unsigned short tab) const
 		f << vars[i].name ();
 		f << " = ";
 		f << vars[i].value ();
-		f << "\r\n";
+		f << "\n";
 	}
 }
 
@@ -886,7 +886,7 @@ void Configuration::writeTxt (const string& filename)
 	fstream f ( filename.c_str (), fstream::out );
 	
 	writeTxt_ ( f, 0 );
-	f << "\r\n";
+	f << "\n";
 	
 	f.close ();
 }
